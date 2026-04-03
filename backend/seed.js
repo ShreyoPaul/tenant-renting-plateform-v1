@@ -125,6 +125,16 @@ const seedData = [
     owner_name: "Arjun Singh",
     owner_phone: "8456789012",
     verified: true
+  },
+  {
+    title: "Economical PG - Dum Dum",
+    price: 4000,
+    location: "Dum Dum",
+    description: "3-sharing room, basic amenities, WiFi",
+    images: ["https://via.placeholder.com/300?text=PG+13"],
+    owner_name: "Rohit Kumar",
+    owner_phone: "9123456780",
+    verified: false
   }
 ];
 
