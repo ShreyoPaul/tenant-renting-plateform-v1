@@ -6,40 +6,44 @@ const listingSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     price: {
       type: Number,
-      required: true
+      required: true,
     },
     location: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     description: {
       type: String,
-      trim: true
+      trim: true,
     },
     images: {
       type: [String],
-      default: []
+      default: [],
+    },
+    amenities: {
+      type: [String],
+      required: true,
     },
     owner_name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     owner_phone: {
       type: String,
-      required: true
+      required: true,
     },
     verified: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Listing", listingSchema);

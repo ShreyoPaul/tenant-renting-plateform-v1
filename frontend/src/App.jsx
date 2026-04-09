@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState ,useEffect} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -9,23 +9,73 @@ import Search from './pages/Search'
 import { Routes, Route } from "react-router-dom";
 import OwnerDashboard from './pages/OwnerDashboard'
 import MyAccount from './pages/MyAccount'
+import PropertyDetails from './pages/PropertyDetails'
+import SignupPage from './pages/SignUpPage'
+import LoginPage from './pages/LoginPage'
+import ProtectedRoute from './pages/ProtectedRoute'
+
 
 
 
 function App() {
   const [count, setCount] = useState(0)
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    // optional: validate token later
+    console.log("User already logged in");
+  }
+}, []);
 
   return (
     <>
-      <div>
-         <Routes>
-      <Route path="/" element={<AcademicCurator />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/owners" element={<OwnerDashboard/>}/>
-         <Route path="/account" element={<MyAccount/>}/>
-      
-    </Routes>
-      </div>
+    <Routes>
+
+    
+     <Route path="/" element={
+  <ProtectedRoute>
+    <AcademicCurator />
+  </ProtectedRoute>
+} />
+
+<Route path="/search" element={
+  <ProtectedRoute>
+    <Search />
+  </ProtectedRoute>
+} />
+
+<Route path="/owners" element={
+  <ProtectedRoute>
+    <OwnerDashboard />
+  </ProtectedRoute>
+} />
+
+<Route path="/account" element={
+  <ProtectedRoute>
+    <MyAccount />
+  </ProtectedRoute>
+} />
+
+<Route path="/propertydetails/:id" element={
+  <ProtectedRoute>
+    <PropertyDetails />
+  </ProtectedRoute>
+} />
+<Route
+  path="/login"
+  element={
+    localStorage.getItem("token") ? <AcademicCurator /> : <LoginPage />
+  }
+/>
+
+<Route
+  path="/signup"
+  element={
+    localStorage.getItem("token") ? <AcademicCurator /> : <SignupPage />
+  }
+/>
+</Routes>
     </>
   )
 }
