@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import MainFooter from "../components/MainFooter";
-import "../styles/AcademicCurator.css";
-import { NavLink } from "react-router-dom";
+import Navbar from "../components/Navbar"
 const sidebarLinks = [
   { icon: "🔍", label: "Discover" },
   { icon: "🔖", label: "Saved Listings" },
@@ -29,14 +26,6 @@ const savedListings = [
     amenities: ["Quiet Zone", "Private Bath"],
     img: "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?w=400&q=80",
   },
-  {
-    id: 3,
-    name: "Oxford Square Villa",
-    price: "₹18k",
-    dist: "1.2 km from Campus",
-    amenities: ["Quiet Zone", "Private Bath"],
-    img: "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?w=400&q=80",
-  },
 ];
 
 const applicationSteps = [
@@ -45,271 +34,503 @@ const applicationSteps = [
     label: "Application Submitted",
     date: "Aug 12, 2024",
     done: true,
-    icon: "✓",
   },
   {
     id: 2,
     label: "In Review",
     date: "Est. outcome in 2 days",
     active: true,
-    icon: "●",
     note: "The curator is currently verifying your university enrollment documents.",
   },
   {
     id: 3,
     label: "Deposit Pending",
     date: "Stage 3 of 4",
-    icon: "◎",
   },
 ];
 
 export default function MyAccount() {
   const [activeNav, setActiveNav] = useState("My Account");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   useEffect(() => {
-    if (sidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = sidebarOpen ? "hidden" : "auto";
   }, [sidebarOpen]);
+
   return (
     <>
-      <Navbar />
-      <div className="min-h-screen bg-[#f8f7ff]">
-        {/* Mobile Top Bar */}
-        <div className="lg:hidden flex justify-between items-center p-4 bg-white shadow-sm">
-          <button onClick={() => setSidebarOpen(true)}>☰</button>
-          {/* <h1 className="font-bold text-lg">Dashboard</h1> */}
-        </div>
+    
+  
+    <Navbar/>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f0eeff", fontFamily: "sans-serif" }}>
 
-        <div className="max-w-[1400px] mx-auto flex overflow-hidden">
-          {/* Overlay (IMPORTANT) */}
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            />
-          )}
+      {/* Mobile Top Bar */}
+      <div className="lg:hidden flex justify-between items-center p-4 bg-white shadow-sm">
+        <button onClick={() => setSidebarOpen(true)}>☰</button>
+      </div>
 
-          {/* SIDEBAR */}
-          <aside
-            className={`
-    fixed top-0 left-0 h-72 w-[260px] bg-white z-50
-    transform transition-transform duration-300
-    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-    lg:translate-x-0 lg:static
-    border-r border-gray-200
-    flex flex-col justify-between p-5
-  `}
-          >
-            {/* Close button (mobile) */}
-            <button
-              className="lg:hidden mb-4 caret-amber-700"
-              onClick={() => setSidebarOpen(false)}
-            >
-              Close
-            </button>
+      <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex" }}>
 
-            {/* Logo */}
-            <div>
-              <div className="mb-10">
-                <h2 className="font-bold text-lg text-indigo-700">
-                  The Curator
-                </h2>
-                <p className="text-xs text-gray-400 tracking-widest">
-                  ACADEMIC HOUSING
-                </p>
+        {/* Overlay */}
+        {sidebarOpen && (
+          <div
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 40 }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* SIDEBAR */}
+        <aside
+          style={{
+            width: 220,
+            minWidth: 220,
+            background: "#fff",
+            borderRight: "1px solid #e5e7eb",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            padding: "28px 16px 24px",
+            minHeight: "100vh",
+            position: "sticky",
+            top: 0,
+            alignSelf: "flex-start",
+          }}
+        >
+          {/* Logo */}
+          <div>
+            <div style={{ marginBottom: 36 }}>
+              <div style={{ fontWeight: 700, fontSize: 17, color: "#4338ca" }}>The Curator</div>
+              <div style={{ fontSize: 10, color: "#9ca3af", letterSpacing: "0.12em", marginTop: 2 }}>
+                ACADEMIC HOUSING
               </div>
-
-              {/* Nav */}
-              <nav className="flex flex-col gap-2">
-                {sidebarLinks.map((link) => (
-                  <button
-                    key={link.label}
-                    onClick={() => setActiveNav(link.label)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
-                      activeNav === link.label
-                        ? "bg-indigo-100 text-indigo-700 font-semibold"
-                        : "text-gray-500 hover:bg-gray-100"
-                    }`}
-                  >
-                    <span>{link.icon}</span>
-                    {link.label}
-                  </button>
-                ))}
-              </nav>
             </div>
 
-            {/* CTA */}
-            <NavLink to={"/search"} className="w-full py-3 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90">
-              List a Property
-            </NavLink>
-          </aside>
+            {/* Nav */}
+            <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {sidebarLinks.map((link) => (
+                <button
+                  key={link.label}
+                  onClick={() => setActiveNav(link.label)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "9px 12px",
+                    borderRadius: 10,
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: activeNav === link.label ? 600 : 400,
+                    background: activeNav === link.label ? "#ede9fe" : "transparent",
+                    color: activeNav === link.label ? "#4338ca" : "#6b7280",
+                    textAlign: "left",
+                    transition: "background 0.15s",
+                    borderLeft: activeNav === link.label ? "3px solid #4338ca" : "3px solid transparent",
+                  }}
+                >
+                  <span style={{ fontSize: 16 }}>{link.icon}</span>
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-          {/* MAIN CONTENT */}
-          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6">
-            {/* PROFILE CARD */}
-            <div className="bg-white rounded-2xl p-5 sm:p-6 mb-6 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row items-center gap-5">
+          {/* CTA */}
+          <button
+            style={{
+              width: "100%",
+              padding: "12px 0",
+              borderRadius: 14,
+              border: "none",
+              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: "pointer",
+              marginTop: 32,
+            }}
+          >
+            List a Property
+          </button>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <main style={{ flex: 1, padding: "28px 32px", minWidth: 0 }}>
+
+          {/* PROFILE CARD */}
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              padding: "24px 28px",
+              marginBottom: 28,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              display: "flex",
+              alignItems: "center",
+              gap: 24,
+            }}
+          >
+            <div style={{ position: "relative", flexShrink: 0 }}>
               <img
                 src="https://randomuser.me/api/portraits/men/32.jpg"
-                className="w-24 h-24 rounded-xl object-cover"
+                style={{ width: 90, height: 90, borderRadius: 14, objectFit: "cover", display: "block" }}
+                alt="Rahul Modak"
               />
-
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-                  Rahul Modak
-                </h1>
-
-                <p className="text-sm text-gray-500 mt-1">
-                  🎓 University of Calcutta • 📍 Kolkata
-                </p>
-
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-xs rounded-full bg-indigo-50 text-indigo-600"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: -8,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: "#10b981",
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: "3px 8px",
+                  borderRadius: 20,
+                  whiteSpace: "nowrap",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                ✓ VERIFIED
               </div>
             </div>
 
-           {/* GRID */}
-<div className="w-full">
-  
-  {/* HEADER */}
-  <div className="flex justify-between items-center mb-4 px-6 lg:px-10">
-    <h2 className="text-xl font-bold">Saved Listings</h2>
-    <button className="text-indigo-600 text-sm">View All</button>
-  </div>
-
-  {/* LISTINGS */}
-  <div className="w-full px-6 lg:px-10">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {savedListings.map((listing) => (
-        <div
-          key={listing.id}
-          className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition duration-300 group flex flex-col"
-        >
-          <img
-            src={listing.img}
-            className="w-full h-[220px] object-cover group-hover:scale-105 transition duration-500"
-          />
-
-          <div className="p-4 flex flex-col flex-grow">
-            <div className="flex justify-between mb-2">
-              <h3 className="font-semibold text-sm truncate">
-                {listing.name}
-              </h3>
-              <span className="text-red-500 font-bold text-sm">
-                {listing.price}
-              </span>
-            </div>
-
-            <p className="text-xs text-gray-500 mb-2">
-              📍 {listing.dist}
-            </p>
-
-            <div className="flex flex-wrap gap-2 mt-auto">
-              {listing.amenities.map((a) => (
-                <span
-                  key={a}
-                  className="px-2 py-1 text-xs rounded-full bg-indigo-50 text-indigo-600"
-                >
-                  {a}
-                </span>
-              ))}
+            <div>
+              <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700, color: "#1f2937" }}>Rahul Modak</h1>
+              <p style={{ margin: "6px 0 0", fontSize: 14, color: "#6b7280" }}>
+                🎓 University of Calcutta &nbsp;•&nbsp; 📍 Kolkata, WB
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    style={{
+                      padding: "5px 14px",
+                      fontSize: 12,
+                      borderRadius: 20,
+                      background: "#ede9fe",
+                      color: "#4338ca",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
 
-</div>
-          </main>
-        </div>
-        <MainFooter />
-      </div>
-    </>
-  );
-}
+          {/* BOTTOM GRID: Listings + Right Panel */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 28, alignItems: "start" }}>
 
-// right side
-
-{
-  /* <div className="flex flex-col gap-4">
-
-          
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-xl p-5 shadow-md">
-                <h3 className="font-bold text-lg mb-2">
-                  Academic Fit Score: 94%
-                </h3>
-                <p className="text-xs opacity-80">
-                  Based on your preferences and proximity.
-                </p>
-              </div>
-
-             
-              <div className="bg-white rounded-xl p-5 shadow-sm">
-                <h3 className="font-bold mb-4">Application Status</h3>
-
-                {applicationSteps.map((step) => (
-                  <div key={step.id} className="mb-3 text-sm">
-                    <div className="font-semibold">{step.label}</div>
-                    <div className="text-xs text-gray-400">
-                      {step.date}
-                    </div>
-                  </div>
-                ))}
-
-                <button className="w-full mt-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm">
-                  View Details
+            {/* LEFT: Saved Listings */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#1f2937" }}>Saved Listings</h2>
+                  <p style={{ margin: "4px 0 0", fontSize: 13, color: "#9ca3af" }}>
+                    Properties you are tracking for the Fall semester.
+                  </p>
+                </div>
+                <button style={{ background: "none", border: "none", color: "#6366f1", fontSize: 14, cursor: "pointer", fontWeight: 500 }}>
+                  View All
                 </button>
               </div>
 
-         
-              <div className="bg-teal-100 rounded-xl p-4 flex gap-3">
-                <span>🛡</span>
-                <p className="text-sm">
-                  Your data is secured by University Protocol.
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 16 }}>
+                {savedListings.map((listing) => (
+                  <div
+                    key={listing.id}
+                    style={{
+                      background: "#fff",
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                      transition: "box-shadow 0.2s",
+                    }}
+                  >
+                    <div style={{ position: "relative" }}>
+                      <img
+                        src={listing.img}
+                        style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
+                        alt={listing.name}
+                      />
+                      <button
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          background: "#f97316",
+                          border: "none",
+                          borderRadius: 8,
+                          width: 32,
+                          height: 32,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 14,
+                          color: "#fff",
+                        }}
+                      >
+                        🔖
+                      </button>
+                    </div>
+
+                    <div style={{ padding: "14px 16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                        <span style={{ fontWeight: 600, fontSize: 14, color: "#1f2937" }}>{listing.name}</span>
+                        <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 14 }}>
+                          {listing.price}<span style={{ fontSize: 11, fontWeight: 400 }}>/mo</span>
+                        </span>
+                      </div>
+
+                      <p style={{ margin: "0 0 10px", fontSize: 12, color: "#9ca3af" }}>
+                        ➤ {listing.dist}
+                      </p>
+
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {listing.amenities.map((a) => (
+                          <span
+                            key={a}
+                            style={{
+                              padding: "4px 10px",
+                              fontSize: 11,
+                              borderRadius: 20,
+                              background: "#ede9fe",
+                              color: "#4338ca",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT PANEL */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+              {/* Academic Fit Score */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                  borderRadius: 18,
+                  padding: "22px 22px 20px",
+                  color: "#fff",
+                  boxShadow: "0 4px 20px rgba(99,102,241,0.3)",
+                }}
+              >
+                <div style={{ fontSize: 20, marginBottom: 8 }}>✦</div>
+                <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>
+                  Your Academic Fit<br />Score is 94%
+                </div>
+                <p style={{ fontSize: 12, opacity: 0.8, margin: "0 0 16px" }}>
+                  Based on your proximity to the economics department and library hours preference.
                 </p>
+                <a
+                  href="#"
+                  style={{
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: "underline",
+                    opacity: 0.9,
+                  }}
+                >
+                  View Curated Insights
+                </a>
               </div>
 
-            </div> */
-}
+              {/* Current Application */}
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 18,
+                  padding: "20px",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                }}
+              >
+                <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#1f2937" }}>
+                  Current Application
+                </h3>
 
-{
-  /* Footer */
-}
-{
-  /* <footer
-          className="mt-12 pt-6 flex justify-between items-start"
-          style={{
-            borderTop: "1px solid #ddd8f0",
-            fontFamily: "sans-serif",
-          }}
-        >
-          <div>
-            <div
-              className="font-semibold text-sm"
-              style={{ color: "#3b3584" }}
-            >
-              The Academic Curator
-            </div>
-            <div className="text-xs mt-0.5" style={{ color: "#9b96b8" }}>
-              © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
+                {/* Property row */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    marginBottom: 20,
+                    padding: "12px",
+                    background: "#f8f7ff",
+                    borderRadius: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 10,
+                      background: "#e0e7ff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 18,
+                      flexShrink: 0,
+                    }}
+                  >
+                    🏢
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: "#1f2937" }}>The Scholar's Suite</div>
+                    <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>App ID: #88219-BK</div>
+                  </div>
+                </div>
+
+                {/* Steps */}
+                <div style={{ position: "relative", paddingLeft: 28 }}>
+                  {/* Vertical line */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 10,
+                      bottom: 10,
+                      width: 2,
+                      background: "#e5e7eb",
+                      borderRadius: 2,
+                    }}
+                  />
+
+                  {applicationSteps.map((step, i) => (
+                    <div key={step.id} style={{ position: "relative", marginBottom: i < applicationSteps.length - 1 ? 20 : 0 }}>
+                      {/* Step dot */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: -28,
+                          top: 2,
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          background: step.done ? "#6366f1" : step.active ? "#fff" : "#f3f4f6",
+                          border: step.active ? "2px solid #6366f1" : step.done ? "none" : "2px solid #d1d5db",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          zIndex: 1,
+                        }}
+                      >
+                        {step.done && (
+                          <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>✓</span>
+                        )}
+                        {step.active && (
+                          <span style={{ fontSize: 8, color: "#6366f1" }}>●</span>
+                        )}
+                      </div>
+
+                      <div style={{ fontWeight: step.active ? 700 : 500, fontSize: 13, color: step.active ? "#4338ca" : "#374151" }}>
+                        {step.label}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{step.date}</div>
+
+                      {step.note && (
+                        <div
+                          style={{
+                            marginTop: 8,
+                            padding: "10px 12px",
+                            background: "#ede9fe",
+                            borderRadius: 10,
+                            fontSize: 12,
+                            color: "#4338ca",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {step.note}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  style={{
+                    width: "100%",
+                    marginTop: 20,
+                    padding: "11px 0",
+                    borderRadius: 12,
+                    border: "1.5px solid #6366f1",
+                    background: "#fff",
+                    color: "#4338ca",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                  }}
+                >
+                  View Application Details
+                </button>
+              </div>
+
+              {/* Student Guarantee */}
+              <div
+                style={{
+                  background: "#99f6e4",
+                  borderRadius: 16,
+                  padding: "16px 18px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                }}
+              >
+                <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>🛡</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", color: "#065f46", marginBottom: 4 }}>
+                    STUDENT GUARANTEE
+                  </div>
+                  <p style={{ margin: 0, fontSize: 13, color: "#064e3b", lineHeight: 1.5 }}>
+                    Your data is secured by University Partnerships Protocol.
+                  </p>
+                </div>
+              </div>
+
             </div>
           </div>
-          <div className="flex flex-wrap gap-4 text-xs" style={{ color: "#7b78a0" }}>
-            <span className="cursor-pointer hover:text-indigo-600">PRIVACY POLICY</span>
-            <span className="cursor-pointer hover:text-indigo-600">TERMS OF SERVICE</span>
-            <span className="cursor-pointer hover:text-indigo-600">UNIVERSITY PARTNERSHIPS</span>
-            <span className="cursor-pointer hover:text-indigo-600">CONTACT SUPPORT</span>
+        </main>
+      </div>
+
+      {/* Footer */}
+      <footer
+        style={{
+          borderTop: "1px solid #ddd8f0",
+          marginTop: 48,
+          padding: "24px 48px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: 16,
+          background: "#fff",
+        }}
+      >
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 14, color: "#4338ca" }}>The Academic Curator</div>
+          <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
+            © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
           </div>
-        </footer> */
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 24, fontSize: 11, color: "#6b7280", letterSpacing: "0.05em" }}>
+          {["PRIVACY POLICY", "TERMS OF SERVICE", "UNIVERSITY PARTNERSHIPS", "CONTACT SUPPORT"].map((link) => (
+            <span key={link} style={{ cursor: "pointer" }}>{link}</span>
+          ))}
+        </div>
+      </footer>
+    </div>
+      </>
+  );
 }
