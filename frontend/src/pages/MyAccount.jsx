@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import MainFooter from "../components/MainFooter";
 import "../styles/AcademicCurator.css";
+import { NavLink } from "react-router-dom";
 const sidebarLinks = [
   { icon: "🔍", label: "Discover" },
   { icon: "🔖", label: "Saved Listings" },
@@ -141,9 +142,9 @@ export default function MyAccount() {
             </div>
 
             {/* CTA */}
-            <button className="w-full py-3 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90">
+            <NavLink to={"/search"} className="w-full py-3 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90">
               List a Property
-            </button>
+            </NavLink>
           </aside>
 
           {/* MAIN CONTENT */}
