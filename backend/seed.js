@@ -169,7 +169,7 @@ const seedData = [
   {
     title: "Mid-Range PG - Behala",
     price: 4800,
-    location: "Behala",
+    location: "Salt Lake",
     description: "2-sharing, WiFi, water & electricity included",
     images: ["https://via.placeholder.com/300?text=PG+11"],
     amenities: [
@@ -185,7 +185,7 @@ const seedData = [
   {
     title: "Spacious Room - Howrah",
     price: 6000,
-    location: "Howrah",
+    location: "Salt Lake",
     description: "Double room, near railway station, WiFi",
     images: ["https://via.placeholder.com/300?text=PG+12"],
     amenities: [
