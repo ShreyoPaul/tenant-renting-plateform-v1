@@ -30,7 +30,7 @@ export default function CreateListing() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [form, setForm] = useState({
     propertyName: "",
-    ownername: "",
+    owner_name: "",
     phone: "",
 
     location: "",
@@ -54,7 +54,7 @@ export default function CreateListing() {
         price: Number(form.price),
         location: form.location,
         description: form.description,
-        owner_name: form.propertyName,
+        owner_name: form.owner_name,
         owner_phone: form.phone,
         amenities: selectedAmenities,
         images: uploadedImages,
@@ -340,6 +340,7 @@ export default function CreateListing() {
             </p>
 
             {/* Row 1: Property Name + Phone */}
+            
             <div
               style={{
                 display: "grid",
@@ -400,12 +401,12 @@ export default function CreateListing() {
                     Owner Name
                   </label>
                   <input
-                    name="ownername"
-                    value={form.ownername}
+                    name="owner_name"
+                    value={form.owner_name}
                     onChange={handleChange}
-                    placeholder="e.g., Modern Studio near St. Xavier's"
+                    placeholder="Enter your name"
                     style={{
-                      width: "100%",
+                      width: "200%",
                       padding: "12px 16px",
                       borderRadius: 12,
                       border: "1.5px solid #e8e4f8",
