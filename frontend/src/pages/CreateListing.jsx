@@ -30,7 +30,7 @@ export default function CreateListing() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [form, setForm] = useState({
     propertyName: "",
-    ownername: "",
+    owner_name: "",
     phone: "",
 
     location: "",
@@ -43,7 +43,39 @@ export default function CreateListing() {
   const [previewImages, setPreviewImages] = useState([]);
   const fileInputRef = useRef(null);
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     const tags = [];
 
+  //     if (selectedRoom) tags.push(selectedRoom);
+  //     if (selectedCategory) tags.push(selectedCategory);
+
+  //     const payload = {
+  //       title: form.propertyName,
+  //       price: Number(form.price),
+  //       location: form.location,
+  //       description: form.description,
+  //       owner_name: form.owner_name,
+  //       owner_phone: form.phone,
+  //       amenities: selectedAmenities,
+  //       images: uploadedImages,
+  //       tags: tags, // ✅ IMPORTANT
+  //     };
+
+  //     const res = await fetch("http://localhost:5000/api/listings", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     const data = await res.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   // const handleSubmit = async () => {
   //   try {
@@ -382,140 +414,140 @@ export default function CreateListing() {
             </p>
 
             {/* Row 1: Property Name + Phone */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 24,
-                marginBottom: 24,
-              }}
-            >
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#2e2a50",
-                    marginBottom: 8,
-                  }}
-                >
-                  Property Name
-                </label>
-                <input
-                  name="propertyName"
-                  value={form.propertyName}
-                  onChange={handleChange}
-                  placeholder="e.g., Modern Studio near St. Xavier's"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: 12,
-                    border: "1.5px solid #e8e4f8",
-                    fontSize: 14,
-                    color: "#2e2a50",
-                    outline: "none",
-                    backgroundColor: "#faf9ff",
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  }}
-                />
-              </div>
+            
+            
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 24,
-                  marginBottom: 24,
-                }}
-              >
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#2e2a50",
-                      marginBottom: 8,
-                    }}
-                  >
-                    Owner Name
-                  </label>
-                  <input
-                    name="ownername"
-                    value={form.ownername}
-                    onChange={handleChange}
-                    placeholder="e.g., Modern Studio near St. Xavier's"
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      borderRadius: 12,
-                      border: "1.5px solid #e8e4f8",
-                      fontSize: 14,
-                      color: "#2e2a50",
-                      outline: "none",
-                      backgroundColor: "#faf9ff",
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    }}
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#2e2a50",
-                    marginBottom: 8,
-                  }}
-                >
-                  Owner's Phone Number
-                </label>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 0,
-                    borderRadius: 12,
-                    border: "1.5px solid #e8e4f8",
-                    overflow: "hidden",
-                    backgroundColor: "#faf9ff",
-                  }}
-                >
-                  <div
-                    style={{
-                      padding: "12px 16px",
-                      backgroundColor: "#ede9fe",
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "#4f46e5",
-                      display: "flex",
-                      alignItems: "center",
-                      flexShrink: 0,
-                      borderRight: "1.5px solid #e8e4f8",
-                    }}
-                  >
-                    +91
-                  </div>
-                  <input
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="98765 43210"
-                    style={{
-                      flex: 1,
-                      padding: "12px 16px",
-                      border: "none",
-                      fontSize: 14,
-                      color: "#2e2a50",
-                      outline: "none",
-                      backgroundColor: "transparent",
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+{/* Row 1: Property Name — full width */}
+<div style={{ marginBottom: 24 }}>
+  <label
+    style={{
+      display: "block",
+      fontSize: 13,
+      fontWeight: 600,
+      color: "#2e2a50",
+      marginBottom: 8,
+    }}
+  >
+    Property Name
+  </label>
+  <input
+    name="propertyName"
+    value={form.propertyName}
+    onChange={handleChange}
+    placeholder="e.g., Modern Studio near St. Xavier's"
+    style={{
+      width: "100%",
+      padding: "12px 16px",
+      borderRadius: 12,
+      border: "1.5px solid #e8e4f8",
+      fontSize: 14,
+      color: "#2e2a50",
+      outline: "none",
+      backgroundColor: "#faf9ff",
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+    }}
+  />
+</div>
+
+{/* Row 2: Owner's Full Name + Owner's Phone Number — side by side */}
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 24,
+    marginBottom: 24,
+  }}
+>
+  {/* Owner's Full Name */}
+  <div>
+    <label
+      style={{
+        display: "block",
+        fontSize: 13,
+        fontWeight: 600,
+        color: "#2e2a50",
+        marginBottom: 8,
+      }}
+    >
+      Owner's Full Name
+    </label>
+    <input
+      name="owner_name"
+      value={form.owner_name}
+      onChange={handleChange}
+      placeholder="e.g., Jane Doe"
+      style={{
+        width: "100%",
+        padding: "12px 16px",
+        borderRadius: 12,
+        border: "1.5px solid #e8e4f8",
+        fontSize: 14,
+        color: "#2e2a50",
+        outline: "none",
+        backgroundColor: "#faf9ff",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    />
+  </div>
+
+  {/* Owner's Phone Number */}
+  <div>
+    <label
+      style={{
+        display: "block",
+        fontSize: 13,
+        fontWeight: 600,
+        color: "#2e2a50",
+        marginBottom: 8,
+      }}
+    >
+      Owner's Phone Number
+    </label>
+    <div
+      style={{
+        display: "flex",
+        gap: 0,
+        borderRadius: 12,
+        border: "1.5px solid #e8e4f8",
+        overflow: "hidden",
+        backgroundColor: "#faf9ff",
+      }}
+    >
+      <div
+        style={{
+          padding: "12px 16px",
+          backgroundColor: "#ede9fe",
+          fontSize: 14,
+          fontWeight: 700,
+          color: "#4f46e5",
+          display: "flex",
+          alignItems: "center",
+          flexShrink: 0,
+          borderRight: "1.5px solid #e8e4f8",
+        }}
+      >
+        +91
+      </div>
+      <input
+        name="phone"
+        value={form.phone}
+        onChange={handleChange}
+        placeholder="98765 43210"
+        style={{
+          flex: 1,
+          padding: "12px 16px",
+          border: "none",
+          fontSize: 14,
+          color: "#2e2a50",
+          outline: "none",
+          backgroundColor: "transparent",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+        }}
+      />
+    </div>
+  </div>
+</div>
+            {/* </div> */}
             <div style={{ marginBottom: 24 }}>
               <label
                 style={{
