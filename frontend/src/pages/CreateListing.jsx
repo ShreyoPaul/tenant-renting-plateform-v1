@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 const STEPS = [
@@ -39,81 +39,93 @@ export default function CreateListing() {
     availableFrom: "",
   });
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState(SAMPLE_IMAGES);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
   const fileInputRef = useRef(null);
 
-  const handleSubmit = async () => {
-    try {
-      const tags = [];
 
-      if (selectedRoom) tags.push(selectedRoom);
-      if (selectedCategory) tags.push(selectedCategory);
-
-      const payload = {
-        title: form.propertyName,
-        price: Number(form.price),
-        location: form.location,
-        description: form.description,
-        owner_name: form.propertyName,
-        owner_phone: form.phone,
-        amenities: selectedAmenities,
-        images: uploadedImages,
-        tags: tags, // ✅ IMPORTANT
-      };
-
-      const res = await fetch("http://localhost:5000/api/listings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   // const handleSubmit = async () => {
   //   try {
-  //     const formData = new FormData();
+  //     const tags = [];
 
-  //     // Basic fields
-  //     formData.append("title", form.propertyName);
-  //     formData.append("price", Number(form.price));
-  //     formData.append("location", form.location);
-  //     formData.append("description", form.description);
-  //     formData.append("owner_name", form.propertyName);
-  //     formData.append("owner_phone", form.phone);
+  //     if (selectedRoom) tags.push(selectedRoom);
+  //     if (selectedCategory) tags.push(selectedCategory);
 
-  //     // Amenities (array)
-  //     selectedAmenities.forEach((a) => {
-  //       formData.append("amenities", a);
-  //     });
-
-  //     // Tags (room + category)
-  //     if (selectedRoom) formData.append("tags", selectedRoom);
-  //     if (selectedCategory) formData.append("tags", selectedCategory);
-
-  //     // Images (VERY IMPORTANT)
-  //     uploadedImages.forEach((img) => {
-  //       formData.append("images", img);
-  //     });
+  //     const payload = {
+  //       title: form.propertyName,
+  //       price: Number(form.price),
+  //       location: form.location,
+  //       description: form.description,
+  //       owner_name: form.propertyName,
+  //       owner_phone: form.phone,
+  //       amenities: selectedAmenities.join(","), // ✅ IMPORTANT
+  //       images: uploadedImages,
+  //       tags: tags.join(","), // ✅ IMPORTANT
+  //     };
 
   //     const res = await fetch("http://localhost:5000/api/listings", {
   //       method: "POST",
-  //       body: formData, // ❗ NO headers
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
   //     });
 
   //     const data = await res.json();
   //     console.log(data);
-
   //   } catch (error) {
   //     console.error(error);
   //   }
   // };
+
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+
+      // Basic fields
+      formData.append("title", form.propertyName);
+      formData.append("price", Number(form.price));
+      formData.append("location", form.location);
+      formData.append("description", form.description);
+      formData.append("owner_name", form.ownername);
+      formData.append("owner_phone", form.phone);
+      formData.append("amenities", selectedAmenities.join(",")); // ✅ IMPORTANT
+      const tags = [];
+      if (selectedRoom) tags.push(selectedRoom);
+      if (selectedCategory) tags.push(selectedCategory);
+      formData.append("tags", tags.join(",")); // ✅ IMPORTANT
+
+
+
+      // // Amenities (array)
+      // selectedAmenities.forEach((a) => {
+      //   formData.append("amenities", a);
+      // });
+
+      // // Tags (room + category)
+      // if (selectedRoom) formData.append("tags", selectedRoom);
+      // if (selectedCategory) formData.append("tags", selectedCategory);
+
+      // Images (VERY IMPORTANT)
+      uploadedImages.forEach((img) => {
+        formData.append("images", img);
+      });
+
+      console.log("FormData entries:", Array.from(formData.entries()));
+
+      const res = await fetch("http://localhost:5000/api/listings", {
+        method: "POST",
+        body: formData, // ❗ NO headers, let browser set it to multipart/form-data with correct boundaries
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -123,20 +135,50 @@ export default function CreateListing() {
       prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a],
     );
 
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   const files = Array.from(e.dataTransfer.files).filter((f) =>
+  //     f.type.startsWith("image/"),
+  //   );
+  //   const urls = files.map((f) => URL.createObjectURL(f));
+  //   setUploadedImages((prev) => [...prev, ...urls].slice(0, 10));
+  // };
+
+  // const handleFileInput = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   const urls = files.map((f) => URL.createObjectURL(f));
+  //   setUploadedImages((prev) => [...prev, ...urls].slice(0, 10));
+  // };
+
   const handleDrop = (e) => {
     e.preventDefault();
+
     const files = Array.from(e.dataTransfer.files).filter((f) =>
-      f.type.startsWith("image/"),
+      f.type.startsWith("image/")
     );
+
+    setUploadedImages((prev) => [...prev, ...files]); // ✅ FILES
+
     const urls = files.map((f) => URL.createObjectURL(f));
-    setUploadedImages((prev) => [...prev, ...urls].slice(0, 10));
+    setPreviewImages((prev) => [...prev, ...urls]); // ✅ preview
   };
 
   const handleFileInput = (e) => {
     const files = Array.from(e.target.files);
+
+    setUploadedImages((prev) => [...prev, ...files]); // ✅ store FILES
+
     const urls = files.map((f) => URL.createObjectURL(f));
-    setUploadedImages((prev) => [...prev, ...urls].slice(0, 10));
+    setPreviewImages((prev) => [...prev, ...urls]); // ✅ for UI only
   };
+
+
+  useEffect(() => {
+    return () => {
+      previewImages.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewImages]);
+
 
   return (
     <>
@@ -929,7 +971,7 @@ export default function CreateListing() {
                 </div>
 
                 {/* Uploaded image thumbnails */}
-                {uploadedImages.slice(0, 2).map((src, i) => (
+                {previewImages.slice(0, 2).map((src, i) => (
                   <div
                     key={i}
                     style={{
