@@ -1,5 +1,6 @@
 // routes/listingRoutes.js
 import express from "express";
+import multer from "multer";
 import {
   createListing,
   getListings,
@@ -8,12 +9,16 @@ import {
   deleteListing,
   getAllData
 } from "../controllers/listingController.js";
+
 // import { signup } from "../controllers/authController.js";
 
 const router = express.Router();
 
+const upload = multer({ storage: multer.memoryStorage() });
+
+
 // Routes
-router.post("/", createListing);           // POST /api/listings
+router.post("/", upload.array("images", 5), createListing);          // POST /api/listings
 router.get("/", getListings);              // GET /api/listings?location=jadavpur&maxPrice=7000
 router.get("/getall", getAllData);
 router.get("/:id", getListingById);        // GET /api/listings/:id

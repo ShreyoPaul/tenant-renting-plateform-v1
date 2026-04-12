@@ -1,17 +1,103 @@
 // controllers/listingController.js
+import cloudinary from "../config/cloudinary.js";
 import Listing from "../models/Listing.js";
+import streamifier from "streamifier";
+
+
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "room-listings" },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+};
 
 // CREATE a new listing
 export const createListing = async (req, res) => {
   try {
-    const listing = new Listing(req.body);
+    // try {
+    //   const test = await cloudinary.uploader.upload(
+    //     "https://picsum.photos/200/300"
+    //   );
+    //   console.log(test);
+    // } catch (err) {
+    //   console.error("Cloudinary direct upload error:", err);
+    // }
+
+    let { title, price, location, owner_name, owner_phone, amenities, tags } = req.body;
+
+    // Image file validation (must have one image)
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        error: "At least one image is required"
+      });
+    }
 
     // Validation
-    if (!listing.title || !listing.price || !listing.location || !listing.owner_name || !listing.owner_phone || !listing.amenities || listing.tags.length === 0) {
+    if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags) {
       return res.status(400).json({
         error: "Missing required fields or invalid data"
       });
     }
+
+    price = parseInt(price);
+
+    if(isNaN(price) || price <= 0) {
+      return res.status(400).json({ error: "Price must be a positive number" });
+    }
+
+    const parsedTags = typeof tags === "string"
+      ? tags.split(",").map(t => t.trim())
+      : tags;
+
+    const parsedAmenities = typeof amenities === "string"
+      ? amenities.split(",").map(a => a.trim())
+      : amenities;
+
+    if (!parsedTags || parsedTags.length === 0)
+      return res.status(400).json({ error: "At least one tag is required" });
+
+    if (!parsedAmenities || parsedAmenities.length === 0)
+      return res.status(400).json({ error: "At least one amenity is required" });
+
+
+    // 🔥 Upload images
+    let imageUrls = [];
+
+    if (req.files && req.files.length > 0) {
+      const uploads = req.files.map(file =>
+        uploadToCloudinary(file.buffer)
+      );
+
+      const results = await Promise.all(uploads);
+
+      console.log("Cloudinary upload results:", results);
+
+      imageUrls = results.map(r => r.secure_url);
+
+      // imageUrls = results.map(r => ({
+      //   url: r.secure_url,
+      //   public_id: r.public_id
+      // }));
+    }
+
+    // ✅ Create listing with images
+    const listing = new Listing({
+      title,
+      price,
+      location,
+      owner_name,
+      owner_phone,
+      amenities: parsedAmenities,
+      tags: parsedTags,
+      images: imageUrls
+    });
+
 
     await listing.save();
     res.status(201).json({
@@ -21,16 +107,16 @@ export const createListing = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}; 
+};
 // Sample listing:
 // {
 //   "title": "2-BHK PG near Jadavpur University",
 //   "price": 5000,
 //   "location": "Jadavpur",
 //   "description": "2 sharing room, WiFi included, Free water & electricity",
-//   "tags": ["2 sharing", "regular"],
+//   "tags": "2 sharing, regular",
 //   "images": ["https://via.placeholder.com/300?text=PG+1"],
-//   "amenities": ["📶Gigabit Wi-Fi", "❄️Full AC", "🧺Laundry Service", "🛡24/7 Security "],
+//   "amenities": "📶Gigabit Wi-Fi, ❄️Full AC, 🧺Laundry Service, 🛡24/7 Security ",
 //   "owner_name": "Rahul Singh",
 //   "owner_phone": "9876543210",
 //   "verified": false
@@ -139,6 +225,8 @@ export const getListings = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 export const getAllData = async (req, res) => {
   try {
     const listings = await Listing.find();
