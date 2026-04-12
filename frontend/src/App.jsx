@@ -13,6 +13,7 @@ import PropertyDetails from './pages/PropertyDetails'
 import SignupPage from './pages/SignUpPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
+import CreateListing from './pages/CreateListing'
 
 
 
@@ -56,7 +57,11 @@ function App() {
     <MyAccount />
   </ProtectedRoute>
 } />
-
+<Route path="/newlisting" element={
+  <ProtectedRoute>
+    <CreateListing />
+  </ProtectedRoute>
+} />
 <Route path="/propertydetails/:id" element={
   <ProtectedRoute>
     <PropertyDetails />

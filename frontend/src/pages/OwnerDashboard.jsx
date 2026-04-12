@@ -1,6 +1,4 @@
-
-
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import MainFooter from "../components/MainFooter";
 import { NavLink } from "react-router-dom";
@@ -10,10 +8,6 @@ const images = [
   "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267"
 ];
-
-
-
-
 
 const properties = [
   {
@@ -55,17 +49,23 @@ function StatusBadge({ status }) {
   const isActive = status === "Active";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-xl ${
-        isActive
-          ? "bg-teal-100 text-teal-700"
-          : "bg-gray-100 text-gray-500"
-      }`}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "4px 12px",
+        fontSize: 12,
+        fontWeight: 700,
+        borderRadius: 10,
+        backgroundColor: isActive ? "#ccfbf1" : "#f3f4f6",
+        color: isActive ? "#0f766e" : "#6b7280",
+      }}
     >
-      <span
-        className={`w-1.5 h-1.5 rounded-full ${
-          isActive ? "bg-teal-600" : "bg-gray-400"
-        }`}
-      />
+      <span style={{
+        width: 7, height: 7, borderRadius: "50%",
+        backgroundColor: isActive ? "#0d9488" : "#9ca3af",
+        display: "inline-block",
+      }} />
       {status}
     </span>
   );
@@ -76,48 +76,51 @@ function PropertyRow({ property }) {
 
   return (
     <tr
-      className="group transition-colors hover:bg-[#f3eeff]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      style={{ backgroundColor: hovered ? "#f3eeff" : "transparent", transition: "background 0.15s" }}
     >
-      <td className="px-8 py-6">
-        <div className="flex items-center gap-4">
+      {/* Property Details */}
+      <td style={{ padding: "18px 28px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <img
             src={property.img}
             alt={property.name}
-            className="w-16 h-16 rounded-lg object-cover"
+            style={{ width: 58, height: 58, borderRadius: 10, objectFit: "cover", flexShrink: 0 }}
           />
           <div>
-            <p className="font-bold text-[#2e2a50]">{property.name}</p>
-            <p className="text-xs text-[#5c5680]">{property.location}</p>
+            <p style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14, margin: 0 }}>{property.name}</p>
+            <p style={{ fontSize: 12, color: "#5c5680", margin: "3px 0 0", fontFamily: "sans-serif" }}>{property.location}</p>
           </div>
         </div>
       </td>
-      <td className="px-8 py-6">
-        <span className="font-medium text-[#2e2a50]">{property.rent}</span>
-        <span className="text-xs text-[#5c5680]">/month</span>
+
+      {/* Monthly Rent */}
+      <td style={{ padding: "18px 28px" }}>
+        <span style={{ fontWeight: 600, color: "#2e2a50", fontSize: 14 }}>{property.rent}</span>
+        <span style={{ fontSize: 12, color: "#5c5680", fontFamily: "sans-serif" }}> /month</span>
       </td>
-      <td className="px-8 py-6">
+
+      {/* Status */}
+      <td style={{ padding: "18px 28px" }}>
         <StatusBadge status={property.status} />
       </td>
-      <td className="px-8 py-6">
-        <div className="flex items-center gap-2">
-          <span className="text-[#2e2a50] font-bold">{property.inquiries}</span>
-          <span className={`text-xs ${property.inquiryBadgeClass}`}>
-            {property.inquiryBadge}
-          </span>
+
+      {/* Inquiries */}
+      <td style={{ padding: "18px 28px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14 }}>{property.inquiries}</span>
+          <span style={{ fontSize: 12 }} className={property.inquiryBadgeClass}>{property.inquiryBadge}</span>
         </div>
       </td>
-      <td className="px-8 py-6 text-right">
-        <div
-          className={`flex items-center justify-end gap-2 transition-opacity ${
-            hovered ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <button className="p-2 text-[#4953ac] hover:bg-[#4953ac]/10 rounded-lg">
+
+      {/* Actions */}
+      <td style={{ padding: "18px 28px", textAlign: "right" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6, opacity: hovered ? 1 : 0, transition: "opacity 0.15s" }}>
+          <button style={{ padding: "6px 8px", color: "#4953ac", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
             <span className="material-symbols-outlined">edit</span>
           </button>
-          <button className="p-2 text-[#5c5680] hover:bg-[#dfd8ff] rounded-lg">
+          <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
             <span className="material-symbols-outlined">analytics</span>
           </button>
         </div>
@@ -128,47 +131,26 @@ function PropertyRow({ property }) {
 
 export default function OwnerDashboard() {
   const [email, setEmail] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
+  useEffect(() => {
+    if (isHovered) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isHovered]);
 
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % images.length);
+  const prevSlide = () => setCurrentIndex((prev) => prev === 0 ? images.length - 1 : prev - 1);
 
-
-const [currentIndex, setCurrentIndex] = useState(0);
-const [isHovered, setIsHovered] = useState(false);
-
-// Auto slide (pause on hover)
-useEffect(() => {
-  if (isHovered) return;
-
-  const interval = setInterval(() => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-  }, 4000);
-
-  return () => clearInterval(interval);
-}, [isHovered]);
-
-// Manual controls
-const nextSlide = () => {
-  setCurrentIndex((prev) => (prev + 1) % images.length);
-};
-
-const prevSlide = () => {
-  setCurrentIndex((prev) =>
-    prev === 0 ? images.length - 1 : prev - 1
-  );
-};
   return (
     <>
-      {/* Google Fonts */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet"
-      />
+      <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       <style>{`
         .material-symbols-outlined {
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -176,291 +158,202 @@ const prevSlide = () => {
         }
         body { font-family: 'Inter', sans-serif; }
         .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        tr { border-bottom: 1px solid #ebe5ff; }
+        tr:last-child { border-bottom: none; }
       `}</style>
 
-     <Navbar/>
-      <div className="bg-[#f9f4ff] text-[#2e2a50] antialiased">
-  <main className="px-4 sm:px-6 lg:px-10 xl:px-16 2xl:w-[73vw] xl:w-[100%]  mx-auto py-6">
+      <Navbar />
 
-    {/* Header */}
-    <header className="flex flex-col w-auto sm:flex-row sm:justify-between sm:items-end gap-4 mb-8 mt-6 sm:mt-10 lg:mt-16">
-      <div className="w-auto">
-        <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tighter text-[#2e2a50] mb-2">
-          Owner Dashboard
-        </h1>
-        <p className="text-[#5c5680] text-sm leading-relaxed">
-          Manage your curated student residences and track your portfolio's performance across Kolkata.
-        </p>
-      </div>
-      <button className="bg-gradient-to-br from-[#4953ac] to-[#929bfa] text-white w-full sm:w-52 h-10 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#4953ac]/20 active:scale-95 transition-transform hover:scale-105 flex-shrink-0">
-        <span className="material-symbols-outlined text-base">add_circle</span>
-        Add New Listing
-      </button>
-    </header>
+      <div style={{ backgroundColor: "#f9f4ff", color: "#2e2a50", minHeight: "100vh" }}>
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 32px 48px" }}>
 
-    {/* Analytics Bento Grid */}
- {/* <section className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 lg:mb-12"> */}
+          {/* ── Header ── */}
+          <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 36, marginTop: 24 }}>
+            <div>
+              <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 36, fontWeight: 800, letterSpacing: "-1px", color: "#2e2a50", margin: "0 0 8px" }}>
+                Owner Dashboard
+              </h1>
+              <p style={{ fontSize: 14, color: "#5c5680", lineHeight: 1.6, margin: 0, maxWidth: 480 }}>
+                Manage your curated student residences and track your portfolio's performance across Kolkata.
+              </p>
+            </div>
+            <NavLink to={"/newlisting"} style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "0 24px", height: 44, borderRadius: 12, border: "none",
+              background: "linear-gradient(135deg, #4953ac, #929bfa)",
+              color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(73,83,172,0.25)", flexShrink: 0,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add_circle</span>
+              Add New Listing
+            </NavLink>
+          </header>
 
-  {/* Total Views */}
-  {/* <div className="sm:col-span-2 lg:col-span-2 bg-white p-6 rounded-xl shadow-sm flex flex-col justify-between min-h-[180px] relative overflow-hidden">
-    <p className="text-[#5c5680] uppercase tracking-widest text-xs font-bold">
-      Total Property Views
-    </p>
+          {/* ── Analytics Bento Grid ── */}
+          <section style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 20, marginBottom: 40 }}>
 
-    <div className="flex items-baseline gap-2 mt-4">
-      <span className="text-4xl xl:text-5xl font-extrabold text-[#4953ac]">
-        12,482
-      </span>
-      <span className="text-teal-600 font-bold text-sm flex items-center gap-1">
-        +14%
-        <span className="material-symbols-outlined text-xs">trending_up</span>
-      </span>
-    </div>
-  </div> */}
+            {/* Total Property Views */}
+            <div style={{
+              backgroundColor: "#fff", borderRadius: 16, padding: "24px 28px",
+              boxShadow: "0 1px 6px rgba(0,0,0,0.04)", display: "flex",
+              flexDirection: "column", justifyContent: "space-between", minHeight: 160,
+              position: "relative", overflow: "hidden",
+            }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: "#5c5680", textTransform: "uppercase", letterSpacing: "0.12em", margin: 0 }}>
+                Total Property Views
+              </p>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 16 }}>
+                <span style={{ fontSize: 48, fontWeight: 800, color: "#4953ac", letterSpacing: "-2px", lineHeight: 1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  12,482
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#0d9488", display: "flex", alignItems: "center", gap: 3 }}>
+                  +14%
+                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>trending_up</span>
+                </span>
+              </div>
+              {/* Decorative eye icon */}
+              <div style={{
+                position: "absolute", right: 20, bottom: 12,
+                width: 80, height: 80, borderRadius: "50%",
+                backgroundColor: "#f3eeff",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: 0.8,
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 42, color: "#c4b8f8" }}>visibility</span>
+              </div>
+            </div>
 
-  {/* Inquiries */}
-  {/* <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col justify-between min-h-[180px] border-l-4 border-[#a83206]">
-    <p className="text-[#5c5680] uppercase tracking-widest text-xs font-bold">
-      Inquiries (Oct)
-    </p>
+            {/* Inquiries Oct */}
+            <div style={{
+              backgroundColor: "#fff", borderRadius: 16, padding: "24px 28px",
+              boxShadow: "0 1px 6px rgba(0,0,0,0.04)",
+              borderLeft: "4px solid #a83206",
+              display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 160,
+            }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: "#5c5680", textTransform: "uppercase", letterSpacing: "0.12em", margin: 0 }}>
+                Inquiries (Oct)
+              </p>
+              <span style={{ fontSize: 48, fontWeight: 800, color: "#2e2a50", letterSpacing: "-2px", lineHeight: 1, fontFamily: "'Plus Jakarta Sans', sans-serif", marginTop: 16 }}>
+                148
+              </span>
+              <p style={{ fontSize: 13, color: "#5c5680", margin: "auto 0 0", fontFamily: "sans-serif" }}>
+                24 pending response
+              </p>
+            </div>
 
-    <span className="text-4xl font-extrabold text-[#2e2a50] mt-4">
-      148
-    </span>
+            {/* Avg Response Time */}
+            <div style={{
+              backgroundColor: "#81f3e5", borderRadius: 16, padding: "24px 28px",
+              display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 160,
+            }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: "#005a53", textTransform: "uppercase", letterSpacing: "0.12em", margin: 0 }}>
+                Avg. Response Time
+              </p>
+              <span style={{ fontSize: 48, fontWeight: 800, color: "#005a53", letterSpacing: "-2px", lineHeight: 1, fontFamily: "'Plus Jakarta Sans', sans-serif", marginTop: 16 }}>
+                2.4h
+              </span>
+              <div style={{ display: "flex", gap: 5, marginTop: "auto" }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#005a53", display: "inline-block" }} />
+                <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#005a53", display: "inline-block", opacity: 0.35 }} />
+                <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#005a53", display: "inline-block", opacity: 0.35 }} />
+              </div>
+            </div>
+          </section>
 
-    <p className="text-[#5c5680] text-sm mt-auto">
-      24 pending response
-    </p>
-  </div> */}
+          {/* ── Your Properties ── */}
+          <section style={{ marginBottom: 40 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+              <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 22, fontWeight: 700, color: "#2e2a50", margin: 0 }}>
+                Your Properties
+              </h2>
+              <div style={{
+                display: "flex", alignItems: "center", gap: 6,
+                backgroundColor: "#f3eeff", padding: "8px 16px", borderRadius: 10,
+                cursor: "pointer", fontSize: 13, color: "#5c5680", fontWeight: 500,
+              }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>filter_list</span>
+                Filter by Status
+              </div>
+            </div>
 
-  {/* Avg Response Time */}
-  {/* <div className="bg-[#81f3e5] p-6 rounded-xl shadow-sm flex flex-col justify-between min-h-[180px]">
-    <p className="text-[#005a53] uppercase tracking-widest text-xs font-bold">
-      Avg. Response Time
-    </p>
+            {/* Table */}
+            <div style={{ backgroundColor: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "#f3eeff" }}>
+                      {["Property Details", "Monthly Rent", "Status", "Inquiries", "Actions"].map((h, i) => (
+                        <th
+                          key={i}
+                          style={{
+                            padding: "16px 28px",
+                            textAlign: i === 4 ? "right" : "left",
+                            fontSize: 13, fontWeight: 700,
+                            color: "#5c5680",
+                            fontFamily: "'Plus Jakarta Sans', sans-serif",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {properties.map((p) => (
+                      <PropertyRow key={p.id} property={p} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
 
-    <span className="text-4xl font-extrabold text-[#005a53] mt-4">
-      2.4h
-    </span>
+          {/* ── Trust / Visibility Banner ── */}
+          <section style={{ backgroundColor: "#81f3e5", borderRadius: 24, padding: "56px 64px", overflow: "hidden", position: "relative" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 40 }}>
+              <div style={{ maxWidth: 480 }}>
+                <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 32, fontWeight: 800, color: "#005a53", margin: "0 0 16px" }}>
+                  Enhance Your Visibility
+                </h3>
+                <p style={{ fontSize: 15, color: "#005a53", opacity: 0.8, lineHeight: 1.7, margin: "0 0 28px", fontFamily: "sans-serif" }}>
+                  Verified listings receive 4x more engagement from high-intent students. Schedule your verification visit today.
+                </p>
+                <button style={{
+                  backgroundColor: "#005a53", color: "#81f3e5",
+                  padding: "14px 28px", borderRadius: 12, border: "none",
+                  fontWeight: 700, fontSize: 15, cursor: "pointer",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}>
+                  Get Verified Now
+                </button>
+              </div>
 
-    <div className="flex gap-1 mt-auto">
-      <span className="w-2 h-2 rounded-full bg-[#005a53]" />
-      <span className="w-2 h-2 rounded-full bg-[#005a53] opacity-40" />
-      <span className="w-2 h-2 rounded-full bg-[#005a53] opacity-40" />
-    </div>
-  </div> */}
-
-{/* </section>  */}
-
-{/* Hero Image Banner */}
-{/* Premium Hero Banner */}
-<section className="w-full mb-10 lg:mb-14">
-  <div
-    className="
-      relative w-full 
-      min-h-[280px] sm:min-h-[340px] md:min-h-[400px] 
-      lg:min-h-[480px] xl:min-h-[560px] 2xl:min-h-[650px]
-      rounded-3xl overflow-hidden shadow-2xl group
-    "
-  >
-
-    {/* Image */}
-    <img
-      src={images[currentIndex]}
-      alt="Room"
-      className="
-        absolute inset-0 w-full h-full 
-        object-cover object-center 
-        transition-all duration-1000 ease-in-out
-        group-hover:scale-105
-      "
-    />
-
-    {/* Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
-
-    {/* LEFT ARROW */}
-    <button
-      onClick={prevSlide}
-      className="
-        absolute left-3 sm:left-5 top-1/2 -translate-y-1/2
-        bg-white/20 backdrop-blur-md border border-white/30
-        w-10 h-10 sm:w-12 sm:h-12
-        rounded-full flex items-center justify-center
-        text-white text-xl
-        hover:bg-white/40 transition-all duration-300
-      "
-    >
-      ‹
-    </button>
-
-    {/* RIGHT ARROW */}
-    <button
-      onClick={nextSlide}
-      className="
-        absolute right-3 sm:right-5 top-1/2 -translate-y-1/2
-        bg-white/20 backdrop-blur-md border border-white/30
-        w-10 h-10 sm:w-12 sm:h-12
-        rounded-full flex items-center justify-center
-        text-white text-xl
-        hover:bg-white/40 transition-all duration-300
-      "
-    >
-      ›
-    </button>
-
-    {/* Content */}
-    <div
-      className="
-        absolute bottom-4 left-4 right-4 
-        sm:left-10 sm:max-w-lg
-        backdrop-blur-xl bg-white/10 border border-white/20
-        rounded-2xl p-5 sm:p-6 shadow-lg text-white
-      "
-    >
-      <span className="inline-block mb-2 px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/80">
-        ✨ Verified Listings
-      </span>
-
-      <h2 className="text-lg sm:text-2xl lg:text-4xl font-extrabold mb-2 leading-tight">
-        Curated Living for Smart Students
-      </h2>
-
-      <p className="text-xs sm:text-sm lg:text-base opacity-90 mb-4">
-        Discover premium PGs near your college with comfort & safety.
-      </p>
-      <div className="flex justify-center">
-
-      <NavLink to={"/search"}>
-
-      
-      <button className="
-        bg-gradient-to-r from-indigo-500 to-purple-500
-        px-5 py-5 rounded-xl text-sm font-semibold
-        hover:scale-105 transition
-        w-full sm:w-40
-        h-10
-        text-center
-      ">
-        Explore Now
-      </button>
-      </NavLink>
-      </div>
-    </div>
-
-    {/* Dots */}
-    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-      {images.map((_, i) => (
-        <div
-          key={i}
-          onClick={() => setCurrentIndex(i)}
-          className={`w-2 h-2 rounded-full cursor-pointer transition-all ${
-            i === currentIndex ? "bg-white scale-125" : "bg-white/40"
-          }`}
-        />
-      ))}
-    </div>
-
-  </div>
-</section>
-    {/* Listings Section */}
-    <section className="mb-8 lg:mb-12">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h2 className="font-headline text-xl sm:text-2xl font-bold text-[#2e2a50]">
-          Your Properties
-        </h2>
-        <div className="bg-[#f3eeff] px-4 py-2 rounded-lg flex items-center gap-2 text-[#5c5680] cursor-pointer hover:bg-[#ebe5ff] transition-colors self-start sm:self-auto">
-          <span className="material-symbols-outlined text-sm">filter_list</span>
-          <span className="text-sm font-medium">Filter by Status</span>
-        </div>
-      </div>
-
-      {/* Table — scrollable on small screens */}
-      <div className="bg-white rounded-xl overflow-hidden shadow-sm overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[600px]">
-          <thead>
-            <tr className="bg-[#f3eeff] text-[#5c5680] text-sm font-bold">
-              {["Property Details", "Monthly Rent", "Status", "Inquiries", ""].map((h, i) => (
-                <th
-                  key={i}
-                  className={`px-4 sm:px-6 lg:px-8 py-4 sm:py-5 font-headline whitespace-nowrap ${i === 4 ? "text-right" : ""}`}
+              {/* Shield icon circle */}
+              <div style={{
+                width: 220, height: 220, borderRadius: "50%",
+                backgroundColor: "rgba(0,90,83,0.12)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 110, color: "#005a53", fontVariationSettings: "'FILL' 1" }}
                 >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#ebe5ff]">
-            {properties.map((p) => (
-              <PropertyRow key={p.id} property={p} />
-            ))}
-          </tbody>
-        </table>
+                  verified_user
+                </span>
+              </div>
+            </div>
+          </section>
+
+        </main>
+
+        <MainFooter />
       </div>
-    </section>
-
-    {/* Trust Banner */}
-    <section className="mt-8 lg:mt-16 bg-[#81f3e5] rounded-2xl lg:rounded-3xl p-8 sm:p-10 lg:p-16 overflow-hidden relative">
-
-      {/* Mobile & Tablet: stacked centered */}
-      <div className="flex flex-col items-center text-center gap-6 lg:hidden">
-        <div className="w-24 h-24 bg-[#005a53]/10 rounded-full flex items-center justify-center">
-          <span
-            className="material-symbols-outlined text-[#005a53] text-6xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            verified_user
-          </span>
-        </div>
-        <div className="max-w-md">
-          <h3 className="font-headline text-2xl sm:text-3xl font-extrabold text-[#005a53] mb-3">
-            Enhance Your Visibility
-          </h3>
-          <p className="text-[#005a53] opacity-80 mb-6 leading-relaxed text-sm sm:text-base">
-            Verified listings receive 4x more engagement from high-intent students.
-            Schedule your verification visit today.
-          </p>
-          <button className="bg-[#005a53] text-[#81f3e5] px-6 py-3 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 w-full sm:w-auto">
-            Get Verified Now
-          </button>
-        </div>
-      </div>
-
-      {/* Desktop: side by side */}
-      <div className="hidden lg:flex lg:flex-row items-center gap-12">
-        <div className="relative z-10 max-w-xl">
-          <h3 className="font-headline text-3xl font-extrabold text-[#005a53] mb-4">
-            Enhance Your Visibility
-          </h3>
-          <p className="text-[#005a53] opacity-80 mb-8 leading-relaxed">
-            Verified listings receive 4x more engagement from high-intent students.
-            Schedule your verification visit today.
-          </p>
-          <button className="bg-[#005a53] text-[#81f3e5] px-8 py-4 rounded-xl font-bold transition-all hover:scale-105 active:scale-95">
-            Get Verified Now
-          </button>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <div className="w-64 h-64 bg-[#005a53]/10 rounded-full flex items-center justify-center">
-            <span
-              className="material-symbols-outlined text-[#005a53] text-9xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              verified_user
-            </span>
-          </div>
-        </div>
-      </div>
-
-    </section>
-  </main>
-
-  <MainFooter />
-</div>
     </>
   );
 }
-
 
 
     {/* <footer className="bg-[#f3eeff] w-full mt-auto">

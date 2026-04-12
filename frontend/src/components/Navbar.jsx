@@ -4,6 +4,7 @@
 
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +16,14 @@ export default function Navbar() {
     { name: "My Account", path: "/account" },
   ];
 
+const handleLogout = () => {
+  const confirm = window.confirm("Are you sure you want to logout?");
+  if (confirm) {
+    localStorage.removeItem("token");
+    window.location.reload();
+    // navigate("/login");
+  }
+};
   return (
     <nav className="ac-nav">
       {/* Logo */}
@@ -38,9 +47,17 @@ export default function Navbar() {
 
       {/* Icons + Hamburger */}
       <div className="ac-nav-icons">
-        <span>🔔</span>
-        <span>♥</span>
+        {/* <span>🔔</span>
+        <span>♥</span> */}
         <NavLink to={"/signup"} className="ac-avatar">S</NavLink>
+  <button
+  onClick={handleLogout}
+  className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
+  text-red-500 hover:bg-red-500 hover:text-white   hover:text-red-600 transition-all duration-200 border-[1px] border-black"
+>
+  <span className="text-lg font-semibold">🚪</span>
+  Logout
+</button>
 
         {/* Hamburger */}
         <div
