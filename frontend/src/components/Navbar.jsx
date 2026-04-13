@@ -16,14 +16,14 @@ export default function Navbar() {
     { name: "My Account", path: "/account" },
   ];
 
-const handleLogout = () => {
-  const confirm = window.confirm("Are you sure you want to logout?");
-  if (confirm) {
-    localStorage.removeItem("token");
-    window.location.reload();
-    // navigate("/login");
-  }
-};
+  const handleLogout = () => {
+    const confirm = window.confirm("Are you sure you want to logout?");
+    if (confirm) {
+      localStorage.removeItem("token");
+      window.location.reload();
+      // navigate("/login");
+    }
+  };
   return (
     <nav className="ac-nav">
       {/* Logo */}
@@ -50,14 +50,14 @@ const handleLogout = () => {
         {/* <span>🔔</span>
         <span>♥</span> */}
         <NavLink to={"/signup"} className="ac-avatar">S</NavLink>
-  <button
-  onClick={handleLogout}
-  className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
-  text-red-500 hover:bg-red-500 hover:text-white   hover:text-red-600 transition-all duration-200 border-[1px] border-black"
->
-  <span className="text-lg font-semibold">🚪</span>
-  Logout
-</button>
+        <button
+          onClick={handleLogout}
+          className="w-20 sm:w-16 rounded-xl
+  text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 border-red-500 border text-center"
+        >
+          {/* <span className="text-lg font-semibold">🚪</span> */}
+          Logout
+        </button>
 
         {/* Hamburger */}
         <div
