@@ -120,7 +120,7 @@ export default function CreateListing() {
       formData.append("price", Number(form.price));
       formData.append("location", form.location);
       formData.append("description", form.description);
-      formData.append("owner_name", form.ownername);
+      formData.append("owner_name", form.owner_name); // i have changed ownername to owner_name
       formData.append("owner_phone", form.phone);
       formData.append("amenities", selectedAmenities.join(",")); // ✅ IMPORTANT
       const tags = [];
@@ -291,7 +291,7 @@ export default function CreateListing() {
           style={{ maxWidth: 860, margin: "0 auto", padding: "40px 24px 80px" }}
         >
           {/* ── Step Indicator ── */}
-          <div
+          {/* <div
             style={{
               display: "flex",
               alignItems: "flex-start",
@@ -299,7 +299,7 @@ export default function CreateListing() {
               position: "relative",
             }}
           >
-            {/* Connecting line */}
+          
             <div
               style={{
                 position: "absolute",
@@ -311,7 +311,7 @@ export default function CreateListing() {
                 zIndex: 0,
               }}
             />
-            {/* Filled progress line (steps 1→2) */}
+           
             <div
               style={{
                 position: "absolute",
@@ -377,7 +377,7 @@ export default function CreateListing() {
                 </div>
               );
             })}
-          </div>
+          </div> */}
 
           {/* ── Form Card ── */}
           <div

@@ -37,7 +37,7 @@ function Hero() {
           the city's most prestigious universities. Curated for focus, comfort,
           and community.
         </p>
-        <div className="ac-search-bar">
+        {/* <div className="ac-search-bar">
           <span style={{ fontSize: 16 }}>🎓</span>
           <input className="ac-search-input" placeholder="Which college area?" />
           <div className="ac-search-divider" />
@@ -48,7 +48,7 @@ function Hero() {
             <option>Within 10km</option>
           </select>
           <button className="ac-search-btn">Find Rooms 🔍</button>
-        </div>
+        </div> */}
       </div>
 
       <div className="ac-hero-visual">

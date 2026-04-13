@@ -1,536 +1,699 @@
-import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar"
+import { useState, useEffect, useRef } from "react";
+import Navbar from "../components/Navbar";
+
 const sidebarLinks = [
-  { icon: "🔍", label: "Discover" },
-  { icon: "🔖", label: "Saved Listings" },
-  { icon: "📄", label: "Applications" },
-  { icon: "👤", label: "My Account", active: true },
+  { icon: "🏠", label: "Dashboard" },
+  { icon: "🔍", label: "Search" },
+  { icon: "🔖", label: "Saved" },
+  { icon: "📋", label: "Applications" },
+  { icon: "💬", label: "Messages" },
+  { icon: "⚙️", label: "Settings" },
 ];
 
-const tags = ["Post-Grad", "Economics Major", "Quiet Study Seeker"];
+const tags = ["Economics Major", "Fall 2024", "Budget: ₹12k/mo", "Quiet Environment"];
 
 const savedListings = [
   {
     id: 1,
-    name: "The Heritage Attic",
-    price: "₹14k",
-    dist: "0.8 km from University",
-    amenities: ["High Speed Wi-Fi", "Meal Plan"],
-    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80",
+    name: "Scholar's Retreat",
+    price: "₹9,500",
+    dist: "0.4km from campus",
+    img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80",
+    amenities: ["WiFi", "AC", "Laundry"],
   },
   {
     id: 2,
-    name: "Oxford Square Villa",
-    price: "₹18k",
-    dist: "1.2 km from Campus",
-    amenities: ["Quiet Zone", "Private Bath"],
-    img: "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?w=400&q=80",
+    name: "Meridian Studio",
+    price: "₹11,200",
+    dist: "0.8km from campus",
+    img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80",
+    amenities: ["WiFi", "Furnished", "Security"],
+  },
+  {
+    id: 3,
+    name: "Lakeview Den",
+    price: "₹8,800",
+    dist: "1.1km from campus",
+    img: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80",
+    amenities: ["WiFi", "Kitchen", "Parking"],
+  },
+  {
+    id: 4,
+    name: "The Ink House",
+    price: "₹10,400",
+    dist: "0.6km from campus",
+    img: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&q=80",
+    amenities: ["WiFi", "AC", "Library"],
   },
 ];
 
 const applicationSteps = [
-  {
-    id: 1,
-    label: "Application Submitted",
-    date: "Aug 12, 2024",
-    done: true,
-  },
-  {
-    id: 2,
-    label: "In Review",
-    date: "Est. outcome in 2 days",
-    active: true,
-    note: "The curator is currently verifying your university enrollment documents.",
-  },
+  { id: 1, label: "Application Submitted", date: "Aug 3, 2024", done: true, active: false, note: null },
+  { id: 2, label: "Document Verification", date: "Aug 5, 2024", done: true, active: false, note: null },
   {
     id: 3,
-    label: "Deposit Pending",
-    date: "Stage 3 of 4",
+    label: "Landlord Review",
+    date: "Aug 7, 2024",
+    done: false,
+    active: true,
+    note: "The landlord has viewed your profile. A response is expected within 48 hours.",
   },
+  { id: 4, label: "Agreement Signing", date: "Pending", done: false, active: false, note: null },
+  { id: 5, label: "Move-In Confirmed", date: "Pending", done: false, active: false, note: null },
 ];
 
-export default function MyAccount() {
-  const [activeNav, setActiveNav] = useState("My Account");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+/* ─────────────────────────────────────────── */
+/* Hook: tracks breakpoint via ResizeObserver  */
+/* ─────────────────────────────────────────── */
+function useBreakpoint() {
+  const [bp, setBp] = useState(() => {
+    const w = typeof window !== "undefined" ? window.innerWidth : 1200;
+    return w < 640 ? "mobile" : w < 1024 ? "tablet" : "desktop";
+  });
 
   useEffect(() => {
-    document.body.style.overflow = sidebarOpen ? "hidden" : "auto";
-  }, [sidebarOpen]);
+    const update = () => {
+      const w = window.innerWidth;
+      setBp(w < 640 ? "mobile" : w < 1024 ? "tablet" : "desktop");
+    };
+    const ro = new ResizeObserver(update);
+    ro.observe(document.body);
+    return () => ro.disconnect();
+  }, []);
+
+  return bp;
+}
+
+export default function CuratorDashboard() {
+  const [activeNav, setActiveNav] = useState("Saved");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const bp = useBreakpoint();
+
+  const isMobile = bp === "mobile";
+  const isTablet = bp === "tablet";
+  const isDesktop = bp === "desktop";
+
+  // Close sidebar when switching to desktop
+  useEffect(() => {
+    if (isDesktop) setSidebarOpen(false);
+  }, [isDesktop]);
 
   return (
     <>
-    
-  
-    <Navbar/>
-    <div style={{ minHeight: "100vh", backgroundColor: "#f0eeff", fontFamily: "sans-serif" }}>
+      <style>{`
+        * { box-sizing: border-box; }
 
-      {/* Mobile Top Bar */}
-      <div className="lg:hidden flex justify-between items-center p-4 bg-white shadow-sm">
-        <button onClick={() => setSidebarOpen(true)}>☰</button>
-      </div>
+        .curator-root {
+          min-height: 100vh;
+          background: #f0eeff;
+          font-family: 'Segoe UI', sans-serif;
+        }
 
-      <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex" }}>
+        /* ── Top bar (mobile/tablet only) ── */
+        .topbar {
+          display: none;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 16px;
+          background: #fff;
+          border-bottom: 1px solid #e5e7eb;
+          position: sticky;
+          top: 0;
+          z-index: 30;
+        }
+        @media (max-width: 1023px) {
+          .topbar { display: flex; }
+        }
 
-        {/* Overlay */}
-        {sidebarOpen && (
+        .topbar-logo { font-weight: 700; font-size: 15px; color: #4338ca; }
+        .topbar-sub  { font-size: 9px; color: #9ca3af; letter-spacing: 0.1em; }
+
+        .hamburger {
+          background: none; border: none; cursor: pointer;
+          padding: 6px; border-radius: 8px; font-size: 18px;
+          color: #374151;
+        }
+        .hamburger:hover { background: #f3f4f6; }
+
+        /* ── Layout wrapper ── */
+        .layout {
+          display: flex;
+          width: 97%;
+          margin: 0 auto;
+        }
+         
+
+        /* ── Overlay ── */
+        .overlay {
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.45);
+          z-index: 40;
+        }
+        .overlay.active { display: block; }
+
+        /* ── Sidebar ── */
+        .sidebar {
+          width: 220px;
+          min-width: 220px;
+          background: #fff;
+          border-right: 1px solid #e5e7eb;
+          padding: 28px 16px 24px;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          align-self: flex-start;
+          z-index: 50;
+        }
+
+        @media (max-width: 1023px) {
+          .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            transform: translateX(-100%);
+            transition: transform 0.28s ease;
+            z-index: 50;
+            overflow-y: auto;
+            padding-top: 20px;
+          }
+          .sidebar.open { transform: translateX(0); }
+        }
+
+        .sidebar-logo-name { font-weight: 700; font-size: 16px; color: #4338ca; }
+        .sidebar-logo-sub  { font-size: 10px; color: #9ca3af; letter-spacing: 0.12em; margin-top: 2px; }
+
+        .nav-btn {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 9px 12px;
+          border-radius: 10px;
+          border: none;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 400;
+          background: transparent;
+          color: #6b7280;
+          text-align: left;
+          transition: background 0.15s;
+          border-left: 3px solid transparent;
+          width: 100%;
+        }
+        .nav-btn.active {
+          background: #ede9fe;
+          color: #4338ca;
+          font-weight: 600;
+          border-left: 3px solid #4338ca;
+        }
+
+        .list-btn {
+          width: 100%;
+          padding: 12px 0;
+          border-radius: 14px;
+          border: none;
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          color: #fff;
+          font-weight: 600;
+          font-size: 14px;
+          cursor: pointer;
+          margin-top: 32px;
+        }
+
+        /* ── Main ── */
+      .main {
+          flex: 1;
+          padding: 28px 32px;
+          min-width: 0;
+        }
+        @media (max-width: 767px) {
+          .main { padding: 16px 14px; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .main { padding: 20px 20px; }
+        }
+
+        /* ── Profile card ── */
+        .profile-card {
+          background: #fff;
+          border-radius: 20px;
+          padding: 24px 28px;
+          margin-bottom: 28px;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+          display: flex;
+          align-items: center;
+          gap: 24px;
+        }
+        @media (max-width: 375px) {
+          .profile-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 16px;
+            gap: 14px;
+          }
+        }
+
+        .profile-name {
+          margin: 0;
+          font-size: 28px;
+          font-weight: 700;
+          color: #1f2937;
+        }
+        @media (max-width: 639px) { .profile-name { font-size: 20px; } }
+        @media (min-width: 640px) and (max-width: 1023px) { .profile-name { font-size: 22px; } }
+
+        .profile-meta { margin: 6px 0 0; font-size: 13px; color: #6b7280; }
+        @media (max-width: 639px) { .profile-meta { font-size: 11px; } }
+
+        .profile-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 12px;
+        }
+        @media (max-width: 639px) {
+          .profile-tags { justify-content: center; }
+        }
+
+        .tag {
+          padding: 5px 12px;
+          font-size: 12px;
+          border-radius: 20px;
+          background: #ede9fe;
+          color: #4338ca;
+          font-weight: 500;
+        }
+        @media (max-width: 639px) { .tag { font-size: 10px; padding: 4px 10px; } }
+
+        /* ── Bottom grid ── */
+        .bottom-grid {
+          display: grid;
+          grid-template-columns: 1fr 300px;
+          gap: 28px;
+          align-items: start;
+        }
+        @media (max-width: 1279px) {
+          .bottom-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Listings header ── */
+        .listing-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 6px;
+        }
+
+        /* ── Listing cards grid ── */
+        .listing-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin-top: 16px;
+        }
+        @media (max-width: 639px) {
+          .listing-grid { grid-template-columns: 1fr; gap: 14px; }
+        }
+
+        .listing-card {
+          background: #fff;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+          transition: box-shadow 0.2s;
+        }
+        .listing-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+        .listing-img {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          display: block;
+        }
+        @media (max-width: 639px) { .listing-img { height: 160px; } }
+
+        /* ── Right panel ── */
+        .right-panel {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        /* ── Fit score card ── */
+        .fit-score-card {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          border-radius: 18px;
+          padding: 22px 22px 20px;
+          color: #fff;
+          box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+        }
+
+        /* ── Application card ── */
+        .app-card {
+          background: #fff;
+          border-radius: 18px;
+          padding: 20px;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        /* ── Guarantee card ── */
+        .guarantee-card {
+          background: #99f6e4;
+          border-radius: 16px;
+          padding: 16px 18px;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        /* ── Footer ── */
+        .footer {
+          border-top: 1px solid #ddd8f0;
+          margin-top: 48px;
+          padding: 24px 48px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 16px;
+          background: #fff;
+        }
+        @media (max-width: 639px) {
+          .footer {
+            padding: 20px 16px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+          }
+        }
+
+        .footer-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          font-size: 11px;
+          color: #6b7280;
+          letter-spacing: 0.05em;
+        }
+        @media (max-width: 639px) {
+          .footer-links { gap: 12px; font-size: 10px; }
+        }
+        
+      `}</style>
+      
+      <Navbar/>
+      <div className="curator-root">
+
+        {/* ── Top Bar (mobile/tablet) ── */}
+        <div className="topbar">
+          <div>
+            <div className="topbar-logo">The Curator</div>
+            <div className="topbar-sub">ACADEMIC HOUSING</div>
+          </div>
+          <button className="hamburger" onClick={() => setSidebarOpen(p => !p)}>
+            {sidebarOpen ? "✖" : "☰"}
+          </button>
+        </div>
+
+        <div className="layout">
+
+          {/* Overlay */}
           <div
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 40 }}
+            className={`overlay ${sidebarOpen ? "active" : ""}`}
             onClick={() => setSidebarOpen(false)}
           />
-        )}
 
-        {/* SIDEBAR */}
-        <aside
-          style={{
-            width: 220,
-            minWidth: 220,
-            background: "#fff",
-            borderRight: "1px solid #e5e7eb",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            padding: "28px 16px 24px",
-            minHeight: "100vh",
-            position: "sticky",
-            top: 0,
-            alignSelf: "flex-start",
-          }}
-        >
-          {/* Logo */}
-          <div>
-            <div style={{ marginBottom: 36 }}>
-              <div style={{ fontWeight: 700, fontSize: 17, color: "#4338ca" }}>The Curator</div>
-              <div style={{ fontSize: 10, color: "#9ca3af", letterSpacing: "0.12em", marginTop: 2 }}>
-                ACADEMIC HOUSING
+          {/* ── Sidebar ── */}
+          <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+            <div>
+              <div style={{ marginBottom: 36 }}>
+                <div className="sidebar-logo-name">The Curator</div>
+                <div className="sidebar-logo-sub">ACADEMIC HOUSING</div>
               </div>
+
+              <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {sidebarLinks.map(link => (
+                  <button
+                    key={link.label}
+                    className={`nav-btn ${activeNav === link.label ? "active" : ""}`}
+                    onClick={() => {
+                      setActiveNav(link.label);
+                      if (!isDesktop) setSidebarOpen(false);
+                    }}
+                  >
+                    <span style={{ fontSize: 15 }}>{link.icon}</span>
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
             </div>
 
-            {/* Nav */}
-            <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {sidebarLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => setActiveNav(link.label)}
+            <button className="list-btn">List a Property</button>
+          </aside>
+
+          {/* ── Main ── */}
+          <main className="main">
+
+            {/* Profile Card */}
+            <div className="profile-card">
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <img
+                  src="https://randomuser.me/api/portraits/men/32.jpg"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "9px 12px",
-                    borderRadius: 10,
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    fontWeight: activeNav === link.label ? 600 : 400,
-                    background: activeNav === link.label ? "#ede9fe" : "transparent",
-                    color: activeNav === link.label ? "#4338ca" : "#6b7280",
-                    textAlign: "left",
-                    transition: "background 0.15s",
-                    borderLeft: activeNav === link.label ? "3px solid #4338ca" : "3px solid transparent",
+                    width: isMobile ? 70 : 90,
+                    height: isMobile ? 70 : 90,
+                    borderRadius: 14,
+                    objectFit: "cover",
+                    display: "block",
                   }}
-                >
-                  <span style={{ fontSize: 16 }}>{link.icon}</span>
-                  {link.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          {/* CTA */}
-          <button
-            style={{
-              width: "100%",
-              padding: "12px 0",
-              borderRadius: 14,
-              border: "none",
-              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: "pointer",
-              marginTop: 32,
-            }}
-          >
-            List a Property
-          </button>
-        </aside>
-
-        {/* MAIN CONTENT */}
-        <main style={{ flex: 1, padding: "28px 32px", minWidth: 0 }}>
-
-          {/* PROFILE CARD */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 20,
-              padding: "24px 28px",
-              marginBottom: 28,
-              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-              display: "flex",
-              alignItems: "center",
-              gap: 24,
-            }}
-          >
-            <div style={{ position: "relative", flexShrink: 0 }}>
-              <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                style={{ width: 90, height: 90, borderRadius: 14, objectFit: "cover", display: "block" }}
-                alt="Rahul Modak"
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: -8,
-                  left: "50%",
+                  alt="Rahul Modak"
+                />
+                <div style={{
+                  position: "absolute", bottom: -8, left: "50%",
                   transform: "translateX(-50%)",
-                  background: "#10b981",
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: 20,
+                  background: "#10b981", color: "#fff",
+                  fontSize: 10, fontWeight: 700,
+                  padding: "3px 8px", borderRadius: 20,
                   whiteSpace: "nowrap",
-                  letterSpacing: "0.03em",
-                }}
-              >
-                ✓ VERIFIED
-              </div>
-            </div>
-
-            <div>
-              <h1 style={{ margin: 0, fontSize: 30, fontWeight: 700, color: "#1f2937" }}>Rahul Modak</h1>
-              <p style={{ margin: "6px 0 0", fontSize: 14, color: "#6b7280" }}>
-                🎓 University of Calcutta &nbsp;•&nbsp; 📍 Kolkata, WB
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      padding: "5px 14px",
-                      fontSize: 12,
-                      borderRadius: 20,
-                      background: "#ede9fe",
-                      color: "#4338ca",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* BOTTOM GRID: Listings + Right Panel */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 28, alignItems: "start" }}>
-
-            {/* LEFT: Saved Listings */}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div>
-                  <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#1f2937" }}>Saved Listings</h2>
-                  <p style={{ margin: "4px 0 0", fontSize: 13, color: "#9ca3af" }}>
-                    Properties you are tracking for the Fall semester.
-                  </p>
+                }}>
+                  ✓ VERIFIED
                 </div>
-                <button style={{ background: "none", border: "none", color: "#6366f1", fontSize: 14, cursor: "pointer", fontWeight: 500 }}>
-                  View All
-                </button>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 16 }}>
-                {savedListings.map((listing) => (
-                  <div
-                    key={listing.id}
-                    style={{
-                      background: "#fff",
-                      borderRadius: 16,
-                      overflow: "hidden",
-                      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                      transition: "box-shadow 0.2s",
-                    }}
-                  >
-                    <div style={{ position: "relative" }}>
-                      <img
-                        src={listing.img}
-                        style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
-                        alt={listing.name}
-                      />
-                      <button
-                        style={{
-                          position: "absolute",
-                          top: 12,
-                          right: 12,
-                          background: "#f97316",
-                          border: "none",
-                          borderRadius: 8,
-                          width: 32,
-                          height: 32,
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 14,
-                          color: "#fff",
-                        }}
-                      >
-                        🔖
-                      </button>
-                    </div>
-
-                    <div style={{ padding: "14px 16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                        <span style={{ fontWeight: 600, fontSize: 14, color: "#1f2937" }}>{listing.name}</span>
-                        <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 14 }}>
-                          {listing.price}<span style={{ fontSize: 11, fontWeight: 400 }}>/mo</span>
-                        </span>
-                      </div>
-
-                      <p style={{ margin: "0 0 10px", fontSize: 12, color: "#9ca3af" }}>
-                        ➤ {listing.dist}
-                      </p>
-
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {listing.amenities.map((a) => (
-                          <span
-                            key={a}
-                            style={{
-                              padding: "4px 10px",
-                              fontSize: 11,
-                              borderRadius: 20,
-                              background: "#ede9fe",
-                              color: "#4338ca",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {a}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div>
+                <h1 className="profile-name">Rahul Modak</h1>
+                <p className="profile-meta">🎓 University of Calcutta &nbsp;•&nbsp; 📍 Kolkata, WB</p>
+                <div className="profile-tags">
+                  {tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
+                </div>
               </div>
             </div>
 
-            {/* RIGHT PANEL */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Bottom Grid */}
+            <div className="bottom-grid">
 
-              {/* Academic Fit Score */}
-              <div
-                style={{
-                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                  borderRadius: 18,
-                  padding: "22px 22px 20px",
-                  color: "#fff",
-                  boxShadow: "0 4px 20px rgba(99,102,241,0.3)",
-                }}
-              >
-                <div style={{ fontSize: 20, marginBottom: 8 }}>✦</div>
-                <div style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>
-                  Your Academic Fit<br />Score is 94%
-                </div>
-                <p style={{ fontSize: 12, opacity: 0.8, margin: "0 0 16px" }}>
-                  Based on your proximity to the economics department and library hours preference.
-                </p>
-                <a
-                  href="#"
-                  style={{
-                    color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    textDecoration: "underline",
-                    opacity: 0.9,
-                  }}
-                >
-                  View Curated Insights
-                </a>
-              </div>
-
-              {/* Current Application */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: 18,
-                  padding: "20px",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                }}
-              >
-                <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: "#1f2937" }}>
-                  Current Application
-                </h3>
-
-                {/* Property row */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginBottom: 20,
-                    padding: "12px",
-                    background: "#f8f7ff",
-                    borderRadius: 12,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 10,
-                      background: "#e0e7ff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 18,
-                      flexShrink: 0,
-                    }}
-                  >
-                    🏢
-                  </div>
+              {/* LEFT — Saved Listings */}
+              <div>
+                <div className="listing-header">
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: "#1f2937" }}>The Scholar's Suite</div>
-                    <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>App ID: #88219-BK</div>
+                    <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1f2937" }}>
+                      Saved Listings
+                    </h2>
+                    <p style={{ margin: "4px 0 0", fontSize: 13, color: "#9ca3af" }}>
+                      Properties you are tracking for the Fall semester.
+                    </p>
                   </div>
+                  <button style={{
+                    background: "none", border: "none",
+                    color: "#6366f1", fontSize: 13,
+                    cursor: "pointer", fontWeight: 500,
+                    whiteSpace: "nowrap",
+                  }}>
+                    View All
+                  </button>
                 </div>
 
-                {/* Steps */}
-                <div style={{ position: "relative", paddingLeft: 28 }}>
-                  {/* Vertical line */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: 9,
-                      top: 10,
-                      bottom: 10,
-                      width: 2,
-                      background: "#e5e7eb",
-                      borderRadius: 2,
-                    }}
-                  />
-
-                  {applicationSteps.map((step, i) => (
-                    <div key={step.id} style={{ position: "relative", marginBottom: i < applicationSteps.length - 1 ? 20 : 0 }}>
-                      {/* Step dot */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: -28,
-                          top: 2,
-                          width: 20,
-                          height: 20,
-                          borderRadius: "50%",
-                          background: step.done ? "#6366f1" : step.active ? "#fff" : "#f3f4f6",
-                          border: step.active ? "2px solid #6366f1" : step.done ? "none" : "2px solid #d1d5db",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          zIndex: 1,
-                        }}
-                      >
-                        {step.done && (
-                          <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>✓</span>
-                        )}
-                        {step.active && (
-                          <span style={{ fontSize: 8, color: "#6366f1" }}>●</span>
-                        )}
+                <div className="listing-grid">
+                  {savedListings.map(listing => (
+                    <div key={listing.id} className="listing-card">
+                      <div style={{ position: "relative" }}>
+                        <img
+                          src={listing.img}
+                          className="listing-img"
+                          alt={listing.name}
+                        />
+                        <button style={{
+                          position: "absolute", top: 10, right: 10,
+                          background: "#f97316", border: "none",
+                          borderRadius: 8, width: 30, height: 30,
+                          cursor: "pointer",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: 13, color: "#fff",
+                        }}>
+                          🔖
+                        </button>
                       </div>
 
-                      <div style={{ fontWeight: step.active ? 700 : 500, fontSize: 13, color: step.active ? "#4338ca" : "#374151" }}>
-                        {step.label}
-                      </div>
-                      <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{step.date}</div>
-
-                      {step.note && (
-                        <div
-                          style={{
-                            marginTop: 8,
-                            padding: "10px 12px",
-                            background: "#ede9fe",
-                            borderRadius: 10,
-                            fontSize: 12,
-                            color: "#4338ca",
-                            lineHeight: 1.5,
-                          }}
-                        >
-                          {step.note}
+                      <div style={{ padding: "14px 16px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                          <span style={{ fontWeight: 600, fontSize: 13, color: "#1f2937" }}>{listing.name}</span>
+                          <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 13 }}>
+                            {listing.price}<span style={{ fontSize: 10, fontWeight: 400 }}>/mo</span>
+                          </span>
                         </div>
-                      )}
+
+                        <p style={{ margin: "0 0 10px", fontSize: 11, color: "#9ca3af" }}>
+                          ➤ {listing.dist}
+                        </p>
+
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {listing.amenities.map(a => (
+                            <span key={a} style={{
+                              padding: "4px 10px", fontSize: 11,
+                              borderRadius: 20,
+                              background: "#ede9fe", color: "#4338ca", fontWeight: 500,
+                            }}>
+                              {a}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
-
-                <button
-                  style={{
-                    width: "100%",
-                    marginTop: 20,
-                    padding: "11px 0",
-                    borderRadius: 12,
-                    border: "1.5px solid #6366f1",
-                    background: "#fff",
-                    color: "#4338ca",
-                    fontWeight: 600,
-                    fontSize: 13,
-                    cursor: "pointer",
-                  }}
-                >
-                  View Application Details
-                </button>
               </div>
 
-              {/* Student Guarantee */}
-              <div
-                style={{
-                  background: "#99f6e4",
-                  borderRadius: 16,
-                  padding: "16px 18px",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 12,
-                }}
-              >
-                <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>🛡</span>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", color: "#065f46", marginBottom: 4 }}>
-                    STUDENT GUARANTEE
+              {/* RIGHT — Panel */}
+              <div className="right-panel">
+
+                {/* Academic Fit Score */}
+                <div className="fit-score-card">
+                  <div style={{ fontSize: 18, marginBottom: 8 }}>✦</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>
+                    Your Academic Fit<br />Score is 94%
                   </div>
-                  <p style={{ margin: 0, fontSize: 13, color: "#064e3b", lineHeight: 1.5 }}>
-                    Your data is secured by University Partnerships Protocol.
+                  <p style={{ fontSize: 12, opacity: 0.8, margin: "0 0 16px" }}>
+                    Based on your proximity to the economics department and library hours preference.
                   </p>
+                  <a href="#" style={{ color: "#fff", fontSize: 13, fontWeight: 500, textDecoration: "underline", opacity: 0.9 }}>
+                    View Curated Insights
+                  </a>
                 </div>
-              </div>
 
+                {/* Current Application */}
+                <div className="app-card">
+                  <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: "#1f2937" }}>
+                    Current Application
+                  </h3>
+
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 12,
+                    marginBottom: 20, padding: 12,
+                    background: "#f8f7ff", borderRadius: 12,
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 10,
+                      background: "#e0e7ff",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 18, flexShrink: 0,
+                    }}>
+                      🏢
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: "#1f2937" }}>The Scholar's Suite</div>
+                      <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>App ID: #88219-BK</div>
+                    </div>
+                  </div>
+
+                  <div style={{ position: "relative", paddingLeft: 28 }}>
+                    <div style={{
+                      position: "absolute", left: 9, top: 10, bottom: 10,
+                      width: 2, background: "#e5e7eb", borderRadius: 2,
+                    }} />
+
+                    {applicationSteps.map((step, i) => (
+                      <div key={step.id} style={{ position: "relative", marginBottom: i < applicationSteps.length - 1 ? 20 : 0 }}>
+                        <div style={{
+                          position: "absolute", left: -28, top: 2,
+                          width: 20, height: 20, borderRadius: "50%",
+                          background: step.done ? "#6366f1" : step.active ? "#fff" : "#f3f4f6",
+                          border: step.active ? "2px solid #6366f1" : step.done ? "none" : "2px solid #d1d5db",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          zIndex: 1,
+                        }}>
+                          {step.done && <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>✓</span>}
+                          {step.active && <span style={{ fontSize: 8, color: "#6366f1" }}>●</span>}
+                        </div>
+
+                        <div style={{ fontWeight: step.active ? 700 : 500, fontSize: 13, color: step.active ? "#4338ca" : "#374151" }}>
+                          {step.label}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{step.date}</div>
+
+                        {step.note && (
+                          <div style={{
+                            marginTop: 8, padding: "10px 12px",
+                            background: "#ede9fe", borderRadius: 10,
+                            fontSize: 12, color: "#4338ca", lineHeight: 1.5,
+                          }}>
+                            {step.note}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button style={{
+                    width: "100%", marginTop: 20, padding: "11px 0",
+                    borderRadius: 12, border: "1.5px solid #6366f1",
+                    background: "#fff", color: "#4338ca",
+                    fontWeight: 600, fontSize: 13, cursor: "pointer",
+                  }}>
+                    View Application Details
+                  </button>
+                </div>
+
+                {/* Student Guarantee */}
+                <div className="guarantee-card">
+                  <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>🛡</span>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", color: "#065f46", marginBottom: 4 }}>
+                      STUDENT GUARANTEE
+                    </div>
+                    <p style={{ margin: 0, fontSize: 13, color: "#064e3b", lineHeight: 1.5 }}>
+                      Your data is secured by University Partnerships Protocol.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </main>
+        </div>
+
+        {/* Footer */}
+        <footer className="footer">
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14, color: "#4338ca" }}>The Academic Curator</div>
+            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
+              © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
             </div>
           </div>
-        </main>
-      </div>
-
-      {/* Footer */}
-      <footer
-        style={{
-          borderTop: "1px solid #ddd8f0",
-          marginTop: 48,
-          padding: "24px 48px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-          gap: 16,
-          background: "#fff",
-        }}
-      >
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 14, color: "#4338ca" }}>The Academic Curator</div>
-          <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
-            © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
+          <div className="footer-links">
+            {["PRIVACY POLICY", "TERMS OF SERVICE", "UNIVERSITY PARTNERSHIPS", "CONTACT SUPPORT"].map(link => (
+              <span key={link} style={{ cursor: "pointer" }}>{link}</span>
+            ))}
           </div>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 24, fontSize: 11, color: "#6b7280", letterSpacing: "0.05em" }}>
-          {["PRIVACY POLICY", "TERMS OF SERVICE", "UNIVERSITY PARTNERSHIPS", "CONTACT SUPPORT"].map((link) => (
-            <span key={link} style={{ cursor: "pointer" }}>{link}</span>
-          ))}
-        </div>
-      </footer>
-    </div>
-      </>
+        </footer>
+
+      </div>
+    </>
   );
 }
