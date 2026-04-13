@@ -84,15 +84,58 @@ function useBreakpoint() {
   return bp;
 }
 
+
 export default function CuratorDashboard() {
   const [activeNav, setActiveNav] = useState("Saved");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [savedListings, setSavedListings] = useState([]);
+   const [likedCards, setLikedCards] = useState({ 1: true });
+
   const bp = useBreakpoint();
 
   const isMobile = bp === "mobile";
   const isTablet = bp === "tablet";
   const isDesktop = bp === "desktop";
 
+useEffect(() => {
+  const fetchBookmarks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:5000/api/bookmarks", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+      setSavedListings(data.bookmarks);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchBookmarks();
+}, []);
+
+const removeBookmark = async (listingId) => {
+  const token = localStorage.getItem("token");
+
+  await fetch("http://localhost:5000/api/bookmarks/postdata", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ listingId })
+  });
+
+  // remove from UI
+  setSavedListings(prev =>
+    prev.filter(item => item._id !== listingId)
+  );
+};
   // Close sidebar when switching to desktop
   useEffect(() => {
     if (isDesktop) setSidebarOpen(false);
@@ -226,16 +269,25 @@ export default function CuratorDashboard() {
         }
 
         /* ── Main ── */
-      .main {
+     .main {
           flex: 1;
           padding: 28px 32px;
           min-width: 0;
+          max-width: 100%;
         }
         @media (max-width: 767px) {
           .main { padding: 16px 14px; }
         }
         @media (min-width: 768px) and (max-width: 1023px) {
           .main { padding: 20px 20px; }
+        }
+        @media (min-width: 1440px) {
+          .main { 
+          padding: 36px 48px; 
+          width:63%;
+          
+          }
+          
         }
 
         /* ── Profile card ── */
@@ -519,54 +571,127 @@ export default function CuratorDashboard() {
                   </button>
                 </div>
 
-                <div className="listing-grid">
-                  {savedListings.map(listing => (
-                    <div key={listing.id} className="listing-card">
-                      <div style={{ position: "relative" }}>
-                        <img
-                          src={listing.img}
-                          className="listing-img"
-                          alt={listing.name}
-                        />
-                        <button style={{
-                          position: "absolute", top: 10, right: 10,
-                          background: "#f97316", border: "none",
-                          borderRadius: 8, width: 30, height: 30,
-                          cursor: "pointer",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontSize: 13, color: "#fff",
-                        }}>
-                          🔖
-                        </button>
-                      </div>
+            <div className="listing-grid">
+  {savedListings.map((listing) => (
+    <div key={listing._id} className="listing-card">
 
-                      <div style={{ padding: "14px 16px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                          <span style={{ fontWeight: 600, fontSize: 13, color: "#1f2937" }}>{listing.name}</span>
-                          <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 13 }}>
-                            {listing.price}<span style={{ fontSize: 10, fontWeight: 400 }}>/mo</span>
-                          </span>
-                        </div>
+      {/* IMAGE */}
+   <div style={{ position: "relative" }}>
+  <img
+    src={listing.images[0]}
+    className="listing-img"
+    alt={listing.title}
+  />
 
-                        <p style={{ margin: "0 0 10px", fontSize: 11, color: "#9ca3af" }}>
-                          ➤ {listing.dist}
-                        </p>
+  {/* ❤️ HEART (LEFT) */}
+  <button
+    style={{
+      position: "absolute",
+      top: 10,
+      left: 10,              // 👈 LEFT SIDE
+      width: 32,
+      height: 32,
+      borderRadius: "50%",
+      background: "#fff",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 16,
+      color: likedCards[listing._id] ? "#ef4444" : "#9ca3af",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+    
+    }}
+   onClick={() => toggleLike(listing._id)}
+  >
+    ❤️
+  </button>
 
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                          {listing.amenities.map(a => (
-                            <span key={a} style={{
-                              padding: "4px 10px", fontSize: 11,
-                              borderRadius: 20,
-                              background: "#ede9fe", color: "#4338ca", fontWeight: 500,
-                            }}>
-                              {a}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  {/* ❌ REMOVE (RIGHT) */}
+  <button
+    onClick={() => removeBookmark(listing._id)}
+    style={{
+      position: "absolute",
+      top: 10,
+      right: 10,             // 👈 RIGHT SIDE
+      width: 32,
+      height: 32,
+      borderRadius: "50%",
+      background: "#ef4444",
+      border: "none",
+      color: "#fff",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 14,
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+    }}
+  >
+    ✕
+  </button>
+</div>
+
+      {/* DETAILS */}
+      <div style={{ padding: "14px 16px" }}>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 6
+        }}>
+          <span style={{ fontWeight: 600 }}>
+            {listing.title}
+          </span>
+
+          <span style={{ color: "#ef4444", fontWeight: 700 }}>
+            ₹{listing.price}/mo
+          </span>
+        </div>
+
+        {/* LOCATION */}
+        <p style={{ fontSize: 12, color: "#9ca3af" }}>
+          📍 {listing.location}
+        </p>
+
+        {/* TAGS */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+          {listing.tags.map(tag => (
+            <span key={tag} style={{
+              fontSize: 10,
+              background: "#e0f2fe",
+              padding: "3px 8px",
+              borderRadius: 12
+            }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* AMENITIES */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {listing.amenities.map(a => (
+            <span key={a} style={{
+              padding: "4px 10px",
+              fontSize: 11,
+              borderRadius: 20,
+              background: "#ede9fe",
+              color: "#4338ca",
+            }}>
+              {a}
+            </span>
+          ))}
+        </div>
+
+        {/* OWNER INFO (BONUS) */}
+        {/* <p style={{ fontSize: 11, marginTop: 10 }}>
+          📞 {listing.owner_phone}
+        </p> */}
+
+      </div>
+    </div>
+  ))}
+</div>
               </div>
 
               {/* RIGHT — Panel */}

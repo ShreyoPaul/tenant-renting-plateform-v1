@@ -75,8 +75,36 @@ export default function Search() {
     setLocations((prev) => ({ ...prev, [loc]: !prev[loc] }));
   };
 
-  const toggleLike = (id) =>
-    setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  // const toggleLike = (id) =>
+  //   setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const toggleLike = async (listingId) => {
+  try {
+    const token = localStorage.getItem("token"); // or wherever you store JWT
+
+    const res = await fetch("http://localhost:5000/api/bookmarks/postdata", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`   // ✅ IMPORTANT
+      },
+      body: JSON.stringify({ listingId })
+    });
+
+    const data = await res.json();
+
+    // update UI after success
+    setLikedCards((prev) => ({
+      ...prev,
+      [listingId]: !prev[listingId]
+    }));
+
+    console.log(data);
+
+  } catch (error) {
+    console.error("Error toggling bookmark:", error);
+  }
+};
 
   const accommodationStyles = [
     "Single room",
@@ -358,6 +386,7 @@ export default function Search() {
                     <div style={{ position: "relative", height: 200, overflow: "hidden" }} className="desktop_card">
                       <img
                         src="https://cdn.pixabay.com/photo/2017/08/27/10/16/interior-2685521_1280.jpg"
+                        //  src={listing.images[0]}
                         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         alt={listing.title}
                       />
@@ -371,7 +400,7 @@ export default function Search() {
                           VERIFIED
                         </div>
                       )}
-                      <button
+                      {/* <button
                         onClick={() => toggleLike(listing._id)}
                         style={{
                           position: "absolute", top: 12, right: 12,
@@ -383,7 +412,29 @@ export default function Search() {
                         }}
                       >
                         {isLiked ? "♥" : "♡"}
-                      </button>
+                      </button> */}
+                      <button
+  onClick={() => toggleLike(listing._id)}
+  style={{
+    position: "absolute",
+    top: 12,
+    right: 12,
+    width: 34,
+    height: 34,
+    borderRadius: "50%",
+    background: "#fff",
+    border: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+    fontSize: 15,
+    color: likedCards[listing._id] ? "#ef4444" : "#d1d5db",
+  }}
+>
+  {likedCards[listing._id] ? "♥" : "♡"}
+</button>
                     </div>
 
                     <div style={{ padding: "16px 18px" }}>

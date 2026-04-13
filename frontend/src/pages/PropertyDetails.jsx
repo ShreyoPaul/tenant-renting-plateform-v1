@@ -54,9 +54,9 @@ export default function PropertyDetails() {
 
   return (
     <>
-    
+   
       <Navbar />
-    <div style={{ backgroundColor: "#f0edf8", minHeight: "100vh", fontFamily: "'Georgia', serif" }}>
+    <div style={{ backgroundColor: "#f0edf8", minHeight: "100vh", fontFamily: "'Georgia', serif" }} >
 
       {/* ── Breadcrumb + Badges ── */}
       <div style={{ padding: "12px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", marginTop:0 }}>
