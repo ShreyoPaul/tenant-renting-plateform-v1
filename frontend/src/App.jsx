@@ -14,6 +14,7 @@ import SignupPage from './pages/SignUpPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
 import CreateListing from './pages/CreateListing'
+import UserData from './pages/UserData'
 
 
 
@@ -60,6 +61,11 @@ function App() {
 <Route path="/newlisting" element={
   <ProtectedRoute>
     <CreateListing />
+  </ProtectedRoute>
+} />
+<Route path="/collectuserdata" element={
+  <ProtectedRoute>
+    <UserData />
   </ProtectedRoute>
 } />
 <Route path="/propertydetails/:id" element={

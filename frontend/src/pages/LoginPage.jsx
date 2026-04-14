@@ -42,7 +42,7 @@ export default function LoginPage() {
       alert("Login successful 🎉");
 
       // redirect to dashboard
-      navigate("/");
+      navigate("/collectuserdata");
 
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

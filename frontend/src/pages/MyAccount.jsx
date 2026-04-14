@@ -1,55 +1,39 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
-
+import { NavLink } from "react-router-dom";
 const sidebarLinks = [
-  { icon: "🏠", label: "Dashboard" },
-  { icon: "🔍", label: "Search" },
-  { icon: "🔖", label: "Saved" },
-  { icon: "📋", label: "Applications" },
-  { icon: "💬", label: "Messages" },
-  { icon: "⚙️", label: "Settings" },
+  { icon: "🏠", label: "Dashboard", route: "/" },
+  { icon: "🔍", label: "Search", route: "/search" },
+  { icon: "🔖", label: "Saved", route: "/save" },
+  { icon: "📋", label: "Applications", route: "/collectuserdata" },
+  // { icon: "💬", label: "Messages" },
+  // { icon: "⚙️", label: "Settings" },
 ];
 
-const tags = ["Economics Major", "Fall 2024", "Budget: ₹12k/mo", "Quiet Environment"];
-
-const savedListings = [
-  {
-    id: 1,
-    name: "Scholar's Retreat",
-    price: "₹9,500",
-    dist: "0.4km from campus",
-    img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80",
-    amenities: ["WiFi", "AC", "Laundry"],
-  },
-  {
-    id: 2,
-    name: "Meridian Studio",
-    price: "₹11,200",
-    dist: "0.8km from campus",
-    img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80",
-    amenities: ["WiFi", "Furnished", "Security"],
-  },
-  {
-    id: 3,
-    name: "Lakeview Den",
-    price: "₹8,800",
-    dist: "1.1km from campus",
-    img: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80",
-    amenities: ["WiFi", "Kitchen", "Parking"],
-  },
-  {
-    id: 4,
-    name: "The Ink House",
-    price: "₹10,400",
-    dist: "0.6km from campus",
-    img: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&q=80",
-    amenities: ["WiFi", "AC", "Library"],
-  },
+const tags = [
+  "Economics Major",
+  "Fall 2024",
+  "Budget: ₹12k/mo",
+  "Quiet Environment",
 ];
 
 const applicationSteps = [
-  { id: 1, label: "Application Submitted", date: "Aug 3, 2024", done: true, active: false, note: null },
-  { id: 2, label: "Document Verification", date: "Aug 5, 2024", done: true, active: false, note: null },
+  {
+    id: 1,
+    label: "Application Submitted",
+    date: "Aug 3, 2024",
+    done: true,
+    active: false,
+    note: null,
+  },
+  {
+    id: 2,
+    label: "Document Verification",
+    date: "Aug 5, 2024",
+    done: true,
+    active: false,
+    note: null,
+  },
   {
     id: 3,
     label: "Landlord Review",
@@ -58,8 +42,22 @@ const applicationSteps = [
     active: true,
     note: "The landlord has viewed your profile. A response is expected within 48 hours.",
   },
-  { id: 4, label: "Agreement Signing", date: "Pending", done: false, active: false, note: null },
-  { id: 5, label: "Move-In Confirmed", date: "Pending", done: false, active: false, note: null },
+  {
+    id: 4,
+    label: "Agreement Signing",
+    date: "Pending",
+    done: false,
+    active: false,
+    note: null,
+  },
+  {
+    id: 5,
+    label: "Move-In Confirmed",
+    date: "Pending",
+    done: false,
+    active: false,
+    note: null,
+  },
 ];
 
 /* ─────────────────────────────────────────── */
@@ -84,12 +82,21 @@ function useBreakpoint() {
   return bp;
 }
 
-
 export default function CuratorDashboard() {
   const [activeNav, setActiveNav] = useState("Saved");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [savedListings, setSavedListings] = useState([]);
-   const [likedCards, setLikedCards] = useState({ 1: true });
+  const [likedCards, setLikedCards] = useState({ 1: true });
+  const [form, setForm] = useState({
+    fullName: "",
+    university: "",
+    passoutYear: "",
+    dob: "",
+    location: "",
+  });
+
+  const [avatar, setAvatar] = useState(null);
+  const [budget, setBudget] = useState(1200);
 
   const bp = useBreakpoint();
 
@@ -97,50 +104,91 @@ export default function CuratorDashboard() {
   const isTablet = bp === "tablet";
   const isDesktop = bp === "desktop";
 
-useEffect(() => {
-  const fetchBookmarks = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5000/api/bookmarks", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+        const res = await fetch("http://localhost:5000/api/bookmarks", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const data = await res.json();
-      setSavedListings(data.bookmarks);
+        const data = await res.json();
+        setSavedListings(data.bookmarks);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-    } catch (err) {
-      console.error(err);
-    }
+    fetchBookmarks();
+  }, []);
+
+  const removeBookmark = async (listingId) => {
+    const token = localStorage.getItem("token");
+
+    await fetch("http://localhost:5000/api/bookmarks/postdata", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ listingId }),
+    });
+
+    // remove from UI
+    setSavedListings((prev) => prev.filter((item) => item._id !== listingId));
   };
-
-  fetchBookmarks();
-}, []);
-
-const removeBookmark = async (listingId) => {
-  const token = localStorage.getItem("token");
-
-  await fetch("http://localhost:5000/api/bookmarks/postdata", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ listingId })
-  });
-
-  // remove from UI
-  setSavedListings(prev =>
-    prev.filter(item => item._id !== listingId)
-  );
-};
   // Close sidebar when switching to desktop
   useEffect(() => {
     if (isDesktop) setSidebarOpen(false);
   }, [isDesktop]);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:5000/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setForm({
+          fullName: data.data.fullName || "",
+          university: data.data.universityName || "",
+          passoutYear: data.data.passoutYear || "",
+          dob: data.data.dob?.split("T")[0] || "",
+          location: data.data.preferredLocation || "",
+        });
+
+        setBudget(data.data.budget || 1200);
+        setAvatar(data.data.profileImg || null);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+  const calculateAge = (dob) => {
+    if (!dob) return "";
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const age = calculateAge(form.dob);
   return (
     <>
       <style>{`
@@ -269,26 +317,22 @@ const removeBookmark = async (listingId) => {
         }
 
         /* ── Main ── */
-     .main {
-          flex: 1;
-          padding: 28px 32px;
-          min-width: 0;
-          max-width: 100%;
-        }
-        @media (max-width: 767px) {
-          .main { padding: 16px 14px; }
-        }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .main { padding: 20px 20px; }
-        }
-        @media (min-width: 1440px) {
-          .main { 
-          padding: 36px 48px; 
-          width:63%;
-          
-          }
-          
-        }
+  .main {
+  flex: 1;
+  padding: 28px 32px;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 767px) {
+  .main { padding: 16px 14px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main { padding: 20px 20px; }
+}
+@media (min-width: 1440px) {
+  .main { padding: 36px 48px; }
+  /* ❌ Remove width: 63% — it was breaking the layout */
+}
 
         /* ── Profile card ── */
         .profile-card {
@@ -323,12 +367,25 @@ const removeBookmark = async (listingId) => {
         .profile-meta { margin: 6px 0 0; font-size: 13px; color: #6b7280; }
         @media (max-width: 639px) { .profile-meta { font-size: 11px; } }
 
-        .profile-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-top: 12px;
-        }
+     .profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.info-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+  color: #4338ca;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(99,102,241,0.15);
+}
         @media (max-width: 639px) {
           .profile-tags { justify-content: center; }
         }
@@ -344,85 +401,109 @@ const removeBookmark = async (listingId) => {
         @media (max-width: 639px) { .tag { font-size: 10px; padding: 4px 10px; } }
 
         /* ── Bottom grid ── */
-        .bottom-grid {
-          display: grid;
-          grid-template-columns: 1fr 300px;
-          gap: 28px;
-          align-items: start;
-        }
-        @media (max-width: 1279px) {
-          .bottom-grid { grid-template-columns: 1fr; }
-        }
+   /* ── Bottom grid: full width, single column on small screens ── */
+/* ── Bottom grid ── */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: start;
+  width: 100%;
+}
 
-        /* ── Listings header ── */
-        .listing-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 6px;
-        }
+/* ── Listings header ── */
+.listing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-        /* ── Listing cards grid ── */
-        .listing-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          margin-top: 16px;
-        }
-        @media (max-width: 639px) {
-          .listing-grid { grid-template-columns: 1fr; gap: 14px; }
-        }
+/* ── Listing cards grid ── */
+.listing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  width: 100%;
+}
 
-        .listing-card {
-          background: #fff;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-          transition: box-shadow 0.2s;
-        }
-        .listing-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+@media (min-width: 480px) {
+  .listing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+}
 
-        .listing-img {
-          width: 100%;
-          height: 180px;
-          object-fit: cover;
-          display: block;
-        }
-        @media (max-width: 639px) { .listing-img { height: 160px; } }
+@media (min-width: 1024px) {
+  .listing-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ── Listing card ── */
+.listing-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s;
+  width: 100%;
+  min-width: 0; /* prevents card from overflowing grid */
+}
+
+.listing-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Listing image ── */
+.listing-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 479px) {
+  .listing-img { height: 160px; }
+}
 
         /* ── Right panel ── */
-        .right-panel {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
+        // .right-panel {
+        //   display: flex;
+        //   flex-direction: column;
+        //   gap: 16px;
+        // }
 
         /* ── Fit score card ── */
-        .fit-score-card {
-          background: linear-gradient(135deg, #4f46e5, #7c3aed);
-          border-radius: 18px;
-          padding: 22px 22px 20px;
-          color: #fff;
-          box-shadow: 0 4px 20px rgba(99,102,241,0.3);
-        }
+        // .fit-score-card {
+        //   background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        //   border-radius: 18px;
+        //   padding: 22px 22px 20px;
+        //   color: #fff;
+        //   box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+        // }
 
         /* ── Application card ── */
-        .app-card {
-          background: #fff;
-          border-radius: 18px;
-          padding: 20px;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-        }
+        // .app-card {
+        //   background: #fff;
+        //   border-radius: 18px;
+        //   padding: 20px;
+        //   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        // }
 
-        /* ── Guarantee card ── */
-        .guarantee-card {
-          background: #99f6e4;
-          border-radius: 16px;
-          padding: 16px 18px;
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-        }
+        // /* ── Guarantee card ── */
+        // .guarantee-card {
+        //   background: #99f6e4;
+        //   border-radius: 16px;
+        //   padding: 16px 18px;
+        //   display: flex;
+        //   align-items: flex-start;
+        //   gap: 12px;
+        // }
 
         /* ── Footer ── */
         .footer {
@@ -458,23 +539,24 @@ const removeBookmark = async (listingId) => {
         }
         
       `}</style>
-      
-      <Navbar/>
-      <div className="curator-root">
 
+      <Navbar />
+      <div className="curator-root">
         {/* ── Top Bar (mobile/tablet) ── */}
         <div className="topbar">
           <div>
             <div className="topbar-logo">The Curator</div>
             <div className="topbar-sub">ACADEMIC HOUSING</div>
           </div>
-          <button className="hamburger" onClick={() => setSidebarOpen(p => !p)}>
+          <button
+            className="hamburger"
+            onClick={() => setSidebarOpen((p) => !p)}
+          >
             {sidebarOpen ? "✖" : "☰"}
           </button>
         </div>
 
         <div className="layout">
-
           {/* Overlay */}
           <div
             className={`overlay ${sidebarOpen ? "active" : ""}`}
@@ -490,9 +572,10 @@ const removeBookmark = async (listingId) => {
               </div>
 
               <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {sidebarLinks.map(link => (
-                  <button
+                {sidebarLinks.map((link) => (
+                  <NavLink
                     key={link.label}
+                    to={link.route}
                     className={`nav-btn ${activeNav === link.label ? "active" : ""}`}
                     onClick={() => {
                       setActiveNav(link.label);
@@ -501,7 +584,7 @@ const removeBookmark = async (listingId) => {
                   >
                     <span style={{ fontSize: 15 }}>{link.icon}</span>
                     {link.label}
-                  </button>
+                  </NavLink>
                 ))}
               </nav>
             </div>
@@ -511,12 +594,13 @@ const removeBookmark = async (listingId) => {
 
           {/* ── Main ── */}
           <main className="main">
-
             {/* Profile Card */}
             <div className="profile-card">
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <img
-                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                  src={
+                    avatar || "https://randomuser.me/api/portraits/men/32.jpg"
+                  }
                   style={{
                     width: isMobile ? 70 : 90,
                     height: isMobile ? 70 : 90,
@@ -526,178 +610,255 @@ const removeBookmark = async (listingId) => {
                   }}
                   alt="Rahul Modak"
                 />
-                <div style={{
-                  position: "absolute", bottom: -8, left: "50%",
-                  transform: "translateX(-50%)",
-                  background: "#10b981", color: "#fff",
-                  fontSize: 10, fontWeight: 700,
-                  padding: "3px 8px", borderRadius: 20,
-                  whiteSpace: "nowrap",
-                }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: -8,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "#10b981",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "3px 8px",
+                    borderRadius: 20,
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   ✓ VERIFIED
                 </div>
               </div>
 
               <div>
-                <h1 className="profile-name">Rahul Modak</h1>
-                <p className="profile-meta">🎓 University of Calcutta &nbsp;•&nbsp; 📍 Kolkata, WB</p>
+                <h1 className="profile-name">{form.fullName || "Your Name"}</h1>
+                <p className="profile-meta">
+                  🎓 {form.university || "University"}
+                  &nbsp;•&nbsp; 🎓 Passout Year: {form.passoutYear || "--"}
+                  &nbsp;•&nbsp; 📍 {form.location || "Location"}
+                </p>
                 <div className="profile-tags">
-                  {tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
+                  <div className="info-pill">Age: 🎂 {age || "--"} yrs</div>
+
+                  <div className="info-pill">
+                    Budget: 💰₹{budget?.toLocaleString() || "--"} / mo
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Bottom Grid */}
             <div className="bottom-grid">
-
               {/* LEFT — Saved Listings */}
               <div>
                 <div className="listing-header">
                   <div>
-                    <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1f2937" }}>
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: 18,
+                        fontWeight: 700,
+                        color: "#1f2937",
+                      }}
+                    >
                       Saved Listings
                     </h2>
-                    <p style={{ margin: "4px 0 0", fontSize: 13, color: "#9ca3af" }}>
+                    <p
+                      style={{
+                        margin: "4px 0 0",
+                        fontSize: 13,
+                        color: "#9ca3af",
+                      }}
+                    >
                       Properties you are tracking for the Fall semester.
                     </p>
                   </div>
-                  <button style={{
-                    background: "none", border: "none",
-                    color: "#6366f1", fontSize: 13,
-                    cursor: "pointer", fontWeight: 500,
-                    whiteSpace: "nowrap",
-                  }}>
+                  <button
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#6366f1",
+                      fontSize: 13,
+                      cursor: "pointer",
+                      fontWeight: 500,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     View All
                   </button>
                 </div>
 
-            <div className="listing-grid">
-  {savedListings.map((listing) => (
-    <div key={listing._id} className="listing-card">
+                <div className="listing-grid">
+                  {savedListings.map((listing) => (
+                    <div key={listing._id} className="listing-card">
+                      {/* IMAGE */}
+                      <div style={{ position: "relative" }}>
+                        <img
+                          src={listing.images[0]}
+                          className="listing-img"
+                          alt={listing.title}
+                        />
 
-      {/* IMAGE */}
-   <div style={{ position: "relative" }}>
-  <img
-    src={listing.images[0]}
-    className="listing-img"
-    alt={listing.title}
-  />
+                        {/* ❤️ HEART (LEFT) */}
+                        <button
+                          style={{
+                            position: "absolute",
+                            top: 10,
+                            left: 10, // 👈 LEFT SIDE
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            background: "#fff",
+                            border: "none",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 16,
+                            color: likedCards[listing._id]
+                              ? "#ef4444"
+                              : "#9ca3af",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                          }}
+                          onClick={() => toggleLike(listing._id)}
+                        >
+                          ❤️
+                        </button>
 
-  {/* ❤️ HEART (LEFT) */}
-  <button
-    style={{
-      position: "absolute",
-      top: 10,
-      left: 10,              // 👈 LEFT SIDE
-      width: 32,
-      height: 32,
-      borderRadius: "50%",
-      background: "#fff",
-      border: "none",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 16,
-      color: likedCards[listing._id] ? "#ef4444" : "#9ca3af",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-    
-    }}
-   onClick={() => toggleLike(listing._id)}
-  >
-    ❤️
-  </button>
+                        {/* ❌ REMOVE (RIGHT) */}
+                        <button
+                          onClick={() => removeBookmark(listing._id)}
+                          style={{
+                            position: "absolute",
+                            top: 10,
+                            right: 10, // 👈 RIGHT SIDE
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            background: "#ef4444",
+                            border: "none",
+                            color: "#fff",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 14,
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
 
-  {/* ❌ REMOVE (RIGHT) */}
-  <button
-    onClick={() => removeBookmark(listing._id)}
-    style={{
-      position: "absolute",
-      top: 10,
-      right: 10,             // 👈 RIGHT SIDE
-      width: 32,
-      height: 32,
-      borderRadius: "50%",
-      background: "#ef4444",
-      border: "none",
-      color: "#fff",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 14,
-      boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-    }}
-  >
-    ✕
-  </button>
-</div>
+                      {/* DETAILS */}
+                      <div style={{ padding: "14px 16px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 6,
+                          }}
+                        >
+                          <span style={{ fontWeight: 600 }}>
+                            {listing.title}
+                          </span>
 
-      {/* DETAILS */}
-      <div style={{ padding: "14px 16px" }}>
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 6
-        }}>
-          <span style={{ fontWeight: 600 }}>
-            {listing.title}
-          </span>
+                          <span style={{ color: "#ef4444", fontWeight: 700 }}>
+                            ₹{listing.price}/mo
+                          </span>
+                        </div>
 
-          <span style={{ color: "#ef4444", fontWeight: 700 }}>
-            ₹{listing.price}/mo
-          </span>
-        </div>
+                        {/* LOCATION */}
+                        <p style={{ fontSize: 12, color: "#9ca3af" }}>
+                          📍 {listing.location}
+                        </p>
 
-        {/* LOCATION */}
-        <p style={{ fontSize: 12, color: "#9ca3af" }}>
-          📍 {listing.location}
-        </p>
+                        {/* TAGS */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: 6,
+                            flexWrap: "wrap",
+                            marginBottom: 8,
+                          }}
+                        >
+                          {listing.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              style={{
+                                fontSize: 10,
+                                background: "#e0f2fe",
+                                padding: "3px 8px",
+                                borderRadius: 12,
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
 
-        {/* TAGS */}
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
-          {listing.tags.map(tag => (
-            <span key={tag} style={{
-              fontSize: 10,
-              background: "#e0f2fe",
-              padding: "3px 8px",
-              borderRadius: 12
-            }}>
-              {tag}
-            </span>
-          ))}
-        </div>
+                        {/* AMENITIES */}
+                        <div
+                          style={{ display: "flex", flexWrap: "wrap", gap: 6 }}
+                        >
+                          {listing.amenities.map((a) => (
+                            <span
+                              key={a}
+                              style={{
+                                padding: "4px 10px",
+                                fontSize: 11,
+                                borderRadius: 20,
+                                background: "#ede9fe",
+                                color: "#4338ca",
+                              }}
+                            >
+                              {a}
+                            </span>
+                          ))}
+                        </div>
 
-        {/* AMENITIES */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-          {listing.amenities.map(a => (
-            <span key={a} style={{
-              padding: "4px 10px",
-              fontSize: 11,
-              borderRadius: 20,
-              background: "#ede9fe",
-              color: "#4338ca",
-            }}>
-              {a}
-            </span>
-          ))}
-        </div>
-
-        {/* OWNER INFO (BONUS) */}
-        {/* <p style={{ fontSize: 11, marginTop: 10 }}>
-          📞 {listing.owner_phone}
-        </p> */}
-
-      </div>
-    </div>
-  ))}
-</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+            </div>
 
-              {/* RIGHT — Panel */}
-              <div className="right-panel">
+          </main>
+        </div>
 
-                {/* Academic Fit Score */}
+        {/* Footer */}
+        <footer className="footer">
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14, color: "#4338ca" }}>
+              The Academic Curator
+            </div>
+            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
+              © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
+            </div>
+          </div>
+          <div className="footer-links">
+            {[
+              "PRIVACY POLICY",
+              "TERMS OF SERVICE",
+              "UNIVERSITY PARTNERSHIPS",
+              "CONTACT SUPPORT",
+            ].map((link) => (
+              <span key={link} style={{ cursor: "pointer" }}>
+                {link}
+              </span>
+            ))}
+          </div>
+        </footer>
+      </div>
+    </>
+  );
+}
+
+//{/* RIGHT — Panel */}
+{
+  /* <div className="right-panel">
+
+             
                 <div className="fit-score-card">
                   <div style={{ fontSize: 18, marginBottom: 8 }}>✦</div>
                   <div style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.3, marginBottom: 8 }}>
@@ -711,7 +872,7 @@ const removeBookmark = async (listingId) => {
                   </a>
                 </div>
 
-                {/* Current Application */}
+             
                 <div className="app-card">
                   <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: "#1f2937" }}>
                     Current Application
@@ -784,7 +945,7 @@ const removeBookmark = async (listingId) => {
                   </button>
                 </div>
 
-                {/* Student Guarantee */}
+                
                 <div className="guarantee-card">
                   <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>🛡</span>
                   <div>
@@ -797,28 +958,5 @@ const removeBookmark = async (listingId) => {
                   </div>
                 </div>
 
-              </div>
-            </div>
-
-          </main>
-        </div>
-
-        {/* Footer */}
-        <footer className="footer">
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: "#4338ca" }}>The Academic Curator</div>
-            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
-              © 2024 THE ACADEMIC CURATOR. CURATING INTELLECTUAL GROWTH.
-            </div>
-          </div>
-          <div className="footer-links">
-            {["PRIVACY POLICY", "TERMS OF SERVICE", "UNIVERSITY PARTNERSHIPS", "CONTACT SUPPORT"].map(link => (
-              <span key={link} style={{ cursor: "pointer" }}>{link}</span>
-            ))}
-          </div>
-        </footer>
-
-      </div>
-    </>
-  );
+              </div> */
 }

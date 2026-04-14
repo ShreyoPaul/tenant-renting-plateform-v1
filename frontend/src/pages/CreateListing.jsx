@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const STEPS = [
   { num: 1, label: "Details" },
   { num: 2, label: "Photos" },
@@ -158,7 +158,7 @@ export default function CreateListing() {
       console.error(error);
     }
   };
-
+const navigate=useNavigate();
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -166,6 +166,12 @@ export default function CreateListing() {
     setSelectedAmenities((prev) =>
       prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a],
     );
+    const handleCancel = () => {
+  const confirmLeave = window.confirm("Discard all changes?");
+  if (confirmLeave) {
+    navigate("/");
+  }
+};
 
   // const handleDrop = (e) => {
   //   e.preventDefault();
@@ -1083,24 +1089,24 @@ export default function CreateListing() {
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}
             >
-              Save as Draft
+              {/* Save as Draft */}
             </button>
             <div style={{ display: "flex", gap: 12 }}>
-              <button
-                style={{
-                  padding: "12px 28px",
-                  borderRadius: 12,
-                  border: "none",
-                  backgroundColor: "#7c6ef8",
-                  color: "#fff",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                }}
-              >
-                Cancel
-              </button>
+           <button
+  onClick={handleCancel}
+  style={{
+    padding: "12px 28px",
+    borderRadius: 12,
+    border: "none",
+    backgroundColor: "#7c6ef8",
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+  }}
+>
+  Cancel
+</button>
               <button
                 style={{
                   padding: "12px 28px",
@@ -1116,7 +1122,7 @@ export default function CreateListing() {
                 }}
                 onClick={handleSubmit}
               >
-                Continue to Photos
+                Submit
               </button>
             </div>
           </div>

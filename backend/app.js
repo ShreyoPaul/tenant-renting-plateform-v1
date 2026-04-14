@@ -4,6 +4,7 @@ import cors from "cors";
 import listingRoutes from "./routes/listingRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import bookmarkRoutes from "./routes/bookmarkRoutes.js";
+import userdataRoutes from "./routes/userdataRoutes.js"
 const app = express();
 
 // Middleware
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/api/listings", listingRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
+app.use("/api/user", userdataRoutes);
 
 // Health check
 app.get("/", (req, res) => {
