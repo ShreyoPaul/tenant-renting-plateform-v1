@@ -33,6 +33,7 @@ export default function Search() {
   const [likedCards, setLikedCards] = useState({ 1: true });
   const [listings, setListings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userBookmarks, setUserBookmarks] = useState([]);
 
 
   const applyFilters = () => {
@@ -71,7 +72,24 @@ export default function Search() {
       }
     };
     fetchData();
-  }, []);
+
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("token"); // or wherever you store JWT
+        const bookmarkRes = await axios.get("http://localhost:5000/api/bookmarks", {
+          headers: {
+            "Authorization": `Bearer ${token}`   // ✅ IMPORTANT
+          }
+        });
+        setUserBookmarks(bookmarkRes.data.bookmarks.map(b => b._id));
+      } catch (err) {
+        console.error(err);
+      }
+      
+    };
+    fetchBookmarks();
+
+  }, [likedCards]);
 
   const toggleLocation = (loc) => {
     setLocations((prev) => ({ ...prev, [loc]: !prev[loc] }));
@@ -84,7 +102,7 @@ export default function Search() {
   try {
     const token = localStorage.getItem("token"); // or wherever you store JWT
 
-    const res = await fetch("http://localhost:5000/api/bookmarks/postdata", {
+    const res = await fetch("http://localhost:5000/api/bookmarks/toggle", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +119,7 @@ export default function Search() {
       [listingId]: !prev[listingId]
     }));
 
-    console.log(data);
+    console.log(data)
 
   } catch (error) {
     console.error("Error toggling bookmark:", error);
@@ -136,6 +154,9 @@ export default function Search() {
   //   { value: "2-sharing room", label: "Twin Sharing" },
   //   { value: "3-sharing room", label: "Premium Dormitory" },
   // ];
+
+  console.log(likedCards);
+  console.log("User bookmarks:", userBookmarks);
 
   return (
     <>
@@ -379,7 +400,11 @@ export default function Search() {
             <div className="cards-grid">
               {listings.map((listing, index) => {
                 const price = listing.price || prices[index % prices.length];
-                const isLiked = likedCards[listing._id];
+                const isBookmarked = userBookmarks.includes(listing._id);
+
+                if(userBookmarks.includes(listing._id)) {
+                  console.log(listing.title, "is bookmarked");
+                }
 
                 return (
                   <div
@@ -423,27 +448,27 @@ export default function Search() {
                         {isLiked ? "♥" : "♡"}
                       </button> */}
                       <button
-  onClick={() => toggleLike(listing._id)}
-  style={{
-    position: "absolute",
-    top: 12,
-    right: 12,
-    width: 34,
-    height: 34,
-    borderRadius: "50%",
-    background: "#fff",
-    border: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-    fontSize: 15,
-    color: likedCards[listing._id] ? "#ef4444" : "#d1d5db",
-  }}
->
-  {likedCards[listing._id] ? "♥" : "♡"}
-</button>
+                        onClick={() => toggleLike(listing._id)}
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          width: 34,
+                          height: 34,
+                          borderRadius: "50%",
+                          background: "#fff",
+                          border: "none",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                          fontSize: 15,
+                          color: isBookmarked ? "#ef4444" : "#d1d5db",
+                        }}
+                      >
+                        {isBookmarked  ? "♥" : "♡"}
+                      </button>
                     </div>
 
                     <div style={{ padding: "16px 18px" }}>
