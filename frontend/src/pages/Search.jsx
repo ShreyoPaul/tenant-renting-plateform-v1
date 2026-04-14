@@ -29,6 +29,7 @@ export default function Search() {
     "Jadavpur": false,
   });
   const [accommodationStyle, setAccommodationStyle] = useState("");
+  const [roomStyle, setRoomStyle] = useState("");
   const [likedCards, setLikedCards] = useState({ 1: true });
   const [listings, setListings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -41,6 +42,7 @@ export default function Search() {
     if (selectedLocations.length > 0) filters.location = selectedLocations.join("|");
     if (sliderValue > 0) filters.maxPrice = sliderValue;
     if (accommodationStyle) filters.style = accommodationStyle;
+    if (roomStyle) filters.roomStyle = roomStyle;
     console.log("Filters sent:", filters);
     fetchListings(filters);
   };
@@ -79,13 +81,14 @@ export default function Search() {
     setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const accommodationStyles = [
-    "Single room",
-    "Single AC room",
-    "2-sharing room",
-    "3-sharing room",
-    "4-sharing room",
+    "Single",
+    "2-sharing",
+    "3-sharing",
+    "4-sharing",
     "Only for girls",
   ];
+
+  const roomStyles = ["Premium", "Regular"]
 
   /* ── display labels matching the screenshot ── */
   const locationLabels = {
@@ -287,6 +290,9 @@ export default function Search() {
             accommodationStyle={accommodationStyle}
             setAccommodationStyle={setAccommodationStyle}
             accommodationStyles={accommodationStyles}
+            roomStyle={roomStyle}
+            setRoomStyle={setRoomStyle}
+            roomStyles={roomStyles}
             locationLabels={locationLabels}
             applyFilters={applyFilters}
           />
@@ -306,6 +312,9 @@ export default function Search() {
                 accommodationStyle={accommodationStyle}
                 setAccommodationStyle={setAccommodationStyle}
                 accommodationStyles={accommodationStyles}
+                roomStyle={roomStyle}
+                setRoomStyle={setRoomStyle}
+                roomStyles={roomStyles}
                 locationLabels={locationLabels}
                 applyFilters={applyFilters}
               />
@@ -486,7 +495,7 @@ function SidebarContent({
   sliderValue, setSliderValue,
   locations, toggleLocation,
   accommodationStyle, setAccommodationStyle,
-  accommodationStyles, locationLabels,
+  accommodationStyles, roomStyle, roomStyles, setRoomStyle, locationLabels,
   applyFilters,
 }) {
   return (
@@ -557,6 +566,32 @@ function SidebarContent({
           ))}
         </div>
       </div>
+
+      {/* Room Style */}
+      <div style={{ marginBottom: 24 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>
+          Room Style
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {roomStyles.map((style) => (
+            <button 
+              key={style}
+              onClick={() => setRoomStyle(style)}
+              style={{
+                textAlign: "left", padding: "9px 14px", borderRadius: 12,
+                border: roomStyle === style ? "1.5px solid #c7c3f8" : "1px solid transparent",
+                background: roomStyle === style ? "#ede9fe" : "transparent",
+                color: roomStyle === style ? "#4f46e5" : "#6b7280",
+                fontSize: 13, fontWeight: roomStyle === style ? 600 : 400,
+                cursor: "pointer",
+              }}
+            >
+              {style}
+            </button>
+          ))}
+        </div>
+      </div>
+
 
       {/* College Proximity */}
       <div style={{ marginBottom: 24 }}>
