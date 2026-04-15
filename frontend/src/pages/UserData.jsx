@@ -483,7 +483,7 @@ export default function UserData() {
     location: "",
   });
   const [errors, setErrors] = useState({});
-
+const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(false);
   const fileRef = useRef();
 
@@ -644,7 +644,6 @@ const navigate=useNavigate();
 
 const saveProfile = async () => {
   if (!validateForm()) return;
-  const token = localStorage.getItem("token");
 
   setLoading(true);
 
