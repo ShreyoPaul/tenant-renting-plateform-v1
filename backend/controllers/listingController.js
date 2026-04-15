@@ -47,7 +47,7 @@ export const createListing = async (req, res) => {
 
     price = parseInt(price);
 
-    if(isNaN(price) || price <= 0) {
+    if (isNaN(price) || price <= 0) {
       return res.status(400).json({ error: "Price must be a positive number" });
     }
 
@@ -166,7 +166,7 @@ export const createListing = async (req, res) => {
 
 export const getListings = async (req, res) => {
   try {
-    const { location, maxPrice, verified, style } = req.query;
+    const { location, maxPrice, verified, style, roomStyle } = req.query;
 
     let conditions = [];
 
@@ -195,18 +195,25 @@ export const getListings = async (req, res) => {
       });
     }
 
-    // ✅ Style (description)
-    if (style) {
+    // ✅ Style & Room Style (description)
+    if (style && roomStyle) {
       const normalizedStyle = style
         .toLowerCase()
         .replace(/-/g, " ") // eg: "2-sharing" -> "2 sharing"
         .trim();
 
+      const normalizedRoomStyle = roomStyle
+        .toLowerCase()
+        .replace(/-/g, " ")
+        .trim();
+
       conditions.push({
-        description: {
-          $regex: normalizedStyle,
-          $options: "i"
-        } // eg: "2 sharing" matches "2-sharing, WiFi, water & electricity included"
+        tags: {
+          $all: [
+            normalizedStyle,
+            normalizedRoomStyle
+          ]
+        }
       });
     }
 

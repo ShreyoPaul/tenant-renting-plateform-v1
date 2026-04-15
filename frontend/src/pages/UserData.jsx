@@ -485,7 +485,7 @@ const [loading, setLoading] = useState(false);
   const fileRef = useRef();
 
   const min = 200,
-    max = 5000;
+    max = 50000;
   const pct = ((budget - min) / (max - min)) * 100;
   const sliderBg = `linear-gradient(90deg, #4b3fce ${pct}%, #d9d5ef ${pct}%)`;
   
@@ -780,7 +780,7 @@ const handleAvatar = (e) => {
                   Monthly Budget
                 </label>
                 <span className="budget-value">
-                  ${budget >= 5000 ? "5,000+" : budget.toLocaleString()}
+                  ₹{budget >= 5000 ? "5,000+" : budget.toLocaleString()}
                 </span>
               </div>
               <div className="slider-wrap">

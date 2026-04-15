@@ -16,13 +16,8 @@ const AMENITIES = [
   "24/7 Security",
 ];
 
-const roomTypes = ["Single Room", "2 Sharing", "3 Sharing", "4 Sharing"];
+const roomTypes = ["Single", "2 Sharing", "3 Sharing", "4 Sharing"];
 const categories = ["Premium", "Regular"];
-
-const SAMPLE_IMAGES = [
-  "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80",
-  "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80",
-];
 
 export default function CreateListing() {
   const [currentStep] = useState(1);
@@ -32,7 +27,6 @@ export default function CreateListing() {
     propertyName: "",
     owner_name: "",
     phone: "",
-
     location: "",
     description: "",
     price: "",

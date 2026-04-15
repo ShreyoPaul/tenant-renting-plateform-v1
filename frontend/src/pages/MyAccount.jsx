@@ -128,7 +128,7 @@ export default function CuratorDashboard() {
   const removeBookmark = async (listingId) => {
     const token = localStorage.getItem("token");
 
-    await fetch("http://localhost:5000/api/bookmarks/postdata", {
+    await fetch("http://localhost:5000/api/bookmarks/toggle", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -698,7 +698,7 @@ export default function CuratorDashboard() {
                           alt={listing.title}
                         />
 
-                        {/* ❤️ HEART (LEFT) */}
+                        {/* ❤️ HEART (LEFT)
                         <button
                           style={{
                             position: "absolute",
@@ -722,7 +722,7 @@ export default function CuratorDashboard() {
                           onClick={() => toggleLike(listing._id)}
                         >
                           ❤️
-                        </button>
+                        </button> */}
 
                         {/* ❌ REMOVE (RIGHT) */}
                         <button

@@ -29,9 +29,11 @@ export default function Search() {
     "Jadavpur": false,
   });
   const [accommodationStyle, setAccommodationStyle] = useState("");
+  const [roomStyle, setRoomStyle] = useState("");
   const [likedCards, setLikedCards] = useState({ 1: true });
   const [listings, setListings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userBookmarks, setUserBookmarks] = useState([]);
 
 
   const applyFilters = () => {
@@ -41,6 +43,7 @@ export default function Search() {
     if (selectedLocations.length > 0) filters.location = selectedLocations.join("|");
     if (sliderValue > 0) filters.maxPrice = sliderValue;
     if (accommodationStyle) filters.style = accommodationStyle;
+    if (roomStyle) filters.roomStyle = roomStyle;
     console.log("Filters sent:", filters);
     fetchListings(filters);
   };
@@ -69,7 +72,24 @@ export default function Search() {
       }
     };
     fetchData();
-  }, []);
+
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("token"); // or wherever you store JWT
+        const bookmarkRes = await axios.get("http://localhost:5000/api/bookmarks", {
+          headers: {
+            "Authorization": `Bearer ${token}`   // ✅ IMPORTANT
+          }
+        });
+        setUserBookmarks(bookmarkRes.data.bookmarks.map(b => b._id));
+      } catch (err) {
+        console.error(err);
+      }
+      
+    };
+    fetchBookmarks();
+
+  }, [likedCards]);
 
   const toggleLocation = (loc) => {
     setLocations((prev) => ({ ...prev, [loc]: !prev[loc] }));
@@ -82,7 +102,7 @@ export default function Search() {
   try {
     const token = localStorage.getItem("token"); // or wherever you store JWT
 
-    const res = await fetch("http://localhost:5000/api/bookmarks/postdata", {
+    const res = await fetch("http://localhost:5000/api/bookmarks/toggle", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,7 +119,7 @@ export default function Search() {
       [listingId]: !prev[listingId]
     }));
 
-    console.log(data);
+    console.log(data)
 
   } catch (error) {
     console.error("Error toggling bookmark:", error);
@@ -107,13 +127,14 @@ export default function Search() {
 };
 
   const accommodationStyles = [
-    "Single room",
-    "Single AC room",
-    "2-sharing room",
-    "3-sharing room",
-    "4-sharing room",
+    "Single",
+    "2-sharing",
+    "3-sharing",
+    "4-sharing",
     "Only for girls",
   ];
+
+  const roomStyles = ["Premium", "Regular"]
 
   /* ── display labels matching the screenshot ── */
   const locationLabels = {
@@ -133,6 +154,9 @@ export default function Search() {
   //   { value: "2-sharing room", label: "Twin Sharing" },
   //   { value: "3-sharing room", label: "Premium Dormitory" },
   // ];
+
+  console.log(likedCards);
+  console.log("User bookmarks:", userBookmarks);
 
   return (
     <>
@@ -315,6 +339,9 @@ export default function Search() {
             accommodationStyle={accommodationStyle}
             setAccommodationStyle={setAccommodationStyle}
             accommodationStyles={accommodationStyles}
+            roomStyle={roomStyle}
+            setRoomStyle={setRoomStyle}
+            roomStyles={roomStyles}
             locationLabels={locationLabels}
             applyFilters={applyFilters}
           />
@@ -334,6 +361,9 @@ export default function Search() {
                 accommodationStyle={accommodationStyle}
                 setAccommodationStyle={setAccommodationStyle}
                 accommodationStyles={accommodationStyles}
+                roomStyle={roomStyle}
+                setRoomStyle={setRoomStyle}
+                roomStyles={roomStyles}
                 locationLabels={locationLabels}
                 applyFilters={applyFilters}
               />
@@ -370,7 +400,11 @@ export default function Search() {
             <div className="cards-grid">
               {listings.map((listing, index) => {
                 const price = listing.price || prices[index % prices.length];
-                const isLiked = likedCards[listing._id];
+                const isBookmarked = userBookmarks.includes(listing._id);
+
+                if(userBookmarks.includes(listing._id)) {
+                  console.log(listing.title, "is bookmarked");
+                }
 
                 return (
                   <div
@@ -414,27 +448,27 @@ export default function Search() {
                         {isLiked ? "♥" : "♡"}
                       </button> */}
                       <button
-  onClick={() => toggleLike(listing._id)}
-  style={{
-    position: "absolute",
-    top: 12,
-    right: 12,
-    width: 34,
-    height: 34,
-    borderRadius: "50%",
-    background: "#fff",
-    border: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-    fontSize: 15,
-    color: likedCards[listing._id] ? "#ef4444" : "#d1d5db",
-  }}
->
-  {likedCards[listing._id] ? "♥" : "♡"}
-</button>
+                        onClick={() => toggleLike(listing._id)}
+                        style={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          width: 34,
+                          height: 34,
+                          borderRadius: "50%",
+                          background: "#fff",
+                          border: "none",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                          fontSize: 15,
+                          color: isBookmarked ? "#ef4444" : "#d1d5db",
+                        }}
+                      >
+                        {isBookmarked  ? "♥" : "♡"}
+                      </button>
                     </div>
 
                     <div style={{ padding: "16px 18px" }}>
@@ -537,7 +571,7 @@ function SidebarContent({
   sliderValue, setSliderValue,
   locations, toggleLocation,
   accommodationStyle, setAccommodationStyle,
-  accommodationStyles, locationLabels,
+  accommodationStyles, roomStyle, roomStyles, setRoomStyle, locationLabels,
   applyFilters,
 }) {
   return (
@@ -608,6 +642,32 @@ function SidebarContent({
           ))}
         </div>
       </div>
+
+      {/* Room Style */}
+      <div style={{ marginBottom: 24 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>
+          Room Style
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {roomStyles.map((style) => (
+            <button 
+              key={style}
+              onClick={() => setRoomStyle(style)}
+              style={{
+                textAlign: "left", padding: "9px 14px", borderRadius: 12,
+                border: roomStyle === style ? "1.5px solid #c7c3f8" : "1px solid transparent",
+                background: roomStyle === style ? "#ede9fe" : "transparent",
+                color: roomStyle === style ? "#4f46e5" : "#6b7280",
+                fontSize: 13, fontWeight: roomStyle === style ? 600 : 400,
+                cursor: "pointer",
+              }}
+            >
+              {style}
+            </button>
+          ))}
+        </div>
+      </div>
+
 
       {/* College Proximity */}
       <div style={{ marginBottom: 24 }}>
