@@ -168,6 +168,7 @@ export const createListing = async (req, res) => {
 export const getListings = async (req, res) => {
   try {
     const { location, maxPrice, verified, style, roomStyle } = req.query;
+    console.log("Received query parameters:", req.query);
 
     let conditions = [];
 
@@ -197,23 +198,31 @@ export const getListings = async (req, res) => {
     }
 
     // ✅ Style & Room Style (description)
-    if (style && roomStyle) {
+    if (style) {
+      console.log("Filtering by style and roomStyle:", { style, roomStyle });
       const normalizedStyle = style
         .toLowerCase()
         .replace(/-/g, " ") // eg: "2-sharing" -> "2 sharing"
         .trim();
 
-      const normalizedRoomStyle = roomStyle
+        console.log("Normalized style:", normalizedStyle);
+
+      const normalizedRoomStyle = roomStyle != undefined ? roomStyle
         .toLowerCase()
         .replace(/-/g, " ")
-        .trim();
+        .trim() : undefined; // if roomStyle is empty, it will be falsy and we won't filter by it. else if roomStyle is provided, we normalize it and include it in the filter. includes premium, regular
+
+        console.log("Normalized roomStyle:", normalizedRoomStyle);
+
+        let descriptionFilter = [roomStyle]
+        if (normalizedStyle) {
+          descriptionFilter.push(normalizedStyle);
+        }
+
 
       conditions.push({
         tags: {
-          $all: [
-            normalizedStyle,
-            normalizedRoomStyle
-          ]
+          $all: descriptionFilter.map((s) => new RegExp(s, "i"))
         }
       });
     }
