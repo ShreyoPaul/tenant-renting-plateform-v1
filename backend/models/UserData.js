@@ -13,9 +13,9 @@ const userDataSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-
+  phoneno:Number,
   universityName: String,
-
+  profession:String,
   passoutYear: Number,
 
   dob: Date,

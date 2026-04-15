@@ -139,7 +139,7 @@ const [showPassword, setShowPassword] = useState(false);
             )}
 
             {/* SSO */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
+            {/* <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
               <button type="button" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 12px", border: "1.5px solid #e5e7eb", borderRadius: 12, background: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", color: "#374151" }}>
                 <span style={{ fontWeight: 900, fontSize: 15, letterSpacing: -0.5 }}>
                   <span style={{ color: "#4285F4" }}>G</span>
@@ -157,12 +157,12 @@ const [showPassword, setShowPassword] = useState(false);
                 </svg>
                 Apple
               </button>
-            </div>
+            </div> */}
 
             {/* Divider */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
               <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
-              <span style={{ fontSize: 11, letterSpacing: "0.1em", color: "#9ca3af", textTransform: "uppercase", whiteSpace: "nowrap" }}>or sign up with email</span>
+              <span style={{ fontSize: 11, letterSpacing: "0.1em", color: "#9ca3af", textTransform: "uppercase", whiteSpace: "nowrap" }}> sign up with email</span>
               <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
             </div>
 

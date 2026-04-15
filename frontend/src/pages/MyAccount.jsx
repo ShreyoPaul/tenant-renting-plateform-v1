@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { NavLink } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 const sidebarLinks = [
   { icon: "🏠", label: "Dashboard", route: "/" },
   { icon: "🔍", label: "Search", route: "/search" },
@@ -90,9 +91,11 @@ export default function CuratorDashboard() {
   const [form, setForm] = useState({
     fullName: "",
     university: "",
+    profession:"",
     passoutYear: "",
     dob: "",
     location: "",
+    phoneno:""
   });
 
   const [avatar, setAvatar] = useState(null);
@@ -104,6 +107,17 @@ export default function CuratorDashboard() {
   const isTablet = bp === "tablet";
   const isDesktop = bp === "desktop";
 
+    const [userRole, setUserRole] = useState(null);
+    
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+    
+      if (token) {
+        const decoded = jwtDecode(token);
+        console.log(decoded);
+        setUserRole(decoded.role);
+      }
+    }, []);
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
@@ -161,9 +175,11 @@ export default function CuratorDashboard() {
         setForm({
           fullName: data.data.fullName || "",
           university: data.data.universityName || "",
+          profession:data.data.profession||"",
           passoutYear: data.data.passoutYear || "",
           dob: data.data.dob?.split("T")[0] || "",
           location: data.data.preferredLocation || "",
+          phoneno:data.data.phoneno||""
         });
 
         setBudget(data.data.budget || 1200);
@@ -595,7 +611,10 @@ export default function CuratorDashboard() {
           {/* ── Main ── */}
           <main className="main">
             {/* Profile Card */}
-            <div className="profile-card">
+            {
+              userRole==="student"?(
+                <>
+                   <div className="profile-card">
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <img
                   src={
@@ -634,6 +653,7 @@ export default function CuratorDashboard() {
                 <p className="profile-meta">
                   🎓 {form.university || "University"}
                   &nbsp;•&nbsp; 🎓 Passout Year: {form.passoutYear || "--"}
+                   &nbsp;•&nbsp; 🧑‍🎓 {form.profession || " "}
                   &nbsp;•&nbsp; 📍 {form.location || "Location"}
                 </p>
                 <div className="profile-tags">
@@ -645,6 +665,64 @@ export default function CuratorDashboard() {
                 </div>
               </div>
             </div>
+                </>
+              ):(
+                <>
+                   <div className="profile-card">
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <img
+                  src={
+                    avatar || "https://randomuser.me/api/portraits/men/32.jpg"
+                  }
+                  style={{
+                    width: isMobile ? 70 : 90,
+                    height: isMobile ? 70 : 90,
+                    borderRadius: 14,
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  alt="Rahul Modak"
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: -8,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "#10b981",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "3px 8px",
+                    borderRadius: 20,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  ✓ VERIFIED
+                </div>
+              </div>
+
+              <div>
+                <h1 className="profile-name">{form.fullName || "Your Name"}</h1>
+                <p className="profile-meta">
+                  🎓 {form.phoneno || "Phone No"}
+                  {/* &nbsp;•&nbsp; 🎓 Passout Year: {form.passoutYear || "--"} */}
+                   &nbsp;•&nbsp; 🧑‍🎓 {form.profession || " "}
+                  &nbsp;•&nbsp; 📍 {form.location || "Location"}
+                </p>
+                <div className="profile-tags">
+                  <div className="info-pill">Age: 🎂 {age || "--"} yrs</div>
+
+                  {/* <div className="info-pill">
+                    Budget: 💰₹{budget?.toLocaleString() || "--"} / mo
+                  </div> */}
+                </div>
+              </div>
+            </div>
+                </>
+              )
+            }
+           
 
             {/* Bottom Grid */}
             <div className="bottom-grid">

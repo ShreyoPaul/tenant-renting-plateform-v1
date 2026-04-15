@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -475,8 +476,10 @@ export default function UserData() {
   const [form, setForm] = useState({
     fullName: "",
     university: "",
+    profession:"",
     passoutYear: "2024",
     dob: "",
+    phoneno:"",
     location: "",
   });
   const [errors, setErrors] = useState({});
@@ -488,16 +491,82 @@ const [loading, setLoading] = useState(false);
     max = 50000;
   const pct = ((budget - min) / (max - min)) * 100;
   const sliderBg = `linear-gradient(90deg, #4b3fce ${pct}%, #d9d5ef ${pct}%)`;
+  const [userRole, setUserRole] = useState(null);
   
-
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    if (token) {
+      const decoded = jwtDecode(token);
+      console.log(decoded);
+      setUserRole(decoded.role);
+    }
+  }, []);
+ const handleCancel = () => {
+    const confirmLeave = window.confirm("Discard all changes?");
+    if (confirmLeave) {
+      navigate("/collectuserdata");
+    }
+  };
 const navigate=useNavigate();
-  const validateForm = () => {
-    const newErrors = {};
+  // const validateForm = () => {
+  //   const newErrors = {};
 
-    if (!form.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+  //   if (!form.fullName.trim()) {
+  //     newErrors.fullName = "Full name is required";
+  //   }
+
+  //   if (!form.university.trim()) {
+  //     newErrors.university = "University name is required";
+  //   }
+  //    if (!form.profession.trim()) {
+  //     newErrors.profession = "Profession name is required";
+  //   }
+
+  //   if (!form.passoutYear) {
+  //     newErrors.passoutYear = "Passout year is required";
+  //   }
+
+  //   if (!form.dob) {
+  //     newErrors.dob = "Date of birth is required";
+  //   }
+
+  //   if (!form.location.trim()) {
+  //     newErrors.location = "Preferred location is required";
+  //   }
+
+  //   if (!budget || budget < 200) {
+  //     newErrors.budget = "Budget must be at least 200";
+  //   }
+
+  //   setErrors(newErrors);
+
+  //   return Object.keys(newErrors).length === 0;
+  // };
+
+  const validateForm = () => {
+  const newErrors = {};
+
+  // ✅ Common fields (both roles)
+  if (!form.fullName.trim()) {
+    newErrors.fullName = "Full name is required";
+  }
+
+  if (!form.dob) {
+    newErrors.dob = "Date of birth is required";
+  }
+    if (!form.location.trim()) {
+      newErrors.location = "Preferred location is required";
+    }
+      if (!form.phoneno.trim()) {
+      newErrors.phoneno = "Phone No is required";
+    }
+     if (!form.profession.trim()) {
+      newErrors.profession = "Profession is required";
     }
 
+  // 👨‍🎓 Student validation
+  if (userRole === "student") {
     if (!form.university.trim()) {
       newErrors.university = "University name is required";
     }
@@ -506,44 +575,104 @@ const navigate=useNavigate();
       newErrors.passoutYear = "Passout year is required";
     }
 
-    if (!form.dob) {
-      newErrors.dob = "Date of birth is required";
-    }
-
-    if (!form.location.trim()) {
-      newErrors.location = "Preferred location is required";
-    }
+  
 
     if (!budget || budget < 200) {
       newErrors.budget = "Budget must be at least 200";
     }
+  }
 
-    setErrors(newErrors);
+  // 🏠 Owner validation
+  // if (userRole === "owner") {
+  //   if (!form.profession.trim()) {
+  //     newErrors.profession = "Profession is required";
+  //   }
+  // }
 
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(newErrors);
 
+  return Object.keys(newErrors).length === 0;
+};
+
+
+// const saveProfile = async () => {
+//   if (!validateForm()) return;
+
+//   setLoading(true); // 🔥 start loading
+
+//   try {
+//     const token = localStorage.getItem("token");
+
+//     const formData = new FormData();
+
+//     formData.append("fullName", form.fullName);
+//     formData.append("universityName", form.university);
+//      formData.append("profession", form.profession);
+//     formData.append("passoutYear", form.passoutYear);
+//     formData.append("dob", form.dob);
+//     formData.append("budget", budget);
+//     formData.append("preferredLocation", form.location);
+
+//     if (avatarFile) {
+//       formData.append("profileImg", avatarFile);
+//     }
+
+//     const res = await fetch("http://localhost:5000/api/user/profile", {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${token}`
+//       },
+//       body: formData
+//     });
+
+//     const data = await res.json();
+
+//     if (res.ok) {
+//       setToast(true);
+
+//       setTimeout(() => {
+//         navigate("/");
+//       }, 1000);
+//     }
+
+//   } catch (err) {
+//     console.error(err);
+//   } finally {
+//     setLoading(false); // 🔥 stop loading
+//   }
+// };
 
 const saveProfile = async () => {
   if (!validateForm()) return;
 
-  setLoading(true); // 🔥 start loading
+  setLoading(true);
 
   try {
     const token = localStorage.getItem("token");
-
     const formData = new FormData();
 
+    // ✅ Common fields
     formData.append("fullName", form.fullName);
-    formData.append("universityName", form.university);
-    formData.append("passoutYear", form.passoutYear);
     formData.append("dob", form.dob);
-    formData.append("budget", budget);
-    formData.append("preferredLocation", form.location);
-
+   formData.append("preferredLocation", form.location);
     if (avatarFile) {
       formData.append("profileImg", avatarFile);
     }
+    formData.append("profession", form.profession);
+    formData.append("phoneno",form.phoneno);
+
+    // 👨‍🎓 Student fields
+    if (userRole === "student") {
+      formData.append("universityName", form.university);
+      formData.append("passoutYear", form.passoutYear);
+      formData.append("budget", budget);
+   
+    }
+
+    // 🏠 Owner fields
+    // if (userRole === "owner") {
+    //   formData.append("profession", form.profession);
+    // }
 
     const res = await fetch("http://localhost:5000/api/user/profile", {
       method: "POST",
@@ -557,16 +686,13 @@ const saveProfile = async () => {
 
     if (res.ok) {
       setToast(true);
-
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      setTimeout(() => navigate("/"), 1000);
     }
 
   } catch (err) {
     console.error(err);
   } finally {
-    setLoading(false); // 🔥 stop loading
+    setLoading(false);
   }
 };
 const handleAvatar = (e) => {
@@ -589,6 +715,295 @@ const handleAvatar = (e) => {
   return (
     <>
       <style>{styles}</style>
+
+     {
+      userRole==="owner"?( <>
+    {/* Avatar */}
+   <div className="app-wrap">
+        {/* NAV */}
+        <nav className="navbar">
+          <span className="navbar-brand">Academic Curator</span>
+          <div className="avatar-icon">
+            <svg
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </div>
+        </nav>
+
+        <div className="main-container">
+          {/* PROGRESS */}
+          <div className="progress-row">
+            <div className="progress-bar-wrap">
+              <div className="progress-bar-fill" />
+            </div>
+            <span className="progress-label">Step 2 of 3</span>
+          </div>
+
+          {/* HEADING */}
+          <h1 className="page-title">Curate Your Experience.</h1>
+          <p className="page-subtitle">
+            Personalize your profile to unlock verified housing listings and
+            academic networking opportunities tailored to your student journey.
+          </p>
+
+          {/* FORM CARD */}
+          <div className="card">
+            {/* AVATAR */}
+            <div className="avatar-upload-row">
+              <div
+                className="avatar-box"
+                onClick={() => fileRef.current.click()}
+              >
+                {avatar ? (
+                  <img src={avatar} alt="avatar" />
+                ) : (
+                  <svg
+                    width="26"
+                    height="26"
+                    fill="none"
+                    stroke="#9390b0"
+                    strokeWidth="1.6"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                  </svg>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileRef}
+                  onChange={handleAvatar}
+                  style={{ display: "none" }}
+                  required
+                />
+              </div>
+              <div className="avatar-info">
+                <h3>Profile Avatar</h3>
+                <p>Help others recognize you</p>
+              </div>
+            </div>
+
+            {/* FULL NAME */}
+            <div className="field-group">
+              <label className="field-label">Full Name</label>
+              <input
+                className="field-input"
+                placeholder="Enter your full name"
+                value={form.fullName}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, fullName: e.target.value }))
+                }
+              />
+
+              {errors.fullName && (
+                <p style={{ color: "red", fontSize: 12 }}>{errors.fullName}</p>
+              )}
+            </div>
+
+               <div className="field-group">
+              <label className="field-label">Profession</label>
+              <input
+                className="field-input"
+                placeholder="Enter your Profession"
+                value={form.profession}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, profession: e.target.value }))
+                }
+              />
+
+              {errors.profession && (
+                <p style={{ color: "red", fontSize: 12 }}>{errors.profession}</p>
+              )}
+            </div>
+                 <div className="field-group">
+              <label className="field-label">Phone Number</label>
+              <input
+                className="field-input"
+                placeholder="Enter your phone number"
+                value={form.phoneno}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, phoneno: e.target.value }))
+                }
+              />
+
+              {errors.phoneno && (
+                <p style={{ color: "red", fontSize: 12 }}>{errors.phoneno}</p>
+              )}
+            </div>
+
+
+         
+
+            {/* PASSOUT YEAR + DOB */}
+            <div className="two-col field-group">
+            
+              <div>
+                <label className="field-label">Date of Birth</label>
+                <div className="date-wrap">
+                  <input
+                    type="date"
+                    value={form.dob}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, dob: e.target.value }))
+                    }
+                  />
+
+                  <span className="cal-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </span>
+                                    {errors.dob && (
+  <p style={{ color: "red", fontSize: 12 }}>{errors.dob}</p>
+)}
+                </div>
+              </div>
+            </div>
+
+            {/* BUDGET SLIDER */}
+        
+
+            {/* LOCATION */}
+            <div className="field-group">
+              <label className="field-label">Preferred Location</label>
+              <div className="input-icon-wrap">
+                <span className="icon">
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </span>
+                <input
+                  className="field-input"
+                  placeholder="e.g. East Village, London"
+                  value={form.location}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, location: e.target.value }))
+                  }
+                />
+                {errors.location && (
+  <p style={{ color: "red", fontSize: 12 }}>{errors.location}</p>
+)}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <button className="btn-primary" onClick={saveProfile}>
+              Save Profile
+            </button>
+            <button className="btn-skip" onClick={handleCancel}>Cancel</button>
+          </div>
+
+          {/* VERIFIED BANNER */}
+          <div className="verified-banner">
+            <div className="verified-left">
+              <div className="verified-shield">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="#0e4d37"
+                  strokeWidth="2.2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path
+                    d="M9 12l2 2 4-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div className="verified-text">
+                <h4>Verified Identity</h4>
+                <p>Secure encryption for all student data.</p>
+              </div>
+            </div>
+            <div className="verified-illus">
+              <svg viewBox="0 0 90 70" xmlns="http://www.w3.org/2000/svg">
+                {/* Two students illustration */}
+                {/* Student 1 */}
+                <circle cx="30" cy="20" r="11" fill="#f4a261" />
+                <rect
+                  x="16"
+                  y="32"
+                  width="28"
+                  height="28"
+                  rx="8"
+                  fill="#e76f51"
+                />
+                <rect
+                  x="20"
+                  y="36"
+                  width="8"
+                  height="14"
+                  rx="3"
+                  fill="#264653"
+                />
+                {/* Hair */}
+                <ellipse cx="30" cy="12" rx="11" ry="6" fill="#264653" />
+                {/* Student 2 */}
+                <circle cx="62" cy="20" r="11" fill="#e9c46a" />
+                <rect
+                  x="48"
+                  y="32"
+                  width="28"
+                  height="28"
+                  rx="8"
+                  fill="#2a9d8f"
+                />
+                <rect
+                  x="64"
+                  y="36"
+                  width="8"
+                  height="14"
+                  rx="3"
+                  fill="#264653"
+                />
+                {/* Hair */}
+                <path d="M51 16 Q62 6 73 16" fill="#6d4c41" stroke="none" />
+                <ellipse cx="62" cy="12" rx="11" ry="5" fill="#6d4c41" />
+                {/* Plant */}
+                <rect
+                  x="38"
+                  y="48"
+                  width="14"
+                  height="16"
+                  rx="3"
+                  fill="#264653"
+                />
+                <ellipse cx="45" cy="44" rx="9" ry="10" fill="#2a9d8f" />
+                <ellipse cx="40" cy="42" rx="6" ry="8" fill="#52b788" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+  </>):(<>
       <div className="app-wrap">
         {/* NAV */}
         <nav className="navbar">
@@ -676,6 +1091,38 @@ const handleAvatar = (e) => {
 
               {errors.fullName && (
                 <p style={{ color: "red", fontSize: 12 }}>{errors.fullName}</p>
+              )}
+            </div>
+
+               <div className="field-group">
+              <label className="field-label">Profession</label>
+              <input
+                className="field-input"
+                placeholder="Enter your Profession"
+                value={form.profession}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, profession: e.target.value }))
+                }
+              />
+
+              {errors.profession && (
+                <p style={{ color: "red", fontSize: 12 }}>{errors.profession}</p>
+              )}
+            </div>
+
+               <div className="field-group">
+              <label className="field-label">Phone Number</label>
+              <input
+                className="field-input"
+                placeholder="Enter your phone number"
+                value={form.phoneno}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, phoneno: e.target.value }))
+                }
+              />
+
+              {errors.phoneno && (
+                <p style={{ color: "red", fontSize: 12 }}>{errors.phoneno}</p>
               )}
             </div>
 
@@ -838,7 +1285,7 @@ const handleAvatar = (e) => {
             <button className="btn-primary" onClick={saveProfile}>
               Save Profile
             </button>
-            {/* <button className="btn-skip">Skip for now</button> */}
+            <button className="btn-skip" onClick={handleCancel}>Cancel</button>
           </div>
 
           {/* VERIFIED BANNER */}
@@ -926,6 +1373,9 @@ const handleAvatar = (e) => {
           </div>
         </div>
       </div>
+      </>)
+     }
+      
 
       {/* TOAST */}
       <div className={`toast ${toast ? "show" : ""}`}>

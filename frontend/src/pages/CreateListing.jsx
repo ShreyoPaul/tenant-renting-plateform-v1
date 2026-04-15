@@ -667,7 +667,7 @@ export default function CreateListing() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "1fr ",
                 gap: 24,
                 marginBottom: 36,
               }}
@@ -717,7 +717,7 @@ export default function CreateListing() {
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label
                   style={{
                     display: "block",
@@ -746,7 +746,7 @@ export default function CreateListing() {
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Divider */}

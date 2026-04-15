@@ -26,6 +26,7 @@ useEffect(() => {
 
   if (token) {
     const decoded = jwtDecode(token);
+    console.log(decoded);
     setUserRole(decoded.role);
   }
 }, []);

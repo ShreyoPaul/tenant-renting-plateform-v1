@@ -23,12 +23,13 @@ export const signup = async (req, res) => {
     });
 
     // generate token
-    const token = jwt.sign(
-      { id: user._id },
-      "SECRET_KEY",
-      { expiresIn: "7d" }
-    );
-    // const token=jwt.sign({ id: user._id, role: user.role }, "SECRET_KEY");
+    // const token = jwt.sign(
+    //   { id: user._id },
+    //   "SECRET_KEY",
+    //   { expiresIn: "7d" }
+    // );
+    const token=jwt.sign({ id: user._id, role: user.role }, "SECRET_KEY");
+    console.log("data is "+token)
 
     res.status(201).json({
       message: "Signup successful",
