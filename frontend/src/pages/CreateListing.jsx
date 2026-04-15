@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import descriptionIcon from "../assets/description-alt.png";
+
 const STEPS = [
   { num: 1, label: "Details" },
   { num: 2, label: "Photos" },
@@ -599,7 +601,7 @@ export default function CreateListing() {
               >
                 {/* <span style={{ fontSize: 16, flexShrink: 0 }}>📍</span> */}
                 <img
-                  src="../assets/description-alt.png"
+                  src={descriptionIcon} // in asserts, we can have a location icon or description icon
                   alt="location"
                   style={{ width: 16, height: 16, flexShrink: 0 }}
                 />
