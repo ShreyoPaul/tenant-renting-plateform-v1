@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import MainFooter from "../components/MainFooter";
 import { useEffect } from "react";
 import axios from "axios";
+import locationDataset from "../data/location-dataset.json";
 
 const tagIcons = {
   "High Speed WiFi": "📶",
@@ -23,11 +24,7 @@ export default function Search() {
   const [priceMin] = useState(8000);
   const [priceMax] = useState(25000);
   const [sliderValue, setSliderValue] = useState(45);
-  const [locations, setLocations] = useState({
-    "Salt Lake": true,
-    "Park Street": false,
-    "Jadavpur": false,
-  });
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [accommodationStyle, setAccommodationStyle] = useState("");
   const [roomStyle, setRoomStyle] = useState("");
   const [likedCards, setLikedCards] = useState({ 1: true });
@@ -37,7 +34,6 @@ export default function Search() {
 
 
   const applyFilters = () => {
-    const selectedLocations = Object.keys(locations).filter((loc) => locations[loc]);
     console.log("Selected locations:", selectedLocations);
     const filters = {};
     if (selectedLocations.length > 0) filters.location = selectedLocations.join("|");
@@ -46,6 +42,11 @@ export default function Search() {
     if (roomStyle) filters.roomStyle = roomStyle;
     console.log("Filters sent:", filters);
     fetchListings(filters);
+  };
+
+  const handleLocationChange = (event) => {
+    const selected = Array.from(event.target.selectedOptions, (option) => option.value);
+    setSelectedLocations(selected);
   };
 
   const fetchListings = async (filters = {}) => {
@@ -91,10 +92,6 @@ export default function Search() {
 
   }, [likedCards]);
 
-  const toggleLocation = (loc) => {
-    setLocations((prev) => ({ ...prev, [loc]: !prev[loc] }));
-  };
-
   // const toggleLike = (id) =>
   //   setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -134,14 +131,7 @@ export default function Search() {
     "Only for girls",
   ];
 
-  const roomStyles = ["Premium", "Regular"]
-
-  /* ── display labels matching the screenshot ── */
-  const locationLabels = {
-    "Salt Lake": "Salt Lake Sector V",
-    "Park Street": "Park Street Area",
-    "Jadavpur": "Jadavpur Precincts",
-  };
+  const roomStyles = ["Premium", "Regular"];
 
   // const styleLabels = {
   //   "Single room": "Private Studio",
@@ -334,15 +324,15 @@ export default function Search() {
           <SidebarContent
             sliderValue={sliderValue}
             setSliderValue={setSliderValue}
-            locations={locations}
-            toggleLocation={toggleLocation}
+            selectedLocations={selectedLocations}
+            setSelectedLocations={setSelectedLocations}
+            locationDataset={locationDataset}
             accommodationStyle={accommodationStyle}
             setAccommodationStyle={setAccommodationStyle}
             accommodationStyles={accommodationStyles}
             roomStyle={roomStyle}
             setRoomStyle={setRoomStyle}
             roomStyles={roomStyles}
-            locationLabels={locationLabels}
             applyFilters={applyFilters}
           />
         </div>
@@ -356,15 +346,15 @@ export default function Search() {
               <SidebarContent
                 sliderValue={sliderValue}
                 setSliderValue={setSliderValue}
-                locations={locations}
-                toggleLocation={toggleLocation}
+                selectedLocations={selectedLocations}
+                setSelectedLocations={setSelectedLocations}
+                locationDataset={locationDataset}
                 accommodationStyle={accommodationStyle}
                 setAccommodationStyle={setAccommodationStyle}
                 accommodationStyles={accommodationStyles}
                 roomStyle={roomStyle}
                 setRoomStyle={setRoomStyle}
                 roomStyles={roomStyles}
-                locationLabels={locationLabels}
                 applyFilters={applyFilters}
               />
             </aside>
@@ -569,9 +559,10 @@ export default function Search() {
 
 function SidebarContent({
   sliderValue, setSliderValue,
-  locations, toggleLocation,
+  selectedLocations, setSelectedLocations,
+  locationDataset,
   accommodationStyle, setAccommodationStyle,
-  accommodationStyles, roomStyle, roomStyles, setRoomStyle, locationLabels,
+  accommodationStyles, roomStyle, roomStyles, setRoomStyle,
   applyFilters,
 }) {
   return (
@@ -587,7 +578,7 @@ function SidebarContent({
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
           <div style={{ flex: 1, background: "#fff", border: "1px solid #e5e3f5", borderRadius: 10, padding: "8px 12px", fontSize: 13, fontWeight: 700, color: "#1f2937", textAlign: "center" }}>
-            ₹8k
+            ₹2k
           </div>
           <span style={{ color: "#9ca3af", fontSize: 13 }}>—</span>
           <div style={{ flex: 1, background: "#fff", border: "1px solid #e5e3f5", borderRadius: 10, padding: "8px 12px", fontSize: 13, fontWeight: 700, color: "#1f2937", textAlign: "center" }}>
@@ -595,7 +586,7 @@ function SidebarContent({
           </div>
         </div>
         <input
-          type="range" min={0} max={25000} value={sliderValue}
+          type="range" min={2000} max={25000} value={sliderValue}
           onChange={(e) => setSliderValue(Number(e.target.value))}
           style={{ width: "100%", accentColor: "#4f46e5", cursor: "pointer" }}
         />
@@ -606,16 +597,37 @@ function SidebarContent({
         <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>
           Strategic Locations
         </p>
-        {Object.entries(locations).map(([loc, checked]) => (
-          <label key={loc} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, marginBottom: 10, cursor: "pointer", color: "#374151" }}>
-            <input
-              type="checkbox" checked={checked}
-              onChange={() => toggleLocation(loc)}
-              style={{ accentColor: "#4f46e5", width: 16, height: 16 }}
-            />
-            {locationLabels[loc] || loc}
-          </label>
-        ))}
+        <select
+          multiple
+          value={selectedLocations}
+          onChange={(e) => setSelectedLocations(Array.from(e.target.selectedOptions, (o) => o.value))}
+          size={8}
+          style={{
+            width: "100%",
+            minHeight: 170,
+            borderRadius: 14,
+            border: "1px solid #e5e3f5",
+            background: "#fff",
+            padding: 12,
+            color: "#1f2937",
+            fontSize: 13,
+            cursor: "pointer",
+          }}
+        >
+          {locationDataset.map((area) => (
+            <optgroup key={area.area_id} label={area.area}>
+              <option value={area.area}>{area.area}</option>
+              {area.sub_areas.map((sub) => (
+                <option key={sub.id} value={sub.name}>
+                  {`${area.area} — ${sub.name}`}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+        <p style={{ margin: "8px 0 0", color: "#6b7280", fontSize: 12 }}>
+          Hold Ctrl/Cmd to select multiple locations.
+        </p>
       </div>
 
       {/* Accommodation Style */}

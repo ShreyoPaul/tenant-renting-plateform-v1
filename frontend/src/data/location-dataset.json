@@ -1,0 +1,126 @@
+[
+  {
+    "area_id": "KOL001",
+    "area": "Salt Lake",
+    "sub_areas": [
+      { "id": "KOL001-1", "name": "Sector I" },
+      { "id": "KOL001-2", "name": "Sector II" },
+      { "id": "KOL001-3", "name": "Sector III" },
+      { "id": "KOL001-4", "name": "Sector V" }
+    ]
+  },
+  {
+    "area_id": "KOL002",
+    "area": "New Town",
+    "sub_areas": [
+      { "id": "KOL002-1", "name": "Action Area I" },
+      { "id": "KOL002-2", "name": "Action Area II" },
+      { "id": "KOL002-3", "name": "Action Area III" }
+    ]
+  },
+  {
+    "area_id": "KOL003",
+    "area": "Rajarhat",
+    "sub_areas": [
+      { "id": "KOL003-1", "name": "Chinar Park" },
+      { "id": "KOL003-2", "name": "Baguiati" },
+      { "id": "KOL003-3", "name": "Teghoria" }
+    ]
+  },
+  {
+    "area_id": "KOL004",
+    "area": "Park Street",
+    "sub_areas": [
+      { "id": "KOL004-1", "name": "Camac Street" },
+      { "id": "KOL004-2", "name": "Shakespeare Sarani" }
+    ]
+  },
+  {
+    "area_id": "KOL005",
+    "area": "Ballygunge",
+    "sub_areas": [
+      { "id": "KOL005-1", "name": "Gariahat" },
+      { "id": "KOL005-2", "name": "Kasba" }
+    ]
+  },
+  {
+    "area_id": "KOL006",
+    "area": "Tollygunge",
+    "sub_areas": [
+      { "id": "KOL006-1", "name": "Golf Green" },
+      { "id": "KOL006-2", "name": "Regent Park" }
+    ]
+  },
+  {
+    "area_id": "KOL007",
+    "area": "Behala",
+    "sub_areas": [
+      { "id": "KOL007-1", "name": "Sakherbazar" },
+      { "id": "KOL007-2", "name": "Thakurpukur" }
+    ]
+  },
+  {
+    "area_id": "KOL008",
+    "area": "Dum Dum",
+    "sub_areas": [
+      { "id": "KOL008-1", "name": "Nagerbazar" },
+      { "id": "KOL008-2", "name": "Motijheel" }
+    ]
+  },
+  {
+    "area_id": "KOL009",
+    "area": "Howrah",
+    "sub_areas": [
+      { "id": "KOL009-1", "name": "Shibpur" },
+      { "id": "KOL009-2", "name": "Santragachi" }
+    ]
+  },
+  {
+    "area_id": "KOL010",
+    "area": "Garia",
+    "sub_areas": [
+      { "id": "KOL010-1", "name": "Narendrapur" },
+      { "id": "KOL010-2", "name": "Kamalgazi" }
+    ]
+  },
+  {
+    "area_id": "KOL011",
+    "area": "Jadavpur",
+    "sub_areas": [
+      { "id": "KOL011-1", "name": "Santoshpur" },
+      { "id": "KOL011-2", "name": "Garfa" }
+    ]
+  },
+  {
+    "area_id": "KOL012",
+    "area": "Sealdah",
+    "sub_areas": [
+      { "id": "KOL012-1", "name": "Entally" },
+      { "id": "KOL012-2", "name": "Phoolbagan" }
+    ]
+  },
+  {
+    "area_id": "KOL013",
+    "area": "Esplanade",
+    "sub_areas": [
+      { "id": "KOL013-1", "name": "Dharmatala" },
+      { "id": "KOL013-2", "name": "Chandni Chowk" }
+    ]
+  },
+  {
+    "area_id": "KOL014",
+    "area": "Barasat",
+    "sub_areas": [
+      { "id": "KOL014-1", "name": "Madhyamgram" },
+      { "id": "KOL014-2", "name": "Hridaypur" }
+    ]
+  },
+  {
+    "area_id": "KOL015",
+    "area": "Barrackpore",
+    "sub_areas": [
+      { "id": "KOL015-1", "name": "Titagarh" },
+      { "id": "KOL015-2", "name": "Khardaha" }
+    ]
+  }
+]
