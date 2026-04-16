@@ -17,38 +17,120 @@ const uploadToCloudinary = (fileBuffer) => {
   });
 };
 
+////IT IS WORKING
+
 // CREATE a new listing
+// export const createListing = async (req, res) => {
+//   try {
+//     // try {
+//     //   const test = await cloudinary.uploader.upload(
+//     //     "https://picsum.photos/200/300"
+//     //   );
+//     //   console.log(test);
+//     // } catch (err) {
+//     //   console.error("Cloudinary direct upload error:", err);
+//     // }
+
+//     let { title, price,description, location, owner_name, owner_phone, amenities, tags } = req.body;
+
+//     // Image file validation (must have one image)
+//     if (!req.files || req.files.length === 0) {
+//       return res.status(400).json({
+//         error: "At least one image is required"
+//       });
+//     }
+
+//     // Validation
+//     if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags ||!description) {
+//       return res.status(400).json({
+//         error: "Missing required fields or invalid data"
+//       });
+//     }
+
+//     price = parseInt(price);
+
+//     if (isNaN(price) || price <= 0) {
+//       return res.status(400).json({ error: "Price must be a positive number" });
+//     }
+
+//     const parsedTags = typeof tags === "string"
+//       ? tags.split(",").map(t => t.trim())
+//       : tags;
+
+//     const parsedAmenities = typeof amenities === "string"
+//       ? amenities.split(",").map(a => a.trim())
+//       : amenities;
+
+//     if (!parsedTags || parsedTags.length === 0)
+//       return res.status(400).json({ error: "At least one tag is required" });
+
+//     if (!parsedAmenities || parsedAmenities.length === 0)
+//       return res.status(400).json({ error: "At least one amenity is required" });
+
+
+//     // 🔥 Upload images
+//     let imageUrls = [];
+
+//     if (req.files && req.files.length > 0) {
+//       const uploads = req.files.map(file =>
+//         uploadToCloudinary(file.buffer)
+//       );
+
+//       const results = await Promise.all(uploads);
+
+//       console.log("Cloudinary upload results:", results);
+
+//       imageUrls = results.map(r => r.secure_url);
+
+//       // imageUrls = results.map(r => ({
+//       //   url: r.secure_url,
+//       //   public_id: r.public_id
+//       // }));
+//     }
+
+//     // ✅ Create listing with images
+//     const listing = new Listing({
+//       title,
+//       price,
+//       location,
+//       description,
+//       owner_name,
+//       owner_phone,
+//       amenities: parsedAmenities,
+//       tags: parsedTags,
+//       images: imageUrls
+//     });
+
+
+//     await listing.save();
+//     res.status(201).json({
+//       message: "✅ Listing created successfully",
+//       listing
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+
+
 export const createListing = async (req, res) => {
   try {
-    // try {
-    //   const test = await cloudinary.uploader.upload(
-    //     "https://picsum.photos/200/300"
-    //   );
-    //   console.log(test);
-    // } catch (err) {
-    //   console.error("Cloudinary direct upload error:", err);
-    // }
+    const userId = req.user.id;
 
     let { title, price,description, location, owner_name, owner_phone, amenities, tags } = req.body;
 
-    // Image file validation (must have one image)
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({
-        error: "At least one image is required"
-      });
+      return res.status(400).json({ error: "At least one image is required" });
     }
 
-    // Validation
     if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags ||!description) {
-      return res.status(400).json({
-        error: "Missing required fields or invalid data"
-      });
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     price = parseInt(price);
-
     if (isNaN(price) || price <= 0) {
-      return res.status(400).json({ error: "Price must be a positive number" });
+      return res.status(400).json({ error: "Invalid price" });
     }
 
     const parsedTags = typeof tags === "string"
@@ -59,34 +141,12 @@ export const createListing = async (req, res) => {
       ? amenities.split(",").map(a => a.trim())
       : amenities;
 
-    if (!parsedTags || parsedTags.length === 0)
-      return res.status(400).json({ error: "At least one tag is required" });
-
-    if (!parsedAmenities || parsedAmenities.length === 0)
-      return res.status(400).json({ error: "At least one amenity is required" });
-
-
-    // 🔥 Upload images
     let imageUrls = [];
 
-    if (req.files && req.files.length > 0) {
-      const uploads = req.files.map(file =>
-        uploadToCloudinary(file.buffer)
-      );
+    const uploads = req.files.map(file => uploadToCloudinary(file.buffer));
+    const results = await Promise.all(uploads);
+    imageUrls = results.map(r => r.secure_url);
 
-      const results = await Promise.all(uploads);
-
-      console.log("Cloudinary upload results:", results);
-
-      imageUrls = results.map(r => r.secure_url);
-
-      // imageUrls = results.map(r => ({
-      //   url: r.secure_url,
-      //   public_id: r.public_id
-      // }));
-    }
-
-    // ✅ Create listing with images
     const listing = new Listing({
       title,
       price,
@@ -96,17 +156,41 @@ export const createListing = async (req, res) => {
       owner_phone,
       amenities: parsedAmenities,
       tags: parsedTags,
-      images: imageUrls
+      images: imageUrls,
+      owner: userId // ✅ KEY CHANGE
     });
-
 
     await listing.save();
+
     res.status(201).json({
-      message: "✅ Listing created successfully",
+      message: "Listing created successfully",
       listing
     });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+
+// GET OWNER LISTING
+export const getOwnerListings = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(userId);
+
+    const listings = await Listing.find({ owner: userId });
+
+    res.status(200).json({
+      message: "Listings fetched",
+      data: listings
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching listings",
+      error: error.message
+    });
   }
 };
 // Sample listing:
@@ -310,5 +394,40 @@ export const deleteListing = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+
+export const deleteOwnerListing = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const listing = await Listing.findById(id);
+
+    if (!listing) {
+      return res.status(404).json({
+        message: "Listing not found"
+      });
+    }
+
+    // 🔒 Only owner can delete
+    if (listing.owner.toString() !== userId) {
+      return res.status(403).json({
+        message: "Unauthorized"
+      });
+    }
+
+    await Listing.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Listing deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting listing",
+      error: error.message
+    });
   }
 };

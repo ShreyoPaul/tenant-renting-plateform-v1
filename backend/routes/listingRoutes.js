@@ -7,23 +7,28 @@ import {
   getListingById,
   updateListing,
   deleteListing,
-  getAllData
+  getAllData,
+  getOwnerListings,
+  deleteOwnerListing
 } from "../controllers/listingController.js";
 
 // import { signup } from "../controllers/authController.js";
 
 const router = express.Router();
+import {authMiddleware} from "../utils/middleware.js"
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 
 // Routes
-router.post("/", upload.array("images", 5), createListing);          // POST /api/listings
+router.post("/", upload.array("images", 5),authMiddleware,  createListing);          // POST /api/listings
 router.get("/", getListings);              // GET /api/listings?location=jadavpur&maxPrice=7000
 router.get("/getall", getAllData);
+router.get("/mydata",authMiddleware,getOwnerListings);
 router.get("/:id", getListingById);        // GET /api/listings/:id
 
 router.put("/:id", updateListing);         // PUT /api/listings/:id
 router.delete("/:id", deleteListing);      // DELETE /api/listings/:id
 // router.post("/signup", signup);
+router.delete("/:id", authMiddleware, deleteOwnerListing);
 export default router;

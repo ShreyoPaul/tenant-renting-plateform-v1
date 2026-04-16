@@ -106,7 +106,63 @@ export default function CreateListing() {
   //   }
   // };
 
-  const handleSubmit = async () => {
+
+  /// IT IS WORKING
+
+  // const handleSubmit = async () => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     // Basic fields
+  //     formData.append("title", form.propertyName);
+  //     formData.append("price", Number(form.price));
+  //     formData.append("location", form.location);
+  //     formData.append("description", form.description);
+  //     formData.append("owner_name", form.owner_name); // i have changed ownername to owner_name
+  //     formData.append("owner_phone", form.phone);
+  //     formData.append("amenities", selectedAmenities.join(",")); // ✅ IMPORTANT
+  //     const tags = [];
+  //     if (selectedRoom) tags.push(selectedRoom);
+  //     if (selectedCategory) tags.push(selectedCategory);
+  //     formData.append("tags", tags.join(",")); // ✅ IMPORTANT
+
+  //     // // Amenities (array)
+  //     // selectedAmenities.forEach((a) => {
+  //     //   formData.append("amenities", a);
+  //     // });
+
+  //     // // Tags (room + category)
+  //     // if (selectedRoom) formData.append("tags", selectedRoom);
+  //     // if (selectedCategory) formData.append("tags", selectedCategory);
+
+  //     // Images (VERY IMPORTANT)
+  //     uploadedImages.forEach((img) => {
+  //       formData.append("images", img);
+  //     });
+
+  //     console.log("FormData entries:", Array.from(formData.entries()));
+
+  //     const res = await fetch("http://localhost:5000/api/listings", {
+  //       method: "POST",
+  //       body: formData, // ❗ NO headers, let browser set it to multipart/form-data with correct boundaries
+  //     });
+
+  //     const data = await res.json();
+  //     console.log(data);
+      
+  //   if (res.ok) {
+  //     setToast(true);
+
+  //     setTimeout(() => {
+  //       setToast(false);
+  //     }, 2000);
+  //   }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+    const handleSubmit = async () => {
     try {
       const formData = new FormData();
 
@@ -138,9 +194,13 @@ export default function CreateListing() {
       });
 
       console.log("FormData entries:", Array.from(formData.entries()));
+      const token=localStorage.getItem("token");
 
       const res = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
+         headers: {
+    Authorization: `Bearer ${token}` // ✅ ADD THIS
+  },
         body: formData, // ❗ NO headers, let browser set it to multipart/form-data with correct boundaries
       });
 

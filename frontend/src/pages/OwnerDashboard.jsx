@@ -9,41 +9,41 @@ const images = [
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
 ];
 
-const properties = [
-  {
-    id: 1,
-    name: "Salt Lake Regency Studio",
-    location: "Block CA, Salt Lake City, Kolkata",
-    rent: "₹18,500",
-    status: "Active",
-    inquiries: 42,
-    inquiryBadge: "+5 new",
-    inquiryBadgeClass: "text-teal-600 font-bold",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBhlCo1f0WGsyp1zSu7N5mChLWdAr0zlQN4fURgoFG3sjPAZsIk1W0g17Q0BSqtkp08Ecmg513VxjYGczo6kRWjxRzJMcYGbojTeir6BYDO3ca4frkYZyMPmPi7SV707CLqnNO9SYEaKbV1jI9KELyeMhK3bIyioQ6pxDZkrY2z2Q4Od1PcfaM_S0pE6lHeLf05B0erFqWnVC_PSbUnXXJcDXyxXpBrWFk7h4maLVQTsxWwmttmd0-E_Z6OrbccIDM9z7SS_gD9Z5o0",
-  },
-  {
-    id: 2,
-    name: "The Scholar's Suite - Heritage",
-    location: "College Street, North Kolkata",
-    rent: "₹12,000",
-    status: "Inactive",
-    inquiries: 89,
-    inquiryBadge: "Paused",
-    inquiryBadgeClass: "text-gray-400 font-medium",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJWTN6gsgLfrF7Q3ZHEFeWeGjKvK9wo1yhw_EtmMDxYHWBh275mudQnylj9Ir5lBRIjHT2xvlUHiF1m4lvvaOAAmLweWJTFyz6L7n2URx5sgXjPShNZQKrBbGCsI-5w9DxJcmdfKLV_JA_fs-CTUkDX5lfwQ6JM21Cx8W0stRqw5K8PnIoYLxenc09RlPGrlM9J0c6Fw6RXsLhtbwdatkmtyxfBoV613vi9LkaY2NcKdkKspDidTb0E8QATJYYToCsizxnL9rzTM7O",
-  },
-  {
-    id: 3,
-    name: "Park Street Creative Loft",
-    location: "Park Street, Central Kolkata",
-    rent: "₹24,000",
-    status: "Active",
-    inquiries: 17,
-    inquiryBadge: "Stable",
-    inquiryBadgeClass: "text-gray-400 font-medium",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2n_0OB4nBcdpTAeWpMunbO3C014OREsdhfgMIhB3LfUE9EF1PychBtMqZUYnUIizDmTdcb1t-EMtw5cEW79n0cCGqEWxcFfKgE7HULVkQRPx7_s9ymRR_Kc5R3xXtuGD4XbphM0p_EAYWvio7cTEJs8RGDDNZYEGFopiNanDi29upCCukyBfyRVZT1t7qQcfSwTPUAU6y798YNyD8nMDza4sEcJ1B33xs8-Cwl9QvTQ2ev-Blt0yfAaVnhsluzkdmuqCeaRkCREHy",
-  },
-];
+// const properties = [
+//   {
+//     id: 1,
+//     name: "Salt Lake Regency Studio",
+//     location: "Block CA, Salt Lake City, Kolkata",
+//     rent: "₹18,500",
+//     status: "Active",
+//     inquiries: 42,
+//     inquiryBadge: "+5 new",
+//     inquiryBadgeClass: "text-teal-600 font-bold",
+//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBhlCo1f0WGsyp1zSu7N5mChLWdAr0zlQN4fURgoFG3sjPAZsIk1W0g17Q0BSqtkp08Ecmg513VxjYGczo6kRWjxRzJMcYGbojTeir6BYDO3ca4frkYZyMPmPi7SV707CLqnNO9SYEaKbV1jI9KELyeMhK3bIyioQ6pxDZkrY2z2Q4Od1PcfaM_S0pE6lHeLf05B0erFqWnVC_PSbUnXXJcDXyxXpBrWFk7h4maLVQTsxWwmttmd0-E_Z6OrbccIDM9z7SS_gD9Z5o0",
+//   },
+//   {
+//     id: 2,
+//     name: "The Scholar's Suite - Heritage",
+//     location: "College Street, North Kolkata",
+//     rent: "₹12,000",
+//     status: "Inactive",
+//     inquiries: 89,
+//     inquiryBadge: "Paused",
+//     inquiryBadgeClass: "text-gray-400 font-medium",
+//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJWTN6gsgLfrF7Q3ZHEFeWeGjKvK9wo1yhw_EtmMDxYHWBh275mudQnylj9Ir5lBRIjHT2xvlUHiF1m4lvvaOAAmLweWJTFyz6L7n2URx5sgXjPShNZQKrBbGCsI-5w9DxJcmdfKLV_JA_fs-CTUkDX5lfwQ6JM21Cx8W0stRqw5K8PnIoYLxenc09RlPGrlM9J0c6Fw6RXsLhtbwdatkmtyxfBoV613vi9LkaY2NcKdkKspDidTb0E8QATJYYToCsizxnL9rzTM7O",
+//   },
+//   {
+//     id: 3,
+//     name: "Park Street Creative Loft",
+//     location: "Park Street, Central Kolkata",
+//     rent: "₹24,000",
+//     status: "Active",
+//     inquiries: 17,
+//     inquiryBadge: "Stable",
+//     inquiryBadgeClass: "text-gray-400 font-medium",
+//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2n_0OB4nBcdpTAeWpMunbO3C014OREsdhfgMIhB3LfUE9EF1PychBtMqZUYnUIizDmTdcb1t-EMtw5cEW79n0cCGqEWxcFfKgE7HULVkQRPx7_s9ymRR_Kc5R3xXtuGD4XbphM0p_EAYWvio7cTEJs8RGDDNZYEGFopiNanDi29upCCukyBfyRVZT1t7qQcfSwTPUAU6y798YNyD8nMDza4sEcJ1B33xs8-Cwl9QvTQ2ev-Blt0yfAaVnhsluzkdmuqCeaRkCREHy",
+//   },
+// ];
 
 function StatusBadge({ status }) {
   const isActive = status === "Active";
@@ -66,7 +66,8 @@ function StatusBadge({ status }) {
           width: 7,
           height: 7,
           borderRadius: "50%",
-          backgroundColor: isActive ? "#0d9488" : "#9ca3af",
+          // backgroundColor: isActive ? "#0d9488" : "#9ca3af",
+          backgroundColor: isActive ? "#9ca3af" : "#0d9488",
           display: "inline-block",
         }}
       />
@@ -75,7 +76,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function PropertyRow({ property }) {
+function PropertyRow({ property, onDelete }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -87,11 +88,13 @@ function PropertyRow({ property }) {
         transition: "background 0.15s",
       }}
     >
+      {/* Property Details */}
       <td style={{ padding: "14px 16px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* 🖼️ Image */}
           <img
-            src={property.img}
-            alt={property.name}
+            src={property.images?.[0] || "/default.jpg"}
+            alt={property.title}
             style={{
               width: 50,
               height: 50,
@@ -100,60 +103,148 @@ function PropertyRow({ property }) {
               flexShrink: 0,
             }}
           />
+
+          {/* 🏠 Title + Location */}
           <div>
-            <p style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14, margin: 0 }}>
-              {property.name}
+            <p
+              style={{
+                fontWeight: 700,
+                color: "#2e2a50",
+                fontSize: 14,
+                margin: 0,
+              }}
+            >
+              {property.title}
             </p>
-            <p style={{ fontSize: 12, color: "#5c5680", margin: "3px 0 0", fontFamily: "sans-serif" }}>
+            <p
+              style={{
+                fontSize: 12,
+                color: "#5c5680",
+                margin: "3px 0 0",
+                fontFamily: "sans-serif",
+              }}
+            >
               {property.location}
             </p>
           </div>
         </div>
       </td>
 
+      {/* 💰 Price */}
       <td style={{ padding: "14px 16px", whiteSpace: "nowrap" }}>
-        <span style={{ fontWeight: 600, color: "#2e2a50", fontSize: 14 }}>{property.rent}</span>
-        <span style={{ fontSize: 12, color: "#5c5680", fontFamily: "sans-serif" }}> /month</span>
+        <span style={{ fontWeight: 600, color: "#2e2a50", fontSize: 14 }}>
+          ₹{property.price}
+        </span>
+        <span
+          style={{ fontSize: 12, color: "#5c5680", fontFamily: "sans-serif" }}
+        >
+          {" "}
+          /month
+        </span>
       </td>
 
+      {/* 🟢 Status */}
       <td style={{ padding: "14px 16px" }}>
-        <StatusBadge status={property.status} />
+        <StatusBadge status={property.status || "active"} />
       </td>
 
-      <td style={{ padding: "14px 16px" }}>
+      {/* 📊 Inquiries (placeholder for now) */}
+      {/* <td style={{ padding: "14px 16px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14 }}>{property.inquiries}</span>
-          <span style={{ fontSize: 12 }} className={property.inquiryBadgeClass}>{property.inquiryBadge}</span>
+          <span style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14 }}>
+            {property.inquiries || 0}
+          </span>
+          <span style={{ fontSize: 12 }}>
+            {property.inquiries ? "New" : "--"}
+          </span>
         </div>
-      </td>
+      </td> */}
 
+      {/* ⚙️ Actions */}
       <td style={{ padding: "14px 16px", textAlign: "right" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
+            // justifyContent: "flex-end",
             gap: 6,
             opacity: hovered ? 1 : 0,
             transition: "opacity 0.15s",
           }}
         >
-          <button style={{ padding: "6px 8px", color: "#4953ac", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
-            <span className="material-symbols-outlined">edit</span>
+          <button
+            onClick={() => onDelete(property._id)}
+            style={{
+              padding: "6px 8px",
+              color: "red",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 18,
+            }}
+          >
+            <span className="material-symbols-outlined">delete</span>
           </button>
-          <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
+
+          {/* <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
             <span className="material-symbols-outlined">analytics</span>
-          </button>
+          </button> */}
         </div>
       </td>
     </tr>
   );
 }
 
+// const tablerow=["Property Details", "Monthly Rent", "Status", "Inquiries", "Actions"];
+const tablerow = ["Property Details", "Monthly Rent", "Status", "Actions"];
+
 export default function OwnerDashboard() {
   const [email, setEmail] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:5000/api/listings/mydata", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setListings(data.data);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const deleteListing = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`http://localhost:5000/api/listings/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // ✅ Remove from UI instantly
+        setListings((prev) => prev.filter((item) => item._id !== id));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (isHovered) return;
@@ -164,14 +255,21 @@ export default function OwnerDashboard() {
   }, [isHovered]);
 
   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % images.length);
-  const prevSlide = () => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const prevSlide = () =>
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
 
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet"
+      />
 
       <style>{`
         .material-symbols-outlined {
@@ -380,19 +478,38 @@ export default function OwnerDashboard() {
 
       <Navbar />
 
-      <div style={{ backgroundColor: "#f9f4ff", color: "#2e2a50", minHeight: "100vh" }}>
+      <div
+        style={{
+          backgroundColor: "#f9f4ff",
+          color: "#2e2a50",
+          minHeight: "100vh",
+        }}
+      >
         <main className="dash-main">
-
           {/* ── Header ── */}
           <header className="dash-header">
             <div>
               <h1 className="dash-title">Owner Dashboard</h1>
-              <p style={{ fontSize: 14, color: "#5c5680", lineHeight: 1.6, margin: 0, maxWidth: 480 }}>
-                Manage your curated student residences and track your portfolio's performance across Kolkata.
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#5c5680",
+                  lineHeight: 1.6,
+                  margin: 0,
+                  maxWidth: 480,
+                }}
+              >
+                Manage your curated student residences and track your
+                portfolio's performance across Kolkata.
               </p>
             </div>
             <NavLink to="/newlisting" className="dash-add-btn">
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add_circle</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 18 }}
+              >
+                add_circle
+              </span>
               Add New Listing
             </NavLink>
           </header>
@@ -435,9 +552,12 @@ export default function OwnerDashboard() {
               {/* Overlay */}
               <div
                 style={{
-                  position: "absolute", inset: 0,
-                  background: "linear-gradient(to top, rgba(15,10,30,0.55) 30%, transparent 80%)",
-                  pointerEvents: "none", zIndex: 1,
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(to top, rgba(15,10,30,0.55) 30%, transparent 80%)",
+                  pointerEvents: "none",
+                  zIndex: 1,
                 }}
               />
 
@@ -445,37 +565,74 @@ export default function OwnerDashboard() {
               <button
                 onClick={prevSlide}
                 style={{
-                  position: "absolute", top: "50%", left: 10,
-                  transform: "translateY(-50%)", zIndex: 3,
-                  background: "rgba(255,255,255,0.18)", backdropFilter: "blur(6px)",
-                  border: "1px solid rgba(255,255,255,0.28)", borderRadius: "50%",
-                  width: 32, height: 32, display: "flex", alignItems: "center",
-                  justifyContent: "center", cursor: "pointer", color: "#fff", padding: 0,
+                  position: "absolute",
+                  top: "50%",
+                  left: 10,
+                  transform: "translateY(-50%)",
+                  zIndex: 3,
+                  background: "rgba(255,255,255,0.18)",
+                  backdropFilter: "blur(6px)",
+                  border: "1px solid rgba(255,255,255,0.28)",
+                  borderRadius: "50%",
+                  width: 32,
+                  height: 32,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#fff",
+                  padding: 0,
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_left</span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 18 }}
+                >
+                  chevron_left
+                </span>
               </button>
 
               {/* Next */}
               <button
                 onClick={nextSlide}
                 style={{
-                  position: "absolute", top: "50%", right: 10,
-                  transform: "translateY(-50%)", zIndex: 3,
-                  background: "rgba(255,255,255,0.18)", backdropFilter: "blur(6px)",
-                  border: "1px solid rgba(255,255,255,0.28)", borderRadius: "50%",
-                  width: 32, height: 32, display: "flex", alignItems: "center",
-                  justifyContent: "center", cursor: "pointer", color: "#fff", padding: 0,
+                  position: "absolute",
+                  top: "50%",
+                  right: 10,
+                  transform: "translateY(-50%)",
+                  zIndex: 3,
+                  background: "rgba(255,255,255,0.18)",
+                  backdropFilter: "blur(6px)",
+                  border: "1px solid rgba(255,255,255,0.28)",
+                  borderRadius: "50%",
+                  width: 32,
+                  height: 32,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#fff",
+                  padding: 0,
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_right</span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 18 }}
+                >
+                  chevron_right
+                </span>
               </button>
 
               {/* Dots */}
               <div
                 style={{
-                  position: "absolute", bottom: 10, left: "50%",
-                  transform: "translateX(-50%)", display: "flex", gap: 5, zIndex: 3,
+                  position: "absolute",
+                  bottom: 10,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  display: "flex",
+                  gap: 5,
+                  zIndex: 3,
                 }}
               >
                 {images.map((_, i) => (
@@ -483,8 +640,12 @@ export default function OwnerDashboard() {
                     key={i}
                     onClick={() => setCurrentIndex(i)}
                     style={{
-                      width: 6, height: 6, borderRadius: "50%", cursor: "pointer",
-                      background: i === currentIndex ? "#fff" : "rgba(255,255,255,0.4)",
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      background:
+                        i === currentIndex ? "#fff" : "rgba(255,255,255,0.4)",
                       transform: i === currentIndex ? "scale(1.3)" : "scale(1)",
                       transition: "all 0.2s",
                     }}
@@ -500,36 +661,65 @@ export default function OwnerDashboard() {
               <h2
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontSize: 22, fontWeight: 700, color: "#2e2a50", margin: 0,
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: "#2e2a50",
+                  margin: 0,
                 }}
               >
                 Your Properties
               </h2>
               <div
                 style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  backgroundColor: "#f3eeff", padding: "8px 16px",
-                  borderRadius: 10, cursor: "pointer", fontSize: 13,
-                  color: "#5c5680", fontWeight: 500,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  backgroundColor: "#f3eeff",
+                  padding: "8px 16px",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  color: "#5c5680",
+                  fontWeight: 500,
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>filter_list</span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 16 }}
+                >
+                  filter_list
+                </span>
                 Filter by Status
               </div>
             </div>
 
-            <div style={{ backgroundColor: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}>
+            <div
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 16,
+                overflow: "hidden",
+                boxShadow: "0 1px 6px rgba(0,0,0,0.04)",
+              }}
+            >
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    minWidth: 560,
+                  }}
+                >
                   <thead>
                     <tr style={{ backgroundColor: "#f3eeff" }}>
-                      {["Property Details", "Monthly Rent", "Status", "Inquiries", "Actions"].map((h, i) => (
+                      {tablerow.map((h, i) => (
                         <th
                           key={i}
                           style={{
                             padding: "14px 16px",
                             textAlign: i === 4 ? "right" : "left",
-                            fontSize: 13, fontWeight: 700, color: "#5c5680",
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#5c5680",
                             fontFamily: "'Plus Jakarta Sans', sans-serif",
                             whiteSpace: "nowrap",
                           }}
@@ -540,8 +730,15 @@ export default function OwnerDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {properties.map((p) => (
+                    {/* {listings.map((p) => (
                       <PropertyRow key={p.id} property={p} />
+                    ))} */}
+                    {listings.map((item) => (
+                      <PropertyRow
+                        key={item._id}
+                        property={item}
+                        onDelete={deleteListing} // ✅ PASS HERE
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -557,43 +754,117 @@ export default function OwnerDashboard() {
                   className="banner-title"
                   style={{
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    fontSize: 32, fontWeight: 800, color: "#005a53", margin: "0 0 16px",
+                    fontSize: 32,
+                    fontWeight: 800,
+                    color: "#005a53",
+                    margin: "0 0 16px",
                   }}
                 >
                   Enhance Your Visibility
                 </h3>
-                <p style={{ fontSize: 15, color: "#005a53", opacity: 0.8, lineHeight: 1.7, margin: "0 0 28px", fontFamily: "sans-serif" }}>
-                  Verified listings receive 4x more engagement from high-intent students. Schedule your verification visit today.
+                <p
+                  style={{
+                    fontSize: 15,
+                    color: "#005a53",
+                    opacity: 0.8,
+                    lineHeight: 1.7,
+                    margin: "0 0 28px",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  Verified listings receive 4x more engagement from high-intent
+                  students. Schedule your verification visit today.
                 </p>
                 <button
                   style={{
-                    backgroundColor: "#005a53", color: "#81f3e5",
-                    padding: "14px 28px", borderRadius: 12, border: "none",
-                    fontWeight: 700, fontSize: 15, cursor: "pointer",
+                    backgroundColor: "#005a53",
+                    color: "#81f3e5",
+                    padding: "14px 28px",
+                    borderRadius: 12,
+                    border: "none",
+                    fontWeight: 700,
+                    fontSize: 15,
+                    cursor: "pointer",
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}
                 >
                   Get Verified Now
                 </button>
+                <p
+                  style={{
+                    fontSize: 10,
+                    marginTop: 20,
+                    color: "#005a53",
+                    opacity: 0.8,
+                    lineHeight: 1.7,
+                    margin: "0 0 28px",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  Feature will be added soon
+                </p>
               </div>
 
               <div className="banner-shield">
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 110, color: "#005a53", fontVariationSettings: "'FILL' 1" }}
+                  style={{
+                    fontSize: 110,
+                    color: "#005a53",
+                    fontVariationSettings: "'FILL' 1",
+                  }}
                 >
                   verified_user
                 </span>
               </div>
             </div>
           </section>
-
         </main>
         <MainFooter />
       </div>
     </>
   );
 }
+
+// {listings.map((item) => (
+//   <div key={item._id} className="property-row">
+
+//     {/* Property Details */}
+//     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+
+//       {/* 🖼️ Image */}
+//       <img
+//         src={item.images?.[0] || "/default.jpg"}
+//         alt="property"
+//         style={{
+//           width: 60,
+//           height: 60,
+//           borderRadius: 12,
+//           objectFit: "cover"
+//         }}
+//       />
+
+//       {/* 🏠 Title + Location */}
+//       <div>
+//         <h3>{item.title}</h3>
+//         <p>{item.location}</p>
+//       </div>
+//     </div>
+
+//     {/* 💰 Price */}
+//     <div>₹{item.price} /month</div>
+
+//     {/* 🟢 Status (temporary static) */}
+//     <div>
+//       <span style={{ color: "green" }}>Active</span>
+//     </div>
+
+//     {/* 📊 Inquiries (fake for now) */}
+//     <div>--</div>
+
+//   </div>
+// ))}
+
 {
   /* <section style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 20, marginBottom: 40 }}>
 

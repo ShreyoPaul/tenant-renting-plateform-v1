@@ -659,7 +659,7 @@ const saveProfile = async () => {
       formData.append("profileImg", avatarFile);
     }
     formData.append("profession", form.profession);
-    formData.append("phoneno",form.phoneno);
+    formData.append("phoneno",String(form.phoneno));
 
     // 👨‍🎓 Student fields
     if (userRole === "student") {
