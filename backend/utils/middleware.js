@@ -11,6 +11,7 @@ export const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, "SECRET_KEY");
         console.log("Decoded token:", decoded); // Add this line to log the decoded token
         req.user = decoded;
+
         next();
     } catch (error) {
         res.status(401).json({ message: "Invalid token" });

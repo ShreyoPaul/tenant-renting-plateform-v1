@@ -1,30 +1,32 @@
 import mongoose from "mongoose";
 
-const userDataSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+const userDataSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    profileImg: String,
+
+    fullName: {
+      type: String,
+      required: true,
+    },
+    phoneno: String,
+    universityName: String,
+    profession: String,
+    passoutYear: Number,
+
+    dob: Date,
+
+    budget: Number,
+
+    preferredLocation: String,
   },
-
-  profileImg: String,
-
-  fullName: {
-    type: String,
-    required: true
-  },
-  phoneno:Number,
-  universityName: String,
-  profession:String,
-  passoutYear: Number,
-
-  dob: Date,
-
-  budget: Number,
-
-  preferredLocation: String
-
-}, { timestamps: true });
+  { timestamps: true },
+);
 const UserData = mongoose.model("UserData", userDataSchema);
 
-export default UserData; 
+export default UserData;

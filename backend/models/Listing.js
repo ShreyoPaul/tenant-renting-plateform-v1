@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 
 const listingSchema = new mongoose.Schema(
   {
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -32,7 +37,14 @@ const listingSchema = new mongoose.Schema(
     },
     tags: {
       type: [String],
-      enum: ["Single", "2 Sharing", "3 Sharing", "4 Sharing", "Premium", "Regular"],
+      enum: [
+        "Single",
+        "2 Sharing",
+        "3 Sharing",
+        "4 Sharing",
+        "Premium",
+        "Regular",
+      ],
       required: true,
     },
     images: {
@@ -52,6 +64,7 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     verified: {
       type: Boolean,
       default: false,
