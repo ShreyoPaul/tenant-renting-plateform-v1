@@ -17,6 +17,15 @@ const listingSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    area: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    sub_area: {
+      type: String,
+      trim: true,
+    },
     description: {
       type: String,
       trim: true,

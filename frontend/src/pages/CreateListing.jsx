@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import descriptionIcon from "../assets/description-alt.png";
+import locationDataset from "../data/location-dataset.json";
 
 const STEPS = [
   { num: 1, label: "Details" },
@@ -25,6 +26,9 @@ export default function CreateListing() {
   const [currentStep] = useState(1);
   const [selectedRoom, setSelectedRoom] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedAreaId, setSelectedAreaId] = useState("");
+  const [selectedSubAreaId, setSelectedSubAreaId] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
   const [form, setForm] = useState({
     propertyName: "",
     owner_name: "",
@@ -164,6 +168,38 @@ export default function CreateListing() {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handleAreaChange = (e) => {
+    const areaId = e.target.value;
+    const area = locationDataset.find((item) => item.area_id === areaId);
+    setSelectedAreaId(areaId);
+    setSelectedSubAreaId("");
+    updateLocation(area ? area.area : "", "", customLocation);
+  };
+
+  const handleSubAreaChange = (e) => {
+    const subAreaId = e.target.value;
+    setSelectedSubAreaId(subAreaId);
+    const area = locationDataset.find((item) => item.area_id === selectedAreaId);
+    const subArea = area?.sub_areas.find((item) => item.id === subAreaId);
+    updateLocation(area?.area || "", subArea ? subArea.name : "", customLocation);
+  };
+
+  const handleCustomLocationChange = (e) => {
+    const value = e.target.value;
+    setCustomLocation(value);
+    const area = locationDataset.find((item) => item.area_id === selectedAreaId);
+    const subArea = area?.sub_areas.find((item) => item.id === selectedSubAreaId);
+    updateLocation(area?.area || "", subArea ? subArea.name : "", value);
+  };
+
+  const updateLocation = (area, subArea, custom) => {
+    const parts = [area, subArea, custom].filter(Boolean); // remove empty parts
+    setForm((prev) => ({
+      ...prev,
+      location: parts.join(", "),
+    }));
+  };
+
   const toggleAmenity = (a) =>
     setSelectedAmenities((prev) =>
       prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a],
@@ -217,6 +253,9 @@ export default function CreateListing() {
       previewImages.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [previewImages]);
+
+  const selectedArea = locationDataset.find((item) => item.area_id === selectedAreaId);
+  const subAreas = selectedArea?.sub_areas || [];
 
   return (
     <>
@@ -638,27 +677,88 @@ export default function CreateListing() {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: 10,
+                  flexDirection: "column",
+                  gap: 14,
                   padding: "12px 16px",
                   borderRadius: 12,
                   border: "1.5px solid #e8e4f8",
                   backgroundColor: "#faf9ff",
                 }}
               >
-                <span style={{ fontSize: 16, flexShrink: 0 }}>📍</span>
-                <input
-                  name="location"
-                  value={form.location}
-                  onChange={handleChange}
-                  placeholder="Search neighborhood or nearest University campus..."
+                <div
                   style={{
-                    flex: 1,
-                    border: "none",
-                    outline: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 16, flexShrink: 0 }}>📍</span>
+                  <span style={{ fontSize: 14, color: "#5c5680" }}>
+                    Pick the area first, then sub-area if available.
+                  </span>
+                </div>
+                <select
+                  name="area"
+                  value={selectedAreaId}
+                  onChange={handleAreaChange}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: 12,
+                    border: "1px solid #d6d1f2",
                     fontSize: 14,
                     color: "#2e2a50",
-                    backgroundColor: "transparent",
+                    backgroundColor: "#fff",
+                    outline: "none",
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  }}
+                >
+                  <option value="">Select area</option>
+                  {locationDataset.map((area) => (
+                    <option key={area.area_id} value={area.area_id}>
+                      {area.area}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  name="subArea"
+                  value={selectedSubAreaId}
+                  onChange={handleSubAreaChange}
+                  disabled={!selectedAreaId}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: 12,
+                    border: "1px solid #d6d1f2",
+                    fontSize: 14,
+                    color: "#2e2a50",
+                    backgroundColor: selectedAreaId ? "#fff" : "#f7f5ff",
+                    outline: "none",
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  }}
+                >
+                  <option value="">Sub-area (optional)</option>
+                  {subAreas.map((subArea) => (
+                    <option key={subArea.id} value={subArea.id}>
+                      {subArea.name}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  name="customLocation"
+                  value={customLocation}
+                  onChange={handleCustomLocationChange}
+                  placeholder="Additional location details (e.g., near university, specific landmark)"
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    borderRadius: 12,
+                    border: "1px solid #d6d1f2",
+                    fontSize: 14,
+                    color: "#2e2a50",
+                    backgroundColor: "#fff",
+                    outline: "none",
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}
                 />
