@@ -301,9 +301,6 @@ export default function Search() {
   .cards-grid {
     grid-template-columns: repeat(2, 500px);
   }
-    .banner-inner{
-    width:67%
-    }
   
 }
 
@@ -597,37 +594,53 @@ function SidebarContent({
         <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>
           Strategic Locations
         </p>
-        <select
-          multiple
-          value={selectedLocations}
-          onChange={(e) => setSelectedLocations(Array.from(e.target.selectedOptions, (o) => o.value))}
-          size={8}
-          style={{
-            width: "100%",
-            minHeight: 170,
-            borderRadius: 14,
-            border: "1px solid #e5e3f5",
-            background: "#fff",
-            padding: 12,
-            color: "#1f2937",
-            fontSize: 13,
-            cursor: "pointer",
-          }}
-        >
+        <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e5e3f5', borderRadius: 14, padding: 12, background: '#fff' }}>
           {locationDataset.map((area) => (
-            <optgroup key={area.area_id} label={area.area}>
-              <option value={area.area}>{area.area}</option>
+            <div key={area.area_id} style={{ marginBottom: 9 }}>
+              <button
+                onClick={() => {
+                  if (selectedLocations.includes(area.area)) {
+                    setSelectedLocations(selectedLocations.filter(loc => loc !== area.area));
+                  } else {
+                    setSelectedLocations([...selectedLocations, area.area]);
+                  }
+                }}
+                style={{
+                  width: '100%', textAlign: 'left', padding: '5px 14px', borderRadius: 12,
+                  border: selectedLocations.includes(area.area) ? '1.5px solid #c7c3f8' : '1px solid transparent',
+                  background: selectedLocations.includes(area.area) ? '#ede9fe' : 'transparent',
+                  color: selectedLocations.includes(area.area) ? '#4f46e5' : '#6b7280',
+                  fontSize: 13, fontWeight: selectedLocations.includes(area.area) ? 600 : 400,
+                  cursor: 'pointer', marginBottom: 3,
+                }}
+              >
+                {area.area}
+              </button>
               {area.sub_areas.map((sub) => (
-                <option key={sub.id} value={sub.name}>
-                  {`${area.area} — ${sub.name}`}
-                </option>
+                <button
+                  key={sub.id}
+                  onClick={() => {
+                    if (selectedLocations.includes(sub.name)) {
+                      setSelectedLocations(selectedLocations.filter(loc => loc !== sub.name));
+                    } else {
+                      setSelectedLocations([...selectedLocations, sub.name]);
+                    }
+                  }}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '3px 14px', borderRadius: 10, marginLeft: 10,
+                    border: selectedLocations.includes(sub.name) ? '1.5px solid #c7c3f8' : '1px solid transparent',
+                    background: selectedLocations.includes(sub.name) ? '#ede9fe' : 'transparent',
+                    color: selectedLocations.includes(sub.name) ? '#4f46e5' : '#6b7280',
+                    fontSize: 12, fontWeight: selectedLocations.includes(sub.name) ? 600 : 400,
+                    cursor: 'pointer', marginBottom: 2,
+                  }}
+                >
+                  {sub.name}
+                </button>
               ))}
-            </optgroup>
+            </div>
           ))}
-        </select>
-        <p style={{ margin: "8px 0 0", color: "#6b7280", fontSize: 12 }}>
-          Hold Ctrl/Cmd to select multiple locations.
-        </p>
+        </div>
       </div>
 
       {/* Accommodation Style */}
