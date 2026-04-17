@@ -55,6 +55,11 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+  type: String,
+  enum: ["active", "inactive"],
+  default: "active"
+}
 
     verified: {
       type: Boolean,
