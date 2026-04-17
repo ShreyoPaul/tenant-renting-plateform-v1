@@ -9,41 +9,6 @@ const images = [
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
 ];
 
-// const properties = [
-//   {
-//     id: 1,
-//     name: "Salt Lake Regency Studio",
-//     location: "Block CA, Salt Lake City, Kolkata",
-//     rent: "₹18,500",
-//     status: "Active",
-//     inquiries: 42,
-//     inquiryBadge: "+5 new",
-//     inquiryBadgeClass: "text-teal-600 font-bold",
-//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBhlCo1f0WGsyp1zSu7N5mChLWdAr0zlQN4fURgoFG3sjPAZsIk1W0g17Q0BSqtkp08Ecmg513VxjYGczo6kRWjxRzJMcYGbojTeir6BYDO3ca4frkYZyMPmPi7SV707CLqnNO9SYEaKbV1jI9KELyeMhK3bIyioQ6pxDZkrY2z2Q4Od1PcfaM_S0pE6lHeLf05B0erFqWnVC_PSbUnXXJcDXyxXpBrWFk7h4maLVQTsxWwmttmd0-E_Z6OrbccIDM9z7SS_gD9Z5o0",
-//   },
-//   {
-//     id: 2,
-//     name: "The Scholar's Suite - Heritage",
-//     location: "College Street, North Kolkata",
-//     rent: "₹12,000",
-//     status: "Inactive",
-//     inquiries: 89,
-//     inquiryBadge: "Paused",
-//     inquiryBadgeClass: "text-gray-400 font-medium",
-//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJWTN6gsgLfrF7Q3ZHEFeWeGjKvK9wo1yhw_EtmMDxYHWBh275mudQnylj9Ir5lBRIjHT2xvlUHiF1m4lvvaOAAmLweWJTFyz6L7n2URx5sgXjPShNZQKrBbGCsI-5w9DxJcmdfKLV_JA_fs-CTUkDX5lfwQ6JM21Cx8W0stRqw5K8PnIoYLxenc09RlPGrlM9J0c6Fw6RXsLhtbwdatkmtyxfBoV613vi9LkaY2NcKdkKspDidTb0E8QATJYYToCsizxnL9rzTM7O",
-//   },
-//   {
-//     id: 3,
-//     name: "Park Street Creative Loft",
-//     location: "Park Street, Central Kolkata",
-//     rent: "₹24,000",
-//     status: "Active",
-//     inquiries: 17,
-//     inquiryBadge: "Stable",
-//     inquiryBadgeClass: "text-gray-400 font-medium",
-//     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB2n_0OB4nBcdpTAeWpMunbO3C014OREsdhfgMIhB3LfUE9EF1PychBtMqZUYnUIizDmTdcb1t-EMtw5cEW79n0cCGqEWxcFfKgE7HULVkQRPx7_s9ymRR_Kc5R3xXtuGD4XbphM0p_EAYWvio7cTEJs8RGDDNZYEGFopiNanDi29upCCukyBfyRVZT1t7qQcfSwTPUAU6y798YNyD8nMDza4sEcJ1B33xs8-Cwl9QvTQ2ev-Blt0yfAaVnhsluzkdmuqCeaRkCREHy",
-//   },
-// ];
 
 function StatusBadge({ status }) {
   const isActive = status === "Active";
@@ -76,9 +41,9 @@ function StatusBadge({ status }) {
   );
 }
 
-function PropertyRow({ property, onDelete }) {
+function PropertyRow({ property, onDelete,handleStatus }) {
   const [hovered, setHovered] = useState(false);
-
+  
   return (
     <tr
       onMouseEnter={() => setHovered(true)}
@@ -144,21 +109,24 @@ function PropertyRow({ property, onDelete }) {
       </td>
 
       {/* 🟢 Status */}
-      <td style={{ padding: "14px 16px" }}>
-        <StatusBadge status={property.status || "active"} />
-      </td>
+    <td style={{ padding: "14px 16px" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 
-      {/* 📊 Inquiries (placeholder for now) */}
-      {/* <td style={{ padding: "14px 16px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontWeight: 700, color: "#2e2a50", fontSize: 14 }}>
-            {property.inquiries || 0}
-          </span>
-          <span style={{ fontSize: 12 }}>
-            {property.inquiries ? "New" : "--"}
-          </span>
-        </div>
-      </td> */}
+    {/* 🟢 Status */}
+   <span
+  onClick={() =>
+        handleStatus(property._id, property.status)
+      }
+  style={{ cursor: "pointer" }}
+>
+  <StatusBadge status={property.status ?? "active"} />
+</span>
+
+  
+
+  </div>
+</td>
+  
 
       {/* ⚙️ Actions */}
       <td style={{ padding: "14px 16px", textAlign: "right" }}>
@@ -186,9 +154,9 @@ function PropertyRow({ property, onDelete }) {
             <span className="material-symbols-outlined">delete</span>
           </button>
 
-          {/* <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
-            <span className="material-symbols-outlined">analytics</span>
-          </button> */}
+          <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
+            <span className="material-symbols-outlined">Edit</span>
+          </button>
         </div>
       </td>
     </tr>
@@ -203,6 +171,44 @@ export default function OwnerDashboard() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [listings, setListings] = useState([]);
+
+    const handleStatus = async (id, currentStatus) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const newStatus =
+      currentStatus === "active" ? "inactive" : "active"; // ✅ FIXED
+
+    const res = await fetch(
+      `http://localhost:5000/api/listings/${id}/status`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      }
+    );
+
+    const data = await res.json();
+    console.log(data);
+
+    if (res.ok) {
+      // ✅ update UI
+      setListings(prev =>
+        prev.map(item =>
+          item._id === id
+            ? { ...item, status: newStatus }
+            : item
+        )
+      );
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -738,6 +744,7 @@ export default function OwnerDashboard() {
                         key={item._id}
                         property={item}
                         onDelete={deleteListing} // ✅ PASS HERE
+                        handleStatus={handleStatus}
                       />
                     ))}
                   </tbody>
@@ -825,6 +832,8 @@ export default function OwnerDashboard() {
     </>
   );
 }
+
+
 
 // {listings.map((item) => (
 //   <div key={item._id} className="property-row">
