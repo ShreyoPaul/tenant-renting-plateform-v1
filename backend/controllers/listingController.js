@@ -444,6 +444,8 @@ export const deleteOwnerListing = async (req, res) => {
   }
 };
 
+/// PATCH METHOD , ONLY TO CHANGE THE STATUS
+
 
 export const updateListingStatus = async (req, res) => {
   try {
