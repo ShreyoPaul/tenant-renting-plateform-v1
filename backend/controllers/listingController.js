@@ -369,23 +369,35 @@ export const getListingById = async (req, res) => {
 };
 
 
-// UPDATE a listing
 export const updateListing = async (req, res) => {
   try {
-    const listing = await Listing.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const userId = req.user.id;
+
+    const { title, price, location } = req.body;
+
+    const listing = await Listing.findOne({
+      _id: req.params.id,
+      owner: userId
+    });
 
     if (!listing) {
-      return res.status(404).json({ error: "Listing not found" });
+      return res.status(404).json({
+        error: "Listing not found or unauthorized"
+      });
     }
+
+    // ✅ Update only allowed fields
+    if (title) listing.title = title;
+    if (price) listing.price = Number(price);
+    if (location) listing.location = location;
+
+    await listing.save();
 
     res.json({
       message: "✅ Listing updated successfully",
       listing
     });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

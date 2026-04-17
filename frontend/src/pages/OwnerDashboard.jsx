@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import MainFooter from "../components/MainFooter";
 import { NavLink } from "react-router-dom";
+import EditListingModal from "./EditListingModal";
 
 const images = [
   "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
@@ -11,7 +12,7 @@ const images = [
 
 
 function StatusBadge({ status }) {
-  const isActive = status === "Active";
+  const isActive = status === "active";
   return (
     <span
       style={{
@@ -31,8 +32,8 @@ function StatusBadge({ status }) {
           width: 7,
           height: 7,
           borderRadius: "50%",
-          // backgroundColor: isActive ? "#0d9488" : "#9ca3af",
-          backgroundColor: isActive ? "#9ca3af" : "#0d9488",
+          backgroundColor: isActive ? "#0d9488" : "#9ca3af",
+          // backgroundColor: isActive ? "#9ca3af" : "#0d9488",
           display: "inline-block",
         }}
       />
@@ -41,7 +42,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function PropertyRow({ property, onDelete,handleStatus }) {
+function PropertyRow({ property, onDelete,handleStatus,handleEdit  }) {
   const [hovered, setHovered] = useState(false);
   
   return (
@@ -140,6 +141,9 @@ function PropertyRow({ property, onDelete,handleStatus }) {
             transition: "opacity 0.15s",
           }}
         >
+            <button onClick={() => handleEdit(property)} style={{ padding: "6px 8px", color: "green", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
+            <span className="material-symbols-outlined">Edit</span>
+          </button>
           <button
             onClick={() => onDelete(property._id)}
             style={{
@@ -151,12 +155,10 @@ function PropertyRow({ property, onDelete,handleStatus }) {
               fontSize: 18,
             }}
           >
-            <span className="material-symbols-outlined">delete</span>
+            <span  className="material-symbols-outlined">delete</span>
           </button>
 
-          <button style={{ padding: "6px 8px", color: "#5c5680", background: "none", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 18 }}>
-            <span className="material-symbols-outlined">Edit</span>
-          </button>
+        
         </div>
       </td>
     </tr>
@@ -171,7 +173,38 @@ export default function OwnerDashboard() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [listings, setListings] = useState([]);
+  const [editData, setEditData] = useState(null);
 
+  const handleEdit = (property) => {
+  setEditData(property);
+};
+const handleUpdate = async (form) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(
+    `http://localhost:5000/api/listings/${editData._id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(form)
+    }
+  );
+
+  const data = await res.json();
+
+  if (res.ok) {
+    setListings(prev =>
+      prev.map(item =>
+        item._id === editData._id ? data.listing : item
+      )
+    );
+
+    setEditData(null); // close modal
+  }
+};
     const handleStatus = async (id, currentStatus) => {
   try {
     const token = localStorage.getItem("token");
@@ -745,10 +778,17 @@ export default function OwnerDashboard() {
                         property={item}
                         onDelete={deleteListing} // ✅ PASS HERE
                         handleStatus={handleStatus}
+                        handleEdit={handleEdit} // ✅ ADD THIS
                       />
                     ))}
+                   
                   </tbody>
                 </table>
+                <EditListingModal
+  editData={editData}
+  setEditData={setEditData}
+  onUpdate={handleUpdate}
+/>
               </div>
             </div>
           </section>

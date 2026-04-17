@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
 import CreateListing from './pages/CreateListing'
 import UserData from './pages/UserData'
+import EditListingModal from './pages/EditListingModal'
 
 
 
@@ -71,6 +72,12 @@ function App() {
 <Route path="/propertydetails/:id" element={
   <ProtectedRoute>
     <PropertyDetails />
+  </ProtectedRoute>
+} />
+
+<Route path="/editdetails" element={
+  <ProtectedRoute>
+    <EditListingModal />
   </ProtectedRoute>
 } />
 <Route
