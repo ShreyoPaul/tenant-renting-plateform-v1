@@ -9,6 +9,7 @@ import {
   deleteListing,
   getAllData,
   getOwnerListings,
+  updateListingStatus,
   deleteOwnerListing
 } from "../controllers/listingController.js";
 
@@ -26,8 +27,8 @@ router.get("/", getListings);              // GET /api/listings?location=jadavpu
 router.get("/getall", getAllData);
 router.get("/mydata",authMiddleware,getOwnerListings);
 router.get("/:id", getListingById);        // GET /api/listings/:id
-
 router.put("/:id", updateListing);         // PUT /api/listings/:id
+router.patch(":/id/status",authMiddleware, updateListingStatus);
 router.delete("/:id", deleteListing);      // DELETE /api/listings/:id
 // router.post("/signup", signup);
 router.delete("/:id", authMiddleware, deleteOwnerListing);

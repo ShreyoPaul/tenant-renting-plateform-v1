@@ -431,3 +431,38 @@ export const deleteOwnerListing = async (req, res) => {
     });
   }
 };
+
+
+export const updateListingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["active", "inactive"].includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status"
+      });
+    }
+
+    const listing = await Listing.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({
+      message: "Status updated",
+      data: listing
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating status",
+      error: error.message
+    });
+  }
+};
