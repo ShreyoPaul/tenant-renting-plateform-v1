@@ -420,16 +420,7 @@ const handleUpdate = async (form) => {
           .carousel-box {
             height: 420px;
           }
-            .carousel-section{
-            width:73%
-            }
-            .property_main{
-            width:73%;
-            
-            }
-            .banner-section{
-            width:73%
-            }
+          
           
         }
 
