@@ -120,6 +120,12 @@ export const createListing = async (req, res) => {
 
     let { title, price,description, location, owner_name, owner_phone, amenities, tags } = req.body;
 
+    // Parse location into area and sub_area
+    const locationParts = location.split(', ');
+    const area = locationParts[0].trim();
+    const sub_area = locationParts[1] ? locationParts[1].trim() : null;
+
+    // Image file validation (must have one image)
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "At least one image is required" });
     }
@@ -151,6 +157,8 @@ export const createListing = async (req, res) => {
       title,
       price,
       location,
+      area,
+      sub_area,
       description,
       owner_name,
       owner_phone,
@@ -256,13 +264,17 @@ export const getListings = async (req, res) => {
 
     let conditions = [];
 
-    // ✅ Location (multiple)
+    // ✅ Location (multiple) - now checks area or sub_area
     if (location) {
       const locationsArray = location.split("|");
 
       conditions.push({
         $or: locationsArray.map((loc) => ({
-          location: { $regex: loc.trim(), $options: "i" }
+          $or: [
+            { area: { $regex: loc.trim(), $options: "i" } },
+            { sub_area: { $regex: loc.trim(), $options: "i" } },
+            { location: { $regex: loc.trim(), $options: "i" } } // fallback
+          ]
         }))
       });
     }
