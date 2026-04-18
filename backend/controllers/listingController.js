@@ -397,6 +397,11 @@ export const updateListing = async (req, res) => {
     if (price) listing.price = Number(price);
     if (location) listing.location = location;
 
+    if (location.split(',').length >= 2) {
+      listing.area = location.split(',')[0].trim();
+      listing.sub_area = location.split(',')[1].trim();
+    }
+
     await listing.save();
 
     res.json({

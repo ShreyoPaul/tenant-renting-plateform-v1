@@ -187,6 +187,8 @@ export default function OwnerDashboard() {
 const handleUpdate = async (form) => {
   const token = localStorage.getItem("token");
 
+  console.log("Updating listing with data:", form);
+
   const res = await fetch(
     `http://localhost:5000/api/listings/${editData._id}`,
     {
@@ -426,16 +428,7 @@ const handleUpdate = async (form) => {
           .carousel-box {
             height: 420px;
           }
-            .carousel-section{
-            width:73%
-            }
-            .property_main{
-            width:73%;
-            
-            }
-            .banner-section{
-            width:73%
-            }
+          
           
         }
 

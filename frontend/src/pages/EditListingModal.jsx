@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
+import locationDataset from "../data/location-dataset.json";
 
 export default function EditListingModal({ editData, setEditData, onUpdate }) {
+  const [selectedAreaId, setSelectedAreaId] = useState("");
+  const [selectedSubAreaId, setSelectedSubAreaId] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
   const [form, setForm] = useState({
     title: "",
     price: "",
@@ -15,10 +19,64 @@ export default function EditListingModal({ editData, setEditData, onUpdate }) {
         price: editData.price || "",
         location: editData.location || ""
       });
+
+      // 🔥 split location
+      const parts = (editData.location || "").split(",").map(p => p.trim());
+
+      const areaObj = locationDataset.find(a => a.area === parts[0]);
+      if (areaObj) {
+        setSelectedAreaId(areaObj.area_id);
+
+        const sub = areaObj.sub_areas.find(s => s.name === parts[1]);
+        if (sub) {
+          setSelectedSubAreaId(sub.id);
+          setCustomLocation(parts.slice(2).join(", "));
+        } else {
+          setCustomLocation(parts.slice(1).join(", "));
+        }
+      }
     }
   }, [editData]);
 
   if (!editData) return null; // ❌ don't render if no data
+
+  const updateLocation = (area, subArea, custom) => {
+    const parts = [area, subArea, custom].filter(Boolean);
+    setForm((prev) => ({
+      ...prev,
+      location: parts.join(", "),
+    }));
+  };
+
+  const handleAreaChange = (e) => {
+    const areaId = e.target.value;
+    const area = locationDataset.find((a) => a.area_id === areaId);
+
+    setSelectedAreaId(areaId);
+    setSelectedSubAreaId("");
+
+    updateLocation(area?.area || "", "", customLocation);
+  };
+
+  const handleSubAreaChange = (e) => {
+    const subId = e.target.value;
+    setSelectedSubAreaId(subId);
+
+    const area = locationDataset.find((a) => a.area_id === selectedAreaId);
+    const sub = area?.sub_areas.find((s) => s.id === subId);
+
+    updateLocation(area?.area || "", sub?.name || "", customLocation);
+  };
+
+  const handleCustomLocationChange = (e) => {
+    const value = e.target.value;
+    setCustomLocation(value);
+
+    const area = locationDataset.find((a) => a.area_id === selectedAreaId);
+    const sub = area?.sub_areas.find((s) => s.id === selectedSubAreaId);
+
+    updateLocation(area?.area || "", sub?.name || "", value);
+  };
 
   return (
     <div style={overlayStyle}>
@@ -47,14 +105,43 @@ export default function EditListingModal({ editData, setEditData, onUpdate }) {
         />
 
         {/* Location */}
-        <input
-          placeholder="Location"
-          value={form.location}
-          onChange={(e) =>
-            setForm({ ...form, location: e.target.value })
-          }
-          style={inputStyle}
-        />
+        <div style={{ marginBottom: 10 }}>
+          <select
+            value={selectedAreaId}
+            onChange={handleAreaChange}
+            style={inputStyle}
+          >
+            <option value="">Select area</option>
+            {locationDataset.map((area) => (
+              <option key={area.area_id} value={area.area_id}>
+                {area.area}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={selectedSubAreaId}
+            onChange={handleSubAreaChange}
+            disabled={!selectedAreaId}
+            style={inputStyle}
+          >
+            <option value="">Sub-area</option>
+            {locationDataset
+              .find((a) => a.area_id === selectedAreaId)
+              ?.sub_areas.map((sub) => (
+                <option key={sub.id} value={sub.id}>
+                  {sub.name}
+                </option>
+              ))}
+          </select>
+
+          <input
+            placeholder="Custom location"
+            value={customLocation}
+            onChange={handleCustomLocationChange}
+            style={inputStyle}
+          />
+        </div>
 
         {/* Buttons */}
         <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
