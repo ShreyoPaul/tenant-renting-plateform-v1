@@ -118,7 +118,7 @@ export const createListing = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    let { title, price,description, location, owner_name, owner_phone, amenities, tags } = req.body;
+    let { title, price,description, location, security_deposit, owner_name, owner_phone, amenities, tags } = req.body;
 
     // Parse location into area and sub_area
     const locationParts = location.split(', ');
@@ -130,7 +130,7 @@ export const createListing = async (req, res) => {
       return res.status(400).json({ error: "At least one image is required" });
     }
 
-    if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags ||!description) {
+    if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags ||!description || !security_deposit) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -160,6 +160,7 @@ export const createListing = async (req, res) => {
       area,
       sub_area,
       description,
+      security_deposit,
       owner_name,
       owner_phone,
       amenities: parsedAmenities,

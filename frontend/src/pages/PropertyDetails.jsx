@@ -516,17 +516,17 @@ useEffect(()=>{
                 <div style={{ borderBottom: "1px solid #e8e4f8", paddingBottom: 14, marginBottom: 14, display: "flex", flexDirection: "column", gap: 8 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontFamily: "sans-serif" }}>
                     <span style={{ color: "#7b78a0" }}>Security Deposit</span>
-                    <span style={{ color: "#1a1740", fontWeight: 500 }}>₹49,000 (2 months)</span>
+                    <span style={{ color: "#1a1740", fontWeight: 500 }}>₹{listing.security_deposit}</span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontFamily: "sans-serif" }}>
+                  {/* <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontFamily: "sans-serif" }}>
                     <span style={{ color: "#7b78a0" }}>Service Fee</span>
                     <span style={{ color: "#1a1740", fontWeight: 500 }}>₹1,500</span>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 700, fontFamily: "sans-serif", marginBottom: 18 }}>
                   <span style={{ color: "#1a1740" }}>Total Initial Payment</span>
-                  <span style={{ color: "#5b54d4", fontSize: 15 }}>₹75,000</span>
+                  <span style={{ color: "#5b54d4", fontSize: 15 }}>₹{listing.price+listing.security_deposit}</span>
                 </div>
 
                 <button className="pd-reserve-btn">Reserve Now</button>

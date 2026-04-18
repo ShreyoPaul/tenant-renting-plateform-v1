@@ -33,6 +33,7 @@ export default function CreateListing() {
     propertyName: "",
     owner_name: "",
     phone: "",
+    security_deposit:"",
     location: "",
     description: "",
     price: "",
@@ -175,6 +176,7 @@ export default function CreateListing() {
       // Basic fields
       formData.append("title", form.propertyName);
       formData.append("price", Number(form.price));
+      formData.append("security_deposit",Number(form.security_deposit))
       formData.append("location", form.location);
       formData.append("description", form.description);
       formData.append("owner_name", form.owner_name); // i have changed ownername to owner_name
@@ -829,7 +831,7 @@ export default function CreateListing() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr ",
+                gridTemplateColumns: "1fr 1fr",
                 gap: 24,
                 marginBottom: 36,
               }}
@@ -879,7 +881,7 @@ export default function CreateListing() {
                   />
                 </div>
               </div>
-              {/* <div>
+               <div>
                 <label
                   style={{
                     display: "block",
@@ -889,26 +891,41 @@ export default function CreateListing() {
                     marginBottom: 8,
                   }}
                 >
-                  Available From
+                  Security Deposit(₹)
                 </label>
-                <input
-                  type="date"
-                  name="availableFrom"
-                  value={form.availableFrom}
-                  onChange={handleChange}
+                <div
                   style={{
-                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
                     padding: "12px 16px",
                     borderRadius: 12,
                     border: "1.5px solid #e8e4f8",
-                    fontSize: 14,
-                    color: "#2e2a50",
-                    outline: "none",
                     backgroundColor: "#faf9ff",
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
                   }}
-                />
-              </div> */}
+                >
+                  <span
+                    style={{ fontSize: 15, color: "#7b78a0", flexShrink: 0 }}
+                  >
+                    ₹
+                  </span>
+                  <input
+                    name="security_deposit"
+                    value={form.security_deposit}
+                    onChange={handleChange}
+                    placeholder="7,000"
+                    style={{
+                      flex: 1,
+                      border: "none",
+                      outline: "none",
+                      fontSize: 14,
+                      color: "#2e2a50",
+                      backgroundColor: "transparent",
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Divider */}

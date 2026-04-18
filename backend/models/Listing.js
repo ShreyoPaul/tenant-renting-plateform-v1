@@ -17,6 +17,10 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    security_deposit:{
+      type:Number,
+      required:true
+    },
     location: {
       type: String,
       required: true,
