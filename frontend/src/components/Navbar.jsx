@@ -6,18 +6,37 @@ import { NavLink } from "react-router-dom";
 import { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [data, setData] = useState(null);
 
-  // const navLinks = [
-  //   { name: "Home", path: "/" },
-  //   { name: "Search", path: "/search" },
-  //   { name: "Owners", path: "/owners" },
-  //   { name: "My Account", path: "/account" },
-  // ];
+const fetchData = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-// const token = localStorage.getItem("token");
+    const response = await axios.get(
+      "http://localhost:5000/api/user/profile",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    // ✅ axios gives data directly
+    setData(response.data.data);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(()=>{
+  fetchData();
+},[])
+ 
 
 const [userRole, setUserRole] = useState(null);
 
@@ -74,7 +93,8 @@ const navLinks = [
       <div className="ac-nav-icons">
         {/* <span>🔔</span>
         <span>♥</span> */}
-        <NavLink to={"/signup"} className="ac-avatar">S</NavLink>
+        {/* <NavLink to={"/signup"} className="ac-avatar">S</NavLink> */}
+         <img src={data?.profileImg} className="ac-avatar" style={{ width: 50, height: 50, borderRadius: "50%" }} />
         <button
           onClick={handleLogout}
           className="w-20 sm:w-16 rounded-xl
