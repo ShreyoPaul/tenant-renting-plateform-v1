@@ -33,18 +33,19 @@ export default function CreateListing() {
     propertyName: "",
     owner_name: "",
     phone: "",
-    security_deposit:"",
+    security_deposit: "",
     location: "",
     description: "",
     price: "",
     availableFrom: "",
   });
-    const [toast, setToast] = useState(false);
+  const [toast, setToast] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const fileInputRef = useRef(null);
 
+  const isMobile = window.innerWidth < 768;
   // const handleSubmit = async () => {
   //   try {
   //     const tags = [];
@@ -113,7 +114,6 @@ export default function CreateListing() {
   //   }
   // };
 
-
   /// IT IS WORKING
 
   // const handleSubmit = async () => {
@@ -156,7 +156,7 @@ export default function CreateListing() {
 
   //     const data = await res.json();
   //     console.log(data);
-      
+
   //   if (res.ok) {
   //     setToast(true);
 
@@ -169,14 +169,14 @@ export default function CreateListing() {
   //   }
   // };
 
-    const handleSubmit = async () => {
+  const handleSubmit = async () => {
     try {
       const formData = new FormData();
 
       // Basic fields
       formData.append("title", form.propertyName);
       formData.append("price", Number(form.price));
-      formData.append("security_deposit",Number(form.security_deposit))
+      formData.append("security_deposit", Number(form.security_deposit));
       formData.append("location", form.location);
       formData.append("description", form.description);
       formData.append("owner_name", form.owner_name); // i have changed ownername to owner_name
@@ -202,26 +202,26 @@ export default function CreateListing() {
       });
 
       console.log("FormData entries:", Array.from(formData.entries()));
-      const token=localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const res = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
-         headers: {
-    Authorization: `Bearer ${token}` // ✅ ADD THIS
-  },
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ ADD THIS
+        },
         body: formData, // ❗ NO headers, let browser set it to multipart/form-data with correct boundaries
       });
 
       const data = await res.json();
       console.log(data);
-      
-    if (res.ok) {
-      setToast(true);
 
-      setTimeout(() => {
-        setToast(false);
-      }, 2000);
-    }
+      if (res.ok) {
+        setToast(true);
+
+        setTimeout(() => {
+          setToast(false);
+        }, 2000);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -241,16 +241,26 @@ export default function CreateListing() {
   const handleSubAreaChange = (e) => {
     const subAreaId = e.target.value;
     setSelectedSubAreaId(subAreaId);
-    const area = locationDataset.find((item) => item.area_id === selectedAreaId);
+    const area = locationDataset.find(
+      (item) => item.area_id === selectedAreaId,
+    );
     const subArea = area?.sub_areas.find((item) => item.id === subAreaId);
-    updateLocation(area?.area || "", subArea ? subArea.name : "", customLocation);
+    updateLocation(
+      area?.area || "",
+      subArea ? subArea.name : "",
+      customLocation,
+    );
   };
 
   const handleCustomLocationChange = (e) => {
     const value = e.target.value;
     setCustomLocation(value);
-    const area = locationDataset.find((item) => item.area_id === selectedAreaId);
-    const subArea = area?.sub_areas.find((item) => item.id === selectedSubAreaId);
+    const area = locationDataset.find(
+      (item) => item.area_id === selectedAreaId,
+    );
+    const subArea = area?.sub_areas.find(
+      (item) => item.id === selectedSubAreaId,
+    );
     updateLocation(area?.area || "", subArea ? subArea.name : "", value);
   };
 
@@ -316,7 +326,9 @@ export default function CreateListing() {
     };
   }, [previewImages]);
 
-  const selectedArea = locationDataset.find((item) => item.area_id === selectedAreaId);
+  const selectedArea = locationDataset.find(
+    (item) => item.area_id === selectedAreaId,
+  );
   const subAreas = selectedArea?.sub_areas || [];
 
   return (
@@ -582,7 +594,8 @@ export default function CreateListing() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                // gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                 gap: 24,
                 marginBottom: 24,
               }}
@@ -831,7 +844,8 @@ export default function CreateListing() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                // gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
                 gap: 24,
                 marginBottom: 36,
               }}
@@ -881,7 +895,7 @@ export default function CreateListing() {
                   />
                 </div>
               </div>
-               <div>
+              <div>
                 <label
                   style={{
                     display: "block",
@@ -1136,17 +1150,22 @@ export default function CreateListing() {
                 >
                   Upload Photos
                 </h2>
-                <span
-                  style={{ fontSize: 12, color: "#9b96b8", fontWeight: 500 }}
-                >
-                  Max 10 photos • JPEG/PNG
-                </span>
+                <div>
+                  <span
+                    style={{ fontSize: 12, color: "#9b96b8", fontWeight: 500 }}
+                  >
+                    4 photos are required • JPEG/PNG
+                  </span>
+                </div>
               </div>
 
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 160px 160px",
+
+                  gridTemplateColumns: isMobile
+                    ? "1fr"
+                    : "1fr repeat(4, 120px)",
                   gap: 14,
                 }}
               >
@@ -1194,7 +1213,14 @@ export default function CreateListing() {
                   >
                     Drag &amp; drop images
                   </p>
-                  <p style={{ margin: 0, fontSize: 12, color: "#9b96b8" }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 12,
+                      color: "#9b96b8",
+                      textAlign: "center",
+                    }}
+                  >
                     or browse from your device
                   </p>
                   <input
@@ -1208,7 +1234,7 @@ export default function CreateListing() {
                 </div>
 
                 {/* Uploaded image thumbnails */}
-                {previewImages.slice(0, 2).map((src, i) => (
+                {previewImages.slice(0, 4).map((src, i) => (
                   <div
                     key={i}
                     style={{
@@ -1228,12 +1254,14 @@ export default function CreateListing() {
                         display: "block",
                       }}
                     />
-                    <button
+                    {/* <button
                       onClick={() =>
                         setUploadedImages((prev) =>
                           prev.filter((_, idx) => idx !== i),
                         )
+                        
                       }
+                      
                       style={{
                         position: "absolute",
                         top: 8,
@@ -1249,6 +1277,35 @@ export default function CreateListing() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                      }}
+                    >
+                      ×
+                    </button> */}
+                    <button
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        width: 24,
+                        height: 24,
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        border: "none",
+                        color: "#fff",
+                        fontSize: 14,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => {
+                        setUploadedImages((prev) =>
+                          prev.filter((_, idx) => idx !== i),
+                        );
+
+                        setPreviewImages((prev) =>
+                          prev.filter((_, idx) => idx !== i),
+                        );
                       }}
                     >
                       ×
@@ -1381,7 +1438,7 @@ export default function CreateListing() {
           </div>
         </div>
       </div>
-         {/* TOAST */}
+      {/* TOAST */}
       <div className={`toast ${toast ? "show" : ""}`}>
         ✓ Profile saved successfully!
       </div>
