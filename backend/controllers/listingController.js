@@ -324,7 +324,11 @@ export const getListings = async (req, res) => {
     }
 
     // ✅ Combine all filters
-    const filter = conditions.length > 0 ? { $and: conditions } : {};
+    // const filter = conditions.length > 0 ? { $and: conditions } : {};
+      const filter = {
+      status: "active", // 🔥 MAIN FIX
+      ...(conditions.length > 0 && { $and: conditions })
+    };
     console.log("Constructed filter:", JSON.stringify(filter, null, 2));
 
     const listings = await Listing.find(filter).sort({ createdAt: -1 });
@@ -342,13 +346,15 @@ export const getListings = async (req, res) => {
 
 export const getAllData = async (req, res) => {
   try {
-    const listings = await Listing.find();
+    const listings = await Listing.find({ status: "active" }) // ✅ FILTER HERE
+    console.log(listings);
 
     if (listings.length === 0) {
       return res.status(404).json({ message: "No listings found" });
     }
 
     res.status(200).json(listings);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -54,6 +54,7 @@ export default function Search() {
       const query = new URLSearchParams(filters).toString();
       const res = await axios.get(`http://localhost:5000/api/listings?${query}`);
       setListings(res.data.listings);
+      
     } catch (err) {
       console.error(err);
     }
@@ -63,34 +64,72 @@ export default function Search() {
     fetchListings();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/listings/getall");
-        setListings(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await axios.get("http://localhost:5000/api/listings/getall");
+  //       setListings(res.data);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+  //   fetchData();
 
-    const fetchBookmarks = async () => {
-      try {
-        const token = localStorage.getItem("token"); // or wherever you store JWT
-        const bookmarkRes = await axios.get("http://localhost:5000/api/bookmarks", {
-          headers: {
-            "Authorization": `Bearer ${token}`   // ✅ IMPORTANT
-          }
-        });
-        setUserBookmarks(bookmarkRes.data.bookmarks.map(b => b._id));
-      } catch (err) {
-        console.error(err);
-      }
+  //   const fetchBookmarks = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token"); // or wherever you store JWT
+  //       const bookmarkRes = await axios.get("http://localhost:5000/api/bookmarks", {
+  //         headers: {
+  //           "Authorization": `Bearer ${token}`   // ✅ IMPORTANT
+  //         }
+  //       });
+  //       setUserBookmarks(bookmarkRes.data.bookmarks.map(b => b._id));
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
       
-    };
-    fetchBookmarks();
+  //   };
+  //   fetchBookmarks();
 
-  }, [likedCards]);
+  // }, [likedCards]);
+//   useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const res = await axios.get("http://localhost:5000/api/listings/getall");
+//       setListings(res.data);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   fetchData();
+// }, []); // ✅ empty dependency
+
+useEffect(() => {
+  const fetchBookmarks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const bookmarkRes = await axios.get(
+        "http://localhost:5000/api/bookmarks",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setUserBookmarks(
+        bookmarkRes.data.bookmarks.map(b => b._id)
+      );
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchBookmarks();
+}, [likedCards]); // ✅ correct
 
   // const toggleLike = (id) =>
   //   setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -133,17 +172,7 @@ export default function Search() {
 
   const roomStyles = ["Premium", "Regular"];
 
-  // const styleLabels = {
-  //   "Single room": "Private Studio",
-  //   "2-sharing room": "Twin Sharing",
-  //   "3-sharing room": "Premium Dormitory",
-  // };
-
-  // const displayStyles = [
-  //   { value: "Single room", label: "Private Studio" },
-  //   { value: "2-sharing room", label: "Twin Sharing" },
-  //   { value: "3-sharing room", label: "Premium Dormitory" },
-  // ];
+ 
 
   console.log(likedCards);
   console.log("User bookmarks:", userBookmarks);
