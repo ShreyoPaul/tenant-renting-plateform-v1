@@ -118,7 +118,28 @@ export const createListing = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    let { title, price,description, location, owner_name, owner_phone, amenities, tags } = req.body;
+    let { title, price,description, location, owner_name, owner_phone, amenities, tags, nearbyPlaces, guidelines } = req.body;
+
+    // Parse JSON fields if they exist
+    if (nearbyPlaces) {
+      try {
+        nearbyPlaces = JSON.parse(nearbyPlaces);
+      } catch (e) {
+        nearbyPlaces = [];
+      }
+    } else {
+      nearbyPlaces = [];
+    }
+
+    if (guidelines) {
+      try {
+        guidelines = JSON.parse(guidelines);
+      } catch (e) {
+        guidelines = [];
+      }
+    } else {
+      guidelines = [];
+    }
 
     // Parse location into area and sub_area
     const locationParts = location.split(', ');
@@ -165,7 +186,9 @@ export const createListing = async (req, res) => {
       amenities: parsedAmenities,
       tags: parsedTags,
       images: imageUrls,
-      owner: userId // ✅ KEY CHANGE
+      owner: userId,
+      nearbyPlaces: nearbyPlaces || [],
+      guidelines: guidelines || [],
     });
 
     await listing.save();

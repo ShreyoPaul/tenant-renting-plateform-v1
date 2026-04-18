@@ -74,6 +74,32 @@ const listingSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    nearbyPlaces: [
+      {
+        place: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+        },
+        distance: {
+          type: String,
+        },
+      },
+    ],
+    guidelines: [
+      {
+        title: {
+          type: String,
+          required: true,
+        },
+        desc: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );
