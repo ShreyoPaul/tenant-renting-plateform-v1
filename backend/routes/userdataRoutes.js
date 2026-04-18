@@ -10,7 +10,7 @@ import { authMiddleware } from "../utils/middleware.js";
 const router = express.Router();
 
 // router.post("/profile", authMiddleware, saveUserProfile);
-router.post("/profile", authMiddleware, upload.single("profileImg"), saveUserProfile);
+router.post("/profile", authMiddleware, upload.single("profileImg"), saveUserProfile); //why upload?
 router.get("/profile", authMiddleware, getUserProfile);
 
 export default router;

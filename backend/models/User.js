@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   bookmarks: [
     // listing IDs
     { type: mongoose.Schema.Types.ObjectId, ref: "Listing" }
-  ]
+  ],
+  profileFilled: { type: Boolean, default: false },
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);

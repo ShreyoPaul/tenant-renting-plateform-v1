@@ -1,4 +1,6 @@
 import UserData from "../models/UserData.js";
+import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 // export const saveUserProfile = async (req, res) => {
 //   try {
@@ -200,9 +202,15 @@ export const saveUserProfile = async (req, res) => {
       { new: true, upsert: true }
     );
 
+    // ✅ Mark profile as filled in User collection
+    const user = await User.findByIdAndUpdate(userId, { profileFilled: true }, { new: true });
+
+    const token=jwt.sign({ id: user._id, role: user.role, profileFilled: user.profileFilled }, "SECRET_KEY");
+
     res.status(200).json({
       message: "Profile saved successfully",
-      data: userProfile
+      data: userProfile,
+      token // ✅ return token to update client-side profileFilled
     });
 
   } catch (error) {

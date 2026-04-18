@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import UserData from "../models/UserData.js";
 
 export const signup = async (req, res) => {
   try {
@@ -20,6 +21,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      profileFilled: false
     });
 
     // generate token
@@ -28,7 +30,7 @@ export const signup = async (req, res) => {
     //   "SECRET_KEY",
     //   { expiresIn: "7d" }
     // );
-    const token=jwt.sign({ id: user._id, role: user.role }, "SECRET_KEY");
+    const token=jwt.sign({ id: user._id, role: user.role, profileFilled: user.profileFilled }, "SECRET_KEY");
     console.log("data is "+token)
 
     res.status(201).json({
@@ -49,12 +51,13 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
+    const userData = await UserData.findOne({ user: user._id }); // ✅ fetch profile data
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id ,role:user.role}, "SECRET_KEY", {
+    const token = jwt.sign({ id: user._id ,role:user.role, profileFilled: userData ? true : false }, "SECRET_KEY", {
       expiresIn: "7d"
     });
 
