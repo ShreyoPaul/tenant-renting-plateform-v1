@@ -126,8 +126,8 @@ export const createListing = async (req, res) => {
     const sub_area = locationParts[1] ? locationParts[1].trim() : null;
 
     // Image file validation (must have one image)
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: "At least one image is required" });
+    if (!req.files || req.files.length <4) {
+      return res.status(400).json({ error: "4 images are required" });
     }
 
     if (!title || !price || !location || !owner_name || !owner_phone || !amenities || !tags ||!description || !security_deposit) {

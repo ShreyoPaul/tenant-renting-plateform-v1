@@ -204,6 +204,12 @@ export default function CreateListing() {
       console.log("FormData entries:", Array.from(formData.entries()));
       const token = localStorage.getItem("token");
 
+        if (uploadedImages.length < 4) {
+    alert("Please upload 4 images.");
+    return;
+  }
+
+
       const res = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
         headers: {
