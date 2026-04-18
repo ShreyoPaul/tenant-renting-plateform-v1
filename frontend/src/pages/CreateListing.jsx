@@ -76,7 +76,7 @@ export default function CreateListing() {
         formData.append("images", img);
       });
 
-      console.log("FormData entries:", Array.from(formData.entries()));
+      // console.log("FormData entries:", Array.from(formData.entries()));
       const token = localStorage.getItem("token");
 
       const res = await fetch("http://localhost:5000/api/listings", {
@@ -88,7 +88,6 @@ export default function CreateListing() {
       });
 
       const data = await res.json();
-      console.log(data);
 
       if (res.ok) {
         setToast(true);
@@ -155,7 +154,6 @@ export default function CreateListing() {
   const updateNearbyPlace = (index, field, value) => {
     const updated = [...nearbyPlaces];
     updated[index][field] = value;
-    console.log("Updated Nearby Place:", updated[index]);
     setNearbyPlaces(updated);
   };
 
@@ -226,8 +224,6 @@ export default function CreateListing() {
 
 
   /////////////// CONSOLE> LOGGING FOR DEBUGGING PURPOSES
-  // console.log("Nearby Places:", nearbyPlaces);
-  // console.log("Guidelines:", guidelines);
 
 
   return (
