@@ -345,7 +345,7 @@ useEffect(()=>{
                 ✓ Verified Listing
               </span>
             )}
-            <span style={{
+            {/* <span style={{
               display: "flex", alignItems: "center",
               padding: isMobile ? "6px 12px" : "8px 18px",
               borderRadius: 999, fontSize: 12,
@@ -353,17 +353,17 @@ useEffect(()=>{
               fontFamily: "sans-serif",
             }}>
               Only 2 Rooms Left
-            </span>
+            </span> */}
           </div>
         </div>
 
         {/* ── Photo Grid ── */}
         <div className="pd-photo-grid">
           <div className="pd-photo-main">
-            <img src={PHOTOS[0]} alt="main" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <img src={listing.images[0]} alt="main" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </div>
           <div className="pd-photo-right">
-            {PHOTOS.slice(1).map((p, i) => (
+            {listing.images.slice(1).map((p, i) => (
               <div key={i} style={{ borderRadius: 12, overflow: "hidden", position: "relative" }}>
                 <img src={p} alt={`photo-${i}`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 {i === 2 && (
@@ -411,9 +411,9 @@ useEffect(()=>{
                       gap: 8, padding: "14px 8px", borderRadius: 10,
                       backgroundColor: "#f8f6ff", cursor: "default",
                     }}>
-                      <span style={{ fontSize: 22 }}>{icon}</span>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: "#3b3584", fontFamily: "sans-serif", textAlign: "center", lineHeight: 1.3 }}>
-                        {label}
+                      {/* <span style={{ fontSize: 22 }}>{icon}</span> */}
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#3b3584", fontFamily: "sans-serif", textAlign: "center", lineHeight: 1.3 }}>
+                        {item}
                       </span>
                     </div>
                   );
