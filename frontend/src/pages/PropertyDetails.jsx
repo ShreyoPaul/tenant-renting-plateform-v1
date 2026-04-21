@@ -581,7 +581,7 @@ export default function PropertyDetails() {
               >
                 🎓 Academic Proximity
               </h3>
-              {PROXIMITY.map((p, i) => (
+              {listing.nearbyPlaces.map((p, i) => (
                 <div
                   key={p.name}
                   style={{
@@ -590,7 +590,7 @@ export default function PropertyDetails() {
                     justifyContent: "space-between",
                     padding: "14px 0",
                     borderBottom:
-                      i < PROXIMITY.length - 1 ? "1px solid #e4e0f4" : "none",
+                      i < listing.nearbyPlaces.length - 1 ? "1px solid #e4e0f4" : "none",
                     gap: 8,
                   }}
                 >
@@ -604,10 +604,10 @@ export default function PropertyDetails() {
                   >
                     <div
                       style={{
-                        width: 36,
-                        height: 36,
+                        width: 10,
+                        height: 10,
                         borderRadius: "50%",
-                        backgroundColor: "#e8e4f8",
+                        backgroundColor: "#3b3584",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -615,7 +615,8 @@ export default function PropertyDetails() {
                         flexShrink: 0,
                       }}
                     >
-                      {p.icon}
+                      {/* {p.icon} */}
+
                     </div>
                     <div style={{ minWidth: 0 }}>
                       <div
@@ -625,7 +626,7 @@ export default function PropertyDetails() {
                           color: "#1a1740",
                         }}
                       >
-                        {p.name}
+                        {p.place}
                       </div>
                       <div
                         style={{
@@ -634,7 +635,7 @@ export default function PropertyDetails() {
                           fontFamily: "sans-serif",
                         }}
                       >
-                        {p.sub}
+                        {p.description}
                       </div>
                     </div>
                   </div>
@@ -647,7 +648,7 @@ export default function PropertyDetails() {
                       flexShrink: 0,
                     }}
                   >
-                    {p.time}
+                    {p.distance}
                   </span>
                 </div>
               ))}
@@ -674,15 +675,16 @@ export default function PropertyDetails() {
               }}
             >
               <div className="pd-guidelines-grid">
-                {GUIDELINES.map((g) => (
+                {listing.guidelines.map((g,i) => (
                   <div key={g.title} style={{ display: "flex", gap: 12 }}>
-                    <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>
-                      {g.icon}
+                    <span style={{ fontSize: 16, flexShrink: 0, marginTop: 2 }}>
+                      {/* {g.icon} */}
+                      {i+1}.
                     </span>
                     <div>
                       <div
                         style={{
-                          fontSize: 13,
+                          fontSize: 20,
                           fontWeight: 600,
                           color: "#1a1740",
                           marginBottom: 3,
