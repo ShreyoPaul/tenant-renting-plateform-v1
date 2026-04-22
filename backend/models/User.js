@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "Listing" }
   ],
   profileFilled: { type: Boolean, default: false },
+  resetPasswordToken: String,
+resetPasswordExpire: Date,
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);
