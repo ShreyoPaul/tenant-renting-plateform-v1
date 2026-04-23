@@ -49,24 +49,62 @@ export const signup = async (req, res) => {
 
 
 
+// export const login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const user = await User.findOne({ email });
+//     const userData = await UserData.findOne({ user: user._id }); // ✅ fetch profile data
+//     if (!user) return res.status(400).json({ message: "User not found" });
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+
+//     const token = jwt.sign({ id: user._id ,role:user.role, profileFilled: userData ? true : false }, "SECRET_KEY", {
+//       expiresIn: "7d"
+//     });
+
+//     res.json({ token, user });
+
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    const userData = await UserData.findOne({ user: user._id }); // ✅ fetch profile data
-    if (!user) return res.status(400).json({ message: "User not found" });
 
+    // ✅ FIRST check user
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // ✅ THEN fetch userData
+    const userData = await UserData.findOne({ user: user._id });
+
+    // ✅ check password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
 
-    const token = jwt.sign({ id: user._id ,role:user.role, profileFilled: userData ? true : false }, "SECRET_KEY", {
-      expiresIn: "7d"
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        profileFilled: userData ? true : false
+      },
+      "SECRET_KEY",
+      { expiresIn: "7d" }
+    );
 
     res.json({ token, user });
 
   } catch (error) {
+    console.error(error); // ✅ add this
     res.status(500).json({ error: error.message });
   }
 };
