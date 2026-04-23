@@ -611,14 +611,14 @@ export default function LoginPage() {
                 </button>
  
                 {/* Divider */}
-                <div className="divider">
+                {/* <div className="divider">
                   <span className="divider-line" />
                   Or continue with
                   <span className="divider-line" />
-                </div>
+                </div> */}
  
                 {/* Social buttons */}
-                <div className="social-row">
+                {/* <div className="social-row">
                   <button className="social-btn" type="button">
                     <div className="social-icon">
                       <svg width="20" height="20" viewBox="0 0 24 24">
@@ -638,7 +638,7 @@ export default function LoginPage() {
                     </div>
                     LinkedIn
                   </button>
-                </div>
+                </div> */}
  
                 {/* Sign Up */}
                 <div className="signup-prompt">
