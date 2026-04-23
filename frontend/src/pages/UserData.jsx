@@ -1341,8 +1341,8 @@ export default function UserData() {
                     )}
                   </div>
                   <div className="slider-labels">
-                    <span>$200</span>
-                    <span>$5,000+</span>
+                    <span>₹200</span>
+                    <span>₹5,000+</span>
                   </div>
                 </div>
 
