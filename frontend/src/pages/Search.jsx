@@ -406,10 +406,10 @@ useEffect(() => {
                   24 Academic residences matching your intellectual profile.
                 </p>
               </div>
-              <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+              {/* <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                 <button style={{ padding: "8px 10px", background: "#ede9fe", border: "none", borderRadius: 8, cursor: "pointer", color: "#4f46e5", fontSize: 16 }}>⊞</button>
                 <button style={{ padding: "8px 10px", background: "#fff", border: "1px solid #e5e3f5", borderRadius: 8, cursor: "pointer", color: "#9ca3af", fontSize: 14 }}>☰</button>
-              </div>
+              </div> */}
             </div>
 
             {/* Cards Grid */}
@@ -435,8 +435,8 @@ useEffect(() => {
                   >
                     <div style={{ position: "relative", height: 200, overflow: "hidden" }} className="desktop_card">
                       <img
-                        src="https://cdn.pixabay.com/photo/2017/08/27/10/16/interior-2685521_1280.jpg"
-                        //  src={listing.images[0]}
+                       
+                         src={listing.images[0]}
                         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         alt={listing.title}
                       />
@@ -724,7 +724,7 @@ function SidebarContent({
 
 
       {/* College Proximity */}
-      <div style={{ marginBottom: 24 }}>
+      {/* <div style={{ marginBottom: 24 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 12px" }}>
           College Proximity
         </p>
@@ -736,7 +736,7 @@ function SidebarContent({
           <span>Within 2km of Presidency University</span>
           <span style={{ fontSize: 11, color: "#9ca3af" }}>▾</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Apply */}
       <button
@@ -752,7 +752,7 @@ function SidebarContent({
       </button>
 
       {/* Map Widget */}
-      <div style={{
+      {/* <div style={{
         marginTop: 20, borderRadius: 16, overflow: "hidden",
         position: "relative", height: 120,
         background: "linear-gradient(135deg, #1a3a4a, #0d2b38)", cursor: "pointer",
@@ -780,7 +780,7 @@ function SidebarContent({
           INTERACTIVE MAP
           <span style={{ fontSize: 12, opacity: 0.7 }}>↗</span>
         </div>
-      </div>
+      </div> */}
      </>
   );
 }
