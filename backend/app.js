@@ -8,17 +8,17 @@ import userdataRoutes from "./routes/userdataRoutes.js"
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(cors({
-  origin: [
-    "http://localhost:5173", // for local dev
-    "https://tenant-renting-plateform.vercel.app" // your live frontend
-  ],
-  credentials: true
-}));
+// app.use(cors());
 // app.use(cors({
-//   origin: "*",   // 🔥 TEMP fix for testing
+//   origin: [
+//     "http://localhost:5173", // for local dev
+//     "https://tenant-renting-plateform.vercel.app" // your live frontend
+//   ],
+//   credentials: true
 // }));
+app.use(cors({
+  origin: "*",   // 🔥 TEMP fix for testing
+}));
 // app.use(cors({
 //   origin: "*"
 // }));
