@@ -569,7 +569,7 @@ const navigate=useNavigate();
             className="hamburger"
             onClick={() => setSidebarOpen((p) => !p)}
           >
-            {sidebarOpen ? "✖" : "☰"}
+            {sidebarOpen ? "✖" : "⋮"}
           </button>
         </div>
 
