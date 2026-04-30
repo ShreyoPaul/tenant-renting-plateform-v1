@@ -74,7 +74,11 @@ const navigate=useNavigate();
   return (
     <nav className="ac-nav">
       {/* Logo */}
-      <div className="ac-nav-logo">The Academic Curator</div>
+      {/* <div className="ac-nav-logo">The Academic Curator</div> */}
+      <div className="ac-nav-logo">
+        <img src="tenant-renting-plateform-v1\frontend\src\assets\noBGRommateLogo.png" alt="" />
+      </div>
+
 
       {/* Desktop Links */}
       <ul className="ac-nav-links">
