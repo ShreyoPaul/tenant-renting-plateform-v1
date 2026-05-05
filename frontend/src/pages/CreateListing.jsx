@@ -12,9 +12,12 @@ const STEPS = [
 ];
 
 const AMENITIES = [
-  "Free Wi-Fi",
+  "Wi-Fi",
   "Almirah",
   "Mattress",
+  "Gas, burner",
+  "Kitchen",
+  "Maid facilities",
   "Refrigerator",
   "Dining Table",
   "Water Purifier",
@@ -22,9 +25,10 @@ const AMENITIES = [
   "Geysers",
   "Lift",
   "Meal Plan",
-  "Washing Machine",
   "AC",
   "24/7 Security",
+  "Parking",
+  "Washing Machine"
 ];
 
 const roomTypes = ["Single", "2 Sharing", "3 Sharing", "4 Sharing"];
