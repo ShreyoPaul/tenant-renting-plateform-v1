@@ -28,7 +28,8 @@ const AMENITIES = [
   "AC",
   "24/7 Security",
   "Parking",
-  "Washing Machine"
+  "Washing Machine",
+  "Balcony"
 ];
 
 const roomTypes = ["Single", "2 Sharing", "3 Sharing", "4 Sharing"];
