@@ -605,9 +605,14 @@ export default function UserData() {
     if (!form.location.trim()) {
       newErrors.location = "Preferred location is required";
     }
+    // if (!form.phoneno.trim()) {
+    //   newErrors.phoneno = "Phone No is required";
+    // }
     if (!form.phoneno.trim()) {
-      newErrors.phoneno = "Phone No is required";
-    }
+  newErrors.phoneno = "Phone No is required";
+} else if (!/^\d{10}$/.test(form.phoneno)) {
+  newErrors.phoneno = "Enter valid 10 digit number";
+}
     if (!form.profession.trim()) {
       newErrors.profession = "Profession is required";
     }
@@ -714,7 +719,7 @@ export default function UserData() {
         formData.append("profileImg", avatarFile);
       }
       formData.append("profession", form.profession);
-      formData.append("phoneno", String(form.phoneno));
+      formData.append("phoneno", form.phoneno);
 
       // 👨‍🎓 Student fields
       if (userRole === "student") {

@@ -100,6 +100,11 @@ export const saveUserProfile = async (req, res) => {
       phoneno
     } = req.body;
 
+const phoneStr = phoneno?.toString().trim();
+
+if (!/^\d{10}$/.test(phoneStr)) {
+  return res.status(400).json({ message: "Enter valid 10 digit phone number" });
+}
     // ✅ Role-based validation
     if (role === "student") {
       if (!fullName || !universityName || !profession || !passoutYear || !dob || !budget || !preferredLocation || !phoneno) {
