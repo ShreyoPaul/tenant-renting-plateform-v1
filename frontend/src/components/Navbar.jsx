@@ -69,8 +69,8 @@ const navigate=useNavigate();
     const confirm = window.confirm("Are you sure you want to logout?");
     if (confirm) {
       localStorage.removeItem("token");
-      // window.location.reload();
-      navigate("/login");
+      window.location.reload();
+      // navigate("/login");
     }
   };
   return (
@@ -103,7 +103,34 @@ const navigate=useNavigate();
         {/* <span>🔔</span>
         <span>♥</span> */}
         {/* <NavLink to={"/signup"} className="ac-avatar">S</NavLink> */}
-         <img src={data?.profileImg} className="ac-avatar" style={{ width: 50, height: 50, borderRadius: "50%" }} />
+         {/* <img src={data?.profileImg} className="ac-avatar" style={{ width: 50, height: 50, borderRadius: "50%" }} /> */}
+         {
+  data?.profileImg ? (
+    <img
+      src={data.profileImg}
+      className="ac-avatar"
+      style={{ width: 50, height: 50, borderRadius: "50%", objectFit: "cover" }}
+    />
+  ) : (
+    <div
+      className="ac-avatar"
+      style={{
+        width: 50,
+        height: 50,
+        borderRadius: "50%",
+        background: "#4f46e5",
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "600",
+        fontSize: "18px"
+      }}
+    >
+      {data?.fullName?.charAt(0).toUpperCase() || "U"}
+    </div>
+  )
+}
         <button
           onClick={handleLogout}
           className="w-20 sm:w-16 rounded-xl
