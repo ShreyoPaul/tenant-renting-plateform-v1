@@ -798,7 +798,7 @@ export default function UserData() {
           <div className="app-wrap">
             {/* NAV */}
             <nav className="navbar">
-              <span className="navbar-brand">Academic Curator</span>
+              <span className="navbar-brand">Rommate</span>
               <div className="avatar-icon">
                 <svg
                   width="20"
