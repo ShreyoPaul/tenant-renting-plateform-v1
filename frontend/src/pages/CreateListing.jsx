@@ -61,73 +61,7 @@ export default function CreateListing() {
   const fileInputRef = useRef(null);
 
   const isMobile = window.innerWidth < 768;
-  // const handleSubmit = async () => {
-  //   try {
-  //     const tags = [];
 
-  //     if (selectedRoom) tags.push(selectedRoom);
-  //     if (selectedCategory) tags.push(selectedCategory);
-
-  //     const payload = {
-  //       title: form.propertyName,
-  //       price: Number(form.price),
-  //       location: form.location,
-  //       description: form.description,
-  //       owner_name: form.owner_name,
-  //       owner_phone: form.phone,
-  //       amenities: selectedAmenities,
-  //       images: uploadedImages,
-  //       tags: tags, // ✅ IMPORTANT
-  //     };
-
-  //     const res = await fetch("http://localhost:5000/api/listings", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const data = await res.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     const tags = [];
-
-  //     if (selectedRoom) tags.push(selectedRoom);
-  //     if (selectedCategory) tags.push(selectedCategory);
-
-  //     const payload = {
-  //       title: form.propertyName,
-  //       price: Number(form.price),
-  //       location: form.location,
-  //       description: form.description,
-  //       owner_name: form.propertyName,
-  //       owner_phone: form.phone,
-  //       amenities: selectedAmenities.join(","), // ✅ IMPORTANT
-  //       images: uploadedImages,
-  //       tags: tags.join(","), // ✅ IMPORTANT
-  //     };
-
-  //     const res = await fetch("http://localhost:5000/api/listings", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const data = await res.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   /// IT IS WORKING
 
