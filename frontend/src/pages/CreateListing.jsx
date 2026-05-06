@@ -29,7 +29,7 @@ const AMENITIES = [
   "24/7 Security",
   "Parking",
   "Washing Machine",
-  "Balcony"
+  "Balcony",
 ];
 
 const roomTypes = ["Single", "2 Sharing", "3 Sharing", "4 Sharing"];
@@ -58,10 +58,10 @@ export default function CreateListing() {
   const [previewImages, setPreviewImages] = useState([]);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [guidelines, setGuidelines] = useState([]);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const isMobile = window.innerWidth < 768;
-
 
   /// IT IS WORKING
 
@@ -152,11 +152,12 @@ export default function CreateListing() {
       console.log("FormData entries:", Array.from(formData.entries()));
       const token = localStorage.getItem("token");
 
-        if (uploadedImages.length < 4) {
-    alert("Please upload 4 images.");
-    return;
-  }
+      if (uploadedImages.length < 4) {
+        alert("Please upload 4 images.");
+        return;
+      }
 
+      setLoading(true);
 
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listings`, {
         method: "POST",
@@ -178,6 +179,8 @@ export default function CreateListing() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // ✅ STOP LOADING
     }
   };
   const navigate = useNavigate();
@@ -238,7 +241,10 @@ export default function CreateListing() {
   };
 
   const addNearbyPlace = () => {
-    setNearbyPlaces([...nearbyPlaces, { place: '', description: '', distance: '' }]);
+    setNearbyPlaces([
+      ...nearbyPlaces,
+      { place: "", description: "", distance: "" },
+    ]);
   };
 
   const updateNearbyPlace = (index, field, value) => {
@@ -252,7 +258,7 @@ export default function CreateListing() {
   };
 
   const addGuideline = () => {
-    setGuidelines([...guidelines, { title: '', desc: '' }]);
+    setGuidelines([...guidelines, { title: "", desc: "" }]);
   };
 
   const updateGuideline = (index, field, value) => {
@@ -313,10 +319,7 @@ export default function CreateListing() {
   );
   const subAreas = selectedArea?.sub_areas || [];
 
-
-
   /////////////// CONSOLE> LOGGING FOR DEBUGGING PURPOSES
-
 
   return (
     <>
@@ -1111,8 +1114,22 @@ export default function CreateListing() {
 
             {/* Nearby Places */}
             <div style={{ marginBottom: 36 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1a1740", margin: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 18,
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#1a1740",
+                    margin: 0,
+                  }}
+                >
                   Nearby Places (Optional)
                 </h2>
                 <button
@@ -1133,9 +1150,34 @@ export default function CreateListing() {
                 </button>
               </div>
               {nearbyPlaces.map((place, index) => (
-                <div key={index} style={{ marginBottom: 16, padding: 16, border: '1px solid #e8e4f8', borderRadius: 12, backgroundColor: '#faf9ff' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <h3 style={{ fontSize: 14, fontWeight: 600, color: '#2e2a50', margin: 0 }}>Place {index + 1}</h3>
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: 16,
+                    padding: 16,
+                    border: "1px solid #e8e4f8",
+                    borderRadius: 12,
+                    backgroundColor: "#faf9ff",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 12,
+                    }}
+                  >
+                    <h3
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#2e2a50",
+                        margin: 0,
+                      }}
+                    >
+                      Place {index + 1}
+                    </h3>
                     <button
                       type="button"
                       onClick={() => removeNearbyPlace(index)}
@@ -1152,12 +1194,21 @@ export default function CreateListing() {
                       Remove
                     </button>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 12,
+                      marginBottom: 12,
+                    }}
+                  >
                     <input
                       type="text"
                       placeholder="Place name (e.g., Mall, Hospital)"
                       value={place.place}
-                      onChange={(e) => updateNearbyPlace(index, 'place', e.target.value)}
+                      onChange={(e) =>
+                        updateNearbyPlace(index, "place", e.target.value)
+                      }
                       style={{
                         padding: "10px 12px",
                         borderRadius: 8,
@@ -1172,7 +1223,9 @@ export default function CreateListing() {
                       type="text"
                       placeholder="Distance (e.g., 2 km)"
                       value={place.distance}
-                      onChange={(e) => updateNearbyPlace(index, 'distance', e.target.value)}
+                      onChange={(e) =>
+                        updateNearbyPlace(index, "distance", e.target.value)
+                      }
                       style={{
                         padding: "10px 12px",
                         borderRadius: 8,
@@ -1188,9 +1241,11 @@ export default function CreateListing() {
                     type="text"
                     placeholder="Description (optional)"
                     value={place.description}
-                    onChange={(e) => updateNearbyPlace(index, 'description', e.target.value)}
+                    onChange={(e) =>
+                      updateNearbyPlace(index, "description", e.target.value)
+                    }
                     style={{
-                      width: '100%',
+                      width: "100%",
                       padding: "10px 12px",
                       borderRadius: 8,
                       border: "1px solid #d6d1f2",
@@ -1206,8 +1261,22 @@ export default function CreateListing() {
 
             {/* Guidelines */}
             <div style={{ marginBottom: 36 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1a1740", margin: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 18,
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#1a1740",
+                    margin: 0,
+                  }}
+                >
                   Guidelines (Optional)
                 </h2>
                 <button
@@ -1228,9 +1297,34 @@ export default function CreateListing() {
                 </button>
               </div>
               {guidelines.map((guideline, index) => (
-                <div key={index} style={{ marginBottom: 16, padding: 16, border: '1px solid #e8e4f8', borderRadius: 12, backgroundColor: '#faf9ff' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <h3 style={{ fontSize: 14, fontWeight: 600, color: '#2e2a50', margin: 0 }}>Guideline {index + 1}</h3>
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: 16,
+                    padding: 16,
+                    border: "1px solid #e8e4f8",
+                    borderRadius: 12,
+                    backgroundColor: "#faf9ff",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 12,
+                    }}
+                  >
+                    <h3
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#2e2a50",
+                        margin: 0,
+                      }}
+                    >
+                      Guideline {index + 1}
+                    </h3>
                     <button
                       type="button"
                       onClick={() => removeGuideline(index)}
@@ -1251,9 +1345,11 @@ export default function CreateListing() {
                     type="text"
                     placeholder="Title (e.g., Check-in Time)"
                     value={guideline.title}
-                    onChange={(e) => updateGuideline(index, 'title', e.target.value)}
+                    onChange={(e) =>
+                      updateGuideline(index, "title", e.target.value)
+                    }
                     style={{
-                      width: '100%',
+                      width: "100%",
                       padding: "10px 12px",
                       borderRadius: 8,
                       border: "1px solid #d6d1f2",
@@ -1267,10 +1363,12 @@ export default function CreateListing() {
                   <textarea
                     placeholder="Description"
                     value={guideline.desc}
-                    onChange={(e) => updateGuideline(index, 'desc', e.target.value)}
+                    onChange={(e) =>
+                      updateGuideline(index, "desc", e.target.value)
+                    }
                     rows={3}
                     style={{
-                      width: '100%',
+                      width: "100%",
                       padding: "10px 12px",
                       borderRadius: 8,
                       border: "1px solid #d6d1f2",
@@ -1278,7 +1376,7 @@ export default function CreateListing() {
                       color: "#2e2a50",
                       backgroundColor: "#fff",
                       outline: "none",
-                      resize: 'vertical',
+                      resize: "vertical",
                     }}
                   />
                 </div>
@@ -1527,22 +1625,25 @@ export default function CreateListing() {
               >
                 Cancel
               </button>
+
               <button
+                onClick={handleSubmit}
+                disabled={loading}
                 style={{
                   padding: "12px 28px",
                   borderRadius: 12,
                   border: "none",
-                  background: "linear-gradient(135deg, #4f46e5, #7c6ef8)",
+                  background: loading
+                    ? "#a5b4fc"
+                    : "linear-gradient(135deg, #4f46e5, #7c6ef8)",
                   color: "#fff",
                   fontSize: 14,
                   fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(79,70,229,0.3)",
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  opacity: loading ? 0.7 : 1,
                 }}
-                onClick={handleSubmit}
               >
-                Submit
+                {loading ? "Uploading..." : "Submit"}
               </button>
             </div>
           </div>
