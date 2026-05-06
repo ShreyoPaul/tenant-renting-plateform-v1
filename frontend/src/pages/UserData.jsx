@@ -999,7 +999,7 @@ export default function UserData() {
 
                 {/* CTA */}
                 <button className="btn-primary" onClick={saveProfile}>
-                  Save Profile
+                 {loading?"Uploading...":"Save Profile"}
                 </button>
                 <button className="btn-skip" onClick={handleCancel}>Cancel</button>
               </div>
