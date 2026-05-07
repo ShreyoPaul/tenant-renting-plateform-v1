@@ -15,7 +15,7 @@ export default function Navbar() {
   const [data, setData] = useState(null);
 
   
-
+const token=localStorage.getItem("token");
 const fetchData = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -127,19 +127,40 @@ const navigate=useNavigate();
         fontSize: "18px"
       }}
     >
-      {data?.fullName?.charAt(0).toUpperCase() || "U"}
+      {data?.fullName?.charAt(0).toUpperCase() || "🧑‍🎓"}
     </div>
   )
 }
-        <button
+        {/* <button
           onClick={handleLogout}
           className="w-20 sm:w-16 rounded-xl
   text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 border-red-500 border text-center"
         >
-          {/* <span className="text-lg font-semibold">🚪</span> */}
+         
           Logout
-        </button>
+        </button> */}
 
+        {
+  token ? (
+    <button
+      onClick={handleLogout}
+      className="w-20 sm:w-16 rounded-xl
+      text-red-500 hover:bg-red-500 hover:text-white
+      transition-all duration-200 border-red-500 border text-center"
+    >
+      Logout
+    </button>
+  ) : (
+    <button
+      onClick={() => navigate("/login")}
+      className="w-20 sm:w-16 rounded-xl
+      text-blue-500 hover:bg-blue-500 hover:text-white
+      transition-all duration-200 border-blue-500 border text-center"
+    >
+      Login
+    </button>
+  )
+}
         {/* Hamburger */}
         <div
           className="ac-hamburger"
