@@ -478,7 +478,7 @@ export default function SignupPage() {
                     <path d="M2 9l10-6 10 6-10 6-10-6z" /><path d="M2 17l10 6 10-6" /><path d="M2 13l10 6 10-6" />
                   </svg>
                 </div>
-                <span style={{ color: "#3730a3", fontWeight: 700, fontSize: 14 }}>The Academic Curator</span>
+                <span style={{ color: "#3730a3", fontWeight: 700, fontSize: 14 }}>Rommate</span>
               </div>
 
               <h2 style={{ fontSize: 30, fontWeight: 900, color: "#1e1b4b", marginBottom: 4 }}>Join the Community</h2>
@@ -514,7 +514,7 @@ export default function SignupPage() {
 
                 {/* Email */}
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 5 }}>University Email</label>
+                  <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 5 }}> Email</label>
                   <div style={{ position: "relative" }}>
                     <svg style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "#9ca3af", pointerEvents: "none" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" />
@@ -598,13 +598,13 @@ export default function SignupPage() {
 
         {/* ── FOOTER ── */}
         <footer className="footer-inner">
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#1e1b4b" }}>The Academic Curator</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#1e1b4b" }}>Rommate</span>
           <div className="footer-links">
             {["Privacy Policy", "Terms of Service", "Support", "Institutional Partners"].map((link) => (
               <a key={link} href="#" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>{link}</a>
             ))}
           </div>
-          <span style={{ fontSize: 12, color: "#9ca3af" }}>© 2024 The Academic Curator. All rights reserved.</span>
+          <span style={{ fontSize: 12, color: "#9ca3af" }}>© 2024 Rommate. All rights reserved.</span>
         </footer>
 
       </div>
