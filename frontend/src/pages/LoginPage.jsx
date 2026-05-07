@@ -504,7 +504,7 @@ export default function LoginPage() {
             <div className="left-overlay" />
             <div className="left-pattern" />
             <div className="left-content">
-              <h1 className="left-title">The Academic<br />Curator</h1>
+              <h1 className="left-title">Rommate</h1>
               <p className="left-subtitle">
                 Curating premium student housing experiences for the modern scholar in the heart of Kolkata.
               </p>
@@ -659,13 +659,13 @@ export default function LoginPage() {
  
         {/* ── FOOTER ── */}
         <footer className="site-footer">
-          <span className="footer-brand">The Academic Curator</span>
+          <span className="footer-brand">Rommate</span>
           <div className="footer-links">
             {["Privacy Policy", "Terms of Service", "Support", "Institutional Partners"].map((l) => (
               <button key={l} className="footer-link" type="button">{l}</button>
             ))}
           </div>
-          <span className="footer-copy">© 2024 The Academic Curator. All rights reserved.</span>
+          <span className="footer-copy">© 2024 Rommate. All rights reserved.</span>
         </footer>
       </div>
     </>
