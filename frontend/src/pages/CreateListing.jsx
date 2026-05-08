@@ -26,6 +26,7 @@ const AMENITIES = [
   "Lift",
   "Meal Plan",
   "AC",
+  "Non AC",
   "24/7 Security",
   "Parking",
   "Washing Machine",
