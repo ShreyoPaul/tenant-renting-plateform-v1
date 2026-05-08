@@ -405,9 +405,9 @@ useEffect(() => {
                 <h1 style={{ margin: 0, fontSize: 32, fontWeight: 800, color: "#1f2937", letterSpacing: "-0.02em" }}>
                   Curated Findings
                 </h1>
-                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#6b7280" }}>
-                  24 Academic residences matching your intellectual profile.
-                </p>
+               <p style={{ margin: "4px 0 0", fontSize: 14, color: "#6b7280" }}>
+  {listings.length} PGs & rooms available across Kolkata.
+</p>
               </div>
               {/* <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                 <button style={{ padding: "8px 10px", background: "#ede9fe", border: "none", borderRadius: 8, cursor: "pointer", color: "#4f46e5", fontSize: 16 }}>⊞</button>
