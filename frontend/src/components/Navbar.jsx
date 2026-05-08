@@ -352,7 +352,7 @@ const navigate=useNavigate();
 <button
   onClick={() => navigate("/login")}
   className="flex items-center gap-1.5 px-5 h-9 rounded-sm text-sm w-20 justify-center font-semibold text-white
-             bg-gradient-to-br from-[#1a237e] to-[#283593]
+             bg-linear-to-br from-[#1a237e] to-[#283593]
              shadow-[0_2px_10px_rgba(26,35,126,0.3)]
              hover:from-[#283593] hover:to-[#3949ab] hover:-translate-y-px
              hover:shadow-[0_4px_16px_rgba(26,35,126,0.35)]
