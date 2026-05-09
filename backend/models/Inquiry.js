@@ -24,6 +24,10 @@ const inquirySchema = new mongoose.Schema(
       type: String,
       enum: ["whatsapp", "call"],
     },
+    count: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );
