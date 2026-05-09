@@ -194,7 +194,7 @@ export default function PropertyDetails() {
     const data = await res.json();
 
     if (res.ok) {
-      const phone = `91${data.phone}`;
+      const phone = `91${listing.owner_phone}`;
 
       const message = encodeURIComponent(
         `Hi ${listing.owner_name}, I'm interested in your listing priced at ₹${listing.price}.`
