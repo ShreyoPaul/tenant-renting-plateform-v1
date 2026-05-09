@@ -138,6 +138,34 @@ export default function PropertyDetails() {
   //   window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   // };
 
+  const handleCall = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // ✅ track call click
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/api/inquiry/track-call`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          listingId: listing._id,
+        }),
+      }
+    );
+
+    // ✅ open phone dialer
+    window.location.href = `tel:${listing.owner_phone}`;
+  } catch (error) {
+    console.error(error);
+
+    // still open dialer even if tracking fails
+    window.location.href = `tel:${listing.owner_phone}`;
+  }
+};
   const handleWhatsApp = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -980,26 +1008,25 @@ export default function PropertyDetails() {
                 {/* <a href={`tel:${listing.phone}`}>
   <button>📞 Call Owner</button>
 </a> */}
-                <a href={`tel:${listing.owner_phone}`}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      fontSize: 13,
-                      backgroundColor: "#f8f6ff",
-                      padding: "10px 12px",
-                      borderRadius: 10,
-                      marginBottom: 12,
-                      color: "#4a4770",
-                      fontFamily: "sans-serif",
-                      wordBreak: "break-all",
-                    }}
-                  >
-                    {/* 📞 {listing.owner_phone} */}
-                    📞 Call Owner
-                  </div>
-                </a>
+             <div
+  onClick={handleCall}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    fontSize: 13,
+    backgroundColor: "#f8f6ff",
+    padding: "10px 12px",
+    borderRadius: 10,
+    marginBottom: 12,
+    color: "#4a4770",
+    fontFamily: "sans-serif",
+    wordBreak: "break-all",
+    cursor: "pointer",
+  }}
+>
+  📞 Call Owner
+</div>
 
                 <button
                   onClick={handleWhatsApp}
