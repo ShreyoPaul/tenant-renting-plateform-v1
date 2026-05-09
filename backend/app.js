@@ -5,6 +5,7 @@ import listingRoutes from "./routes/listingRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import bookmarkRoutes from "./routes/bookmarkRoutes.js";
 import userdataRoutes from "./routes/userdataRoutes.js"
+import inquiryRoutes from "./routes/inquiryRoutes.js"
 const app = express();
 
 // Middleware
@@ -29,7 +30,7 @@ app.use("/api/listings", listingRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/user", userdataRoutes);
-
+app.use("/api/inquiry",inquiryRoutes);
 // Health check
 app.get("/", (req, res) => {
   res.json({ message: "✅ Backend is running" });
