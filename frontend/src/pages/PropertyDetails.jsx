@@ -111,13 +111,20 @@ export default function PropertyDetails() {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/listings/${id}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/listings/${id}`,
+        );
+
         setListing(res.data);
-        console.log("The user data is" + res.data);
+
+        console.log("Listing Data:", res.data);
+        console.log("Owner Profile:", res.data.ownerProfile);
+        console.log("Profile Image:", res.data.ownerProfile?.profileImg);
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchListing();
   }, [id]);
 
@@ -129,23 +136,12 @@ export default function PropertyDetails() {
 
   const px = isMobile ? "16px" : isTablet ? "20px" : "32px";
 
-  // const handleWhatsApp = () => {
-  //   const phone = `91${listing.owner_phone}`;
-  //   const message = encodeURIComponent(
-  //     `Hi ${listing.owner_name}, I'm interested in your listing priced at ₹${listing.price}.`,
-  //   );
-
-  //   window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-  // };
-
   const handleCall = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    // ✅ track call click
-    await fetch(
-      `${import.meta.env.VITE_API_URL}/api/inquiry/track-call`,
-      {
+      // ✅ track call click
+      await fetch(`${import.meta.env.VITE_API_URL}/api/inquiry/track-call`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,63 +150,58 @@ export default function PropertyDetails() {
         body: JSON.stringify({
           listingId: listing._id,
         }),
-      }
-    );
+      });
 
-    // ✅ open phone dialer
-    window.location.href = `tel:${listing.owner_phone}`;
-  } catch (error) {
-    console.error(error);
+      // ✅ open phone dialer
+      window.location.href = `tel:${listing.owner_phone}`;
+    } catch (error) {
+      console.error(error);
 
-    // still open dialer even if tracking fails
-    window.location.href = `tel:${listing.owner_phone}`;
-  }
-};
+      // still open dialer even if tracking fails
+      window.location.href = `tel:${listing.owner_phone}`;
+    }
+  };
   const handleWhatsApp = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    // 🔒 Require login first
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    // ✅ Track inquiry
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/inquiry/track-whatsapp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          listingId: listing._id,
-        }),
+      // 🔒 Require login first
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    );
 
-    const data = await res.json();
-
-    if (res.ok) {
-      const phone = `91${listing.owner_phone}`;
-
-      const message = encodeURIComponent(
-        `Hi ${listing.owner_name}, I'm interested in your listing priced at ₹${listing.price}.`
+      // ✅ Track inquiry
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/inquiry/track-whatsapp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            listingId: listing._id,
+          }),
+        },
       );
 
-      // ✅ Open WhatsApp after tracking
-      window.open(
-        `https://wa.me/${phone}?text=${message}`,
-        "_blank"
-      );
+      const data = await res.json();
+
+      if (res.ok) {
+        const phone = `91${listing.owner_phone}`;
+
+        const message = encodeURIComponent(
+          `Hi ${listing.owner_name}, I'm interested in your listing priced at ₹${listing.price}.`,
+        );
+
+        // ✅ Open WhatsApp after tracking
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   return (
     <>
@@ -664,7 +655,9 @@ export default function PropertyDetails() {
                     justifyContent: "space-between",
                     padding: "14px 0",
                     borderBottom:
-                      i < listing.nearbyPlaces.length - 1 ? "1px solid #e4e0f4" : "none",
+                      i < listing.nearbyPlaces.length - 1
+                        ? "1px solid #e4e0f4"
+                        : "none",
                     gap: 8,
                   }}
                 >
@@ -690,7 +683,6 @@ export default function PropertyDetails() {
                       }}
                     >
                       {/* {p.icon} */}
-
                     </div>
                     <div style={{ minWidth: 0 }}>
                       <div
@@ -749,11 +741,11 @@ export default function PropertyDetails() {
               }}
             >
               <div className="pd-guidelines-grid">
-                {listing.guidelines.map((g,i) => (
+                {listing.guidelines.map((g, i) => (
                   <div key={g.title} style={{ display: "flex", gap: 12 }}>
                     <span style={{ fontSize: 16, flexShrink: 0, marginTop: 2 }}>
                       {/* {g.icon} */}
-                      {i+1}.
+                      {i + 1}.
                     </span>
                     <div>
                       <div
@@ -958,30 +950,35 @@ export default function PropertyDetails() {
                     marginBottom: 14,
                   }}
                 >
-                  <div style={{ position: "relative" }}>
-                    <img
-                      src={data?.profileImg}
-                      alt="curator"
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                    <span
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        right: 0,
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        backgroundColor: "#4caf8e",
-                        border: "2px solid #fff",
-                      }}
-                    />
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#5b54d4",
+                      color: "#fff",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {listing?.ownerProfile?.profileImg ? (
+                      <img
+                        src={listing.ownerProfile.profileImg}
+                        alt="curator"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      listing?.owner_name?.charAt(0)
+                    )}
                   </div>
                   <div>
                     <div
@@ -1008,25 +1005,25 @@ export default function PropertyDetails() {
                 {/* <a href={`tel:${listing.phone}`}>
   <button>📞 Call Owner</button>
 </a> */}
-             <div
-  onClick={handleCall}
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    fontSize: 13,
-    backgroundColor: "#f8f6ff",
-    padding: "10px 12px",
-    borderRadius: 10,
-    marginBottom: 12,
-    color: "#4a4770",
-    fontFamily: "sans-serif",
-    wordBreak: "break-all",
-    cursor: "pointer",
-  }}
->
-  📞 Call Owner
-</div>
+                <div
+                  onClick={handleCall}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontSize: 13,
+                    backgroundColor: "#f8f6ff",
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    marginBottom: 12,
+                    color: "#4a4770",
+                    fontFamily: "sans-serif",
+                    wordBreak: "break-all",
+                    cursor: "pointer",
+                  }}
+                >
+                  📞 Call Owner
+                </div>
 
                 <button
                   onClick={handleWhatsApp}
