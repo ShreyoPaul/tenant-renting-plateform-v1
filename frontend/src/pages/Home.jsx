@@ -50,7 +50,7 @@ function Hero() {
           <HeroIllustration />
         </div>
         <div className="ac-hero-badge">
-          <span className="big">50+</span>
+          <span className="big">20+</span>
           VERIFIED LISTINGS
           <br />
           IN KOLKATA
