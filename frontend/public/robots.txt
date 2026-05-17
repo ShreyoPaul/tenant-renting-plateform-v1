@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /owners
+Disallow: /account
+Disallow: /newlisting
+Disallow: /collectuserdata
+Disallow: /editdetails
+Disallow: /reset-password
+
+Sitemap: https://rommate.in/sitemap.xml

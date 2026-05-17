@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import MainFooter from "../components/MainFooter";
+import SEO from "../components/SEO.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -134,6 +135,17 @@ export default function PropertyDetails() {
     );
   }
 
+  const seoTitle = `${listing.title} — Verified Student Rental in Kolkata`;
+  const seoDescription =
+    listing.description ||
+    `Discover trusted student accommodation in Kolkata near top colleges. ${listing.title} offers a safe, curated rental option for students.`;
+  const seoUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `https://rommate.in/propertydetails/${id}`;
+  const seoImage = listing.images?.[0] || "/logostart.png";
+  const seoKeywords = `student housing Kolkata, ${listing.title}, ${listing.location || "Kolkata"}, verified rental`;
+
   const px = isMobile ? "16px" : isTablet ? "20px" : "32px";
 
   const handleCall = async () => {
@@ -205,6 +217,13 @@ export default function PropertyDetails() {
 
   return (
     <>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        url={seoUrl}
+        image={seoImage}
+        keywords={seoKeywords}
+      />
       <style>{`
         * { box-sizing: border-box; }
 

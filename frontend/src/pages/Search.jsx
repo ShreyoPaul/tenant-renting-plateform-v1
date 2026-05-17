@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import "../styles/AcademicCurator.css";
 import { NavLink } from "react-router-dom";
 import MainFooter from "../components/MainFooter";
+import SEO from "../components/SEO.jsx";
 import { useEffect } from "react";
 import axios from "axios";
 import locationDataset from "../data/location-dataset.json";
@@ -66,6 +67,10 @@ export default function Search() {
   useEffect(() => {
     fetchListings();
   }, []);
+
+  const pageTitle = "Search Verified Student Rentals in Kolkata | Rommate";
+  const pageDescription =
+    "Browse verified student rentals, shared apartments, and roommate-friendly accommodations in Kolkata. Filter by location, budget, and amenities to find your next student home.";
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -182,9 +187,13 @@ useEffect(() => {
 
   return (
     <>
-    
-    <Navbar />
-   
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        keywords="Kolkata student rentals, student accommodation search, roommate housing, verified rentals"
+      />
+      <Navbar />
+      
       <style>{`
         .curated-wrapper {
           min-height: 100vh;

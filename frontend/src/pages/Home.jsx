@@ -10,6 +10,7 @@ import {
 import Navbar from "../components/Navbar.jsx";
 import MainFooter from "../components/MainFooter.jsx";
 import ListingCard from "../components/ListingCards.jsx";
+import SEO from "../components/SEO.jsx";
 import { NavLink } from "react-router-dom";
 
 
@@ -198,14 +199,21 @@ export default function AcademicCurator() {
   const [activeNav, setActiveNav] = useState("Home");
 
   return (
-    <div className="ac-root">
-      <Navbar activeNav={activeNav} setActiveNav={setActiveNav} />
-      <Hero />
-      <ListingsSection />
-      <TrustBar />
-      <TestimonialsSection />
-      <CTABanner />
-      <MainFooter />
-    </div>
+    <>
+      <SEO
+        title="Rommate — Verified Student Rentals & Roommate Finder in Kolkata"
+        description="Find verified student accommodations near Kolkata universities. Browse curated roommate-friendly rentals and secure your ideal student housing with Rommate."
+        keywords="student housing Kolkata, verified student rentals, roommate finder, Kolkata accommodation, college housing"
+      />
+      <div className="ac-root">
+        <Navbar activeNav={activeNav} setActiveNav={setActiveNav} />
+        <Hero />
+        <ListingsSection />
+        <TrustBar />
+        <TestimonialsSection />
+        <CTABanner />
+        <MainFooter />
+      </div>
+    </>
   );
 }
