@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import MainFooter from "../components/MainFooter";
 import SEO from "../components/SEO.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const PROXIMITY = [
@@ -77,37 +77,12 @@ function useBreakpoint() {
 
 export default function PropertyDetails() {
   const [listing, setListing] = useState(null);
-  const [data, setData] = useState(null);
+  const [copyStatus, setCopyStatus] = useState("");
   const { id } = useParams();
+  const navigate = useNavigate();
   const bp = useBreakpoint();
 
   const isMobile = bp === "mobile";
-  const isTablet = bp === "tablet";
-  const isDesktop = bp === "desktop";
-
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/user/profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      // ✅ axios gives data directly
-      setData(response.data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -145,8 +120,6 @@ export default function PropertyDetails() {
       : `https://rommate.in/propertydetails/${id}`;
   const seoImage = listing.images?.[0] || "/logostart.png";
   const seoKeywords = `student housing Kolkata, ${listing.title}, ${listing.location || "Kolkata"}, verified rental`;
-
-  const px = isMobile ? "16px" : isTablet ? "20px" : "32px";
 
   const handleCall = async () => {
     try {
@@ -198,7 +171,7 @@ export default function PropertyDetails() {
         },
       );
 
-      const data = await res.json();
+      await res.json();
 
       if (res.ok) {
         const phone = `91${listing.owner_phone}`;
@@ -212,6 +185,48 @@ export default function PropertyDetails() {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const listingUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `https://rommate.in/propertydetails/${id}`;
+
+  const shareText = `Check out this property on Rommate: ${listing?.title} in ${listing?.location}. ${listingUrl}`;
+
+  const showToast = (message) => {
+    setCopyStatus(message);
+    window.clearTimeout(showToast.timeoutId);
+    showToast.timeoutId = window.setTimeout(() => setCopyStatus(""), 2200);
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: listing.title,
+          text: shareText,
+          url: listingUrl,
+        });
+        showToast("Property shared successfully!");
+      } else {
+        await navigator.clipboard.writeText(shareText);
+        showToast("Link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Could not share right now.");
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(listingUrl);
+      showToast("Link copied to clipboard!");
+    } catch (error) {
+      console.error(error);
+      showToast("Failed to copy link.");
     }
   };
 
@@ -231,6 +246,23 @@ export default function PropertyDetails() {
           background-color: #f0edf8;
           min-height: 100vh;
           font-family: 'Georgia', serif;
+        }
+
+        .pd-toast {
+          position: fixed;
+          left: 50%;
+          bottom: 28px;
+          transform: translateX(-50%);
+          padding: 12px 18px;
+          background: rgba(20, 116, 62, 0.98);
+          color: #fff;
+          border-radius: 999px;
+          font-size: 13px;
+          box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+          z-index: 9999;
+          max-width: calc(100% - 32px);
+          text-align: center;
+          opacity: 0.98;
         }
 
         /* ── Breadcrumb ── */
@@ -445,6 +477,7 @@ export default function PropertyDetails() {
 
       <Navbar />
       <div className="pd-root">
+        {copyStatus && <div className="pd-toast">{copyStatus}</div>}
         {/* ── Breadcrumb + Badges ── */}
         <div className="pd-breadcrumb">
           <div
@@ -472,35 +505,85 @@ export default function PropertyDetails() {
               {listing.title}
             </span>
           </div>
-          <div className="pd-badges">
-            {listing.verified && (
-              <span
+          <div
+            className="pd-badges"
+            style={{ alignItems: "center", flexDirection: "column", gap: 8 }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                flexWrap: "wrap",
+              }}
+            >
+              {listing.verified && (
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: isMobile ? "6px 12px" : "8px 18px",
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    backgroundColor: "#4caf8e",
+                    color: "#fff",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  ✓ Verified Listing
+                </span>
+              )}
+              <button
+                onClick={handleShare}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 6,
-                  padding: isMobile ? "6px 12px" : "8px 18px",
+                  padding: isMobile ? "6px 12px" : "8px 16px",
                   borderRadius: 999,
                   fontSize: 12,
                   fontWeight: 600,
-                  backgroundColor: "#4caf8e",
-                  color: "#fff",
+                  border: "1px solid #dad7f0",
+                  backgroundColor: "#fff",
+                  color: "#3b3584",
+                  cursor: "pointer",
                   fontFamily: "sans-serif",
                 }}
               >
-                ✓ Verified Listing
-              </span>
-            )}
-            {/* <span style={{
-              display: "flex", alignItems: "center",
-              padding: isMobile ? "6px 12px" : "8px 18px",
-              borderRadius: 999, fontSize: 12,
-              fontWeight: 600, backgroundColor: "#ffe0d4", color: "#c0441a",
-              fontFamily: "sans-serif",
-            }}>
-              Only 2 Rooms Left
-            </span> */}
+                🔗 Share Property
+              </button>
+              <button
+                onClick={handleCopyLink}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: isMobile ? "6px 12px" : "8px 16px",
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  border: "1px solid #dad7f0",
+                  backgroundColor: "#fff",
+                  color: "#3b3584",
+                  cursor: "pointer",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                📋 Copy Link
+              </button>
+            </div>
           </div>
+          {/* <span style={{
+            display: "flex", alignItems: "center",
+            padding: isMobile ? "6px 12px" : "8px 18px",
+            borderRadius: 999, fontSize: 12,
+            fontWeight: 600, backgroundColor: "#ffe0d4", color: "#c0441a",
+            fontFamily: "sans-serif",
+          }}>
+            Only 2 Rooms Left
+          </span> */}
         </div>
 
         {/* ── Photo Grid ── */}
@@ -606,8 +689,6 @@ export default function PropertyDetails() {
             >
               <div className="pd-amenities-grid">
                 {listing.amenities?.map((item, index) => {
-                  const icon = item.slice(0, 2);
-                  const label = item.slice(2);
                   return (
                     <div
                       key={index}
